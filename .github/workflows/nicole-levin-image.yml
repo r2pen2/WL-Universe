@@ -9,6 +9,7 @@ on:
       - "packages/nicole-levin/**"
       - "packages/web-legos/**"
       - "packages/server-legos/**"
+      - "deploy/docker/**"
       - "scripts/**"
       - ".github/workflows/nicole-levin-image.yml"
       - "package.json"
@@ -47,7 +48,11 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: packages/nicole-levin/Dockerfile
+          file: deploy/docker/node-react-express.Dockerfile
+          build-args: |
+            APP_DIR=packages/nicole-levin
+            APP_NAME=nicole-levin
+            PORT=3005
           push: true
           tags: |
             ${{ env.IMAGE_NAME }}:latest
