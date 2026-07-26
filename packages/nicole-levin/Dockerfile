@@ -19,7 +19,7 @@ FROM node:18-bookworm-slim AS server-deps
 WORKDIR /repo/packages/nicole-levin
 
 COPY packages/nicole-levin/package*.json ./
-RUN npm ci --omit=dev
+RUN npm install --omit=dev --ignore-scripts
 
 FROM node:18-bookworm-slim AS runtime
 ENV NODE_ENV=production
