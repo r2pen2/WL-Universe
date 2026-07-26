@@ -1,6 +1,6 @@
 services:
   nicole-levin:
-    image: ghcr.io/r2pen2/wl-universe/nicole-levin:${NICOLE_IMAGE_TAG:-latest}
+    image: ghcr.io/r2pen2/wl-universe-nicole-levin:${NICOLE_IMAGE_TAG:-latest}
     container_name: nicole-levin
     restart: unless-stopped
     env_file:

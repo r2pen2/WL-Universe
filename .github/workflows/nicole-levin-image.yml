@@ -24,7 +24,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/wl-universe/nicole-levin
+  IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/wl-universe-nicole-levin
 
 jobs:
   publish:

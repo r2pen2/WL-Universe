@@ -31,7 +31,7 @@ The Nicole image is published by `.github/workflows/nicole-levin-image.yml` when
 The image tag used by glados is:
 
 ```text
-ghcr.io/r2pen2/wl-universe/nicole-levin:latest
+ghcr.io/r2pen2/wl-universe-nicole-levin:latest
 ```
 
 ## Glados Deployment
