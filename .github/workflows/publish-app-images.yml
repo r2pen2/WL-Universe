@@ -8,6 +8,7 @@ on:
     paths:
       - "packages/**"
       - "deploy/docker/**"
+      - "deploy/compose/**"
       - "scripts/**"
       - ".github/workflows/publish-app-images.yml"
       - "package.json"
@@ -78,3 +79,42 @@ jobs:
             ${{ env.IMAGE_NAME }}:${{ github.sha }}
           cache-from: type=gha,scope=${{ matrix.app }}
           cache-to: type=gha,mode=max,scope=${{ matrix.app }}
+
+  deploy:
+    name: deploy (${{ matrix.app }})
+    needs: publish
+    runs-on:
+      - self-hosted
+      - glados
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - app: nicole-levin
+          - app: a-new-day-coaching
+          - app: a-new-day-coaching-crm
+          - app: beyond-the-bell
+          - app: wl-admin-portal
+          - app: you-can-do-it-gardening
+          - app: joe-dobbelaar
+          - app: talk-about-dreams
+          - app: boston-mixtape
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Deploy compose app
+        run: |
+          set -euo pipefail
+          app="${{ matrix.app }}"
+          app_dir="/opt/services/apps/${app}"
+          compose_file="${app_dir}/compose.yml"
+
+          sudo mkdir -p "${app_dir}"
+          sudo cp "deploy/compose/${app}.yml" "${compose_file}"
+
+          cd "${app_dir}"
+          sudo docker compose -f "${compose_file}" pull
+          sudo docker compose -f "${compose_file}" up -d
+          sudo docker compose -f "${compose_file}" ps
