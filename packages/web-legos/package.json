@@ -36,7 +36,8 @@
     "react-scripts": "5.0.1",
     "react-slick": "^0.31.0",
     "react-sparkle": "^2.0.0",
-    "slick-carousel": "^1.8.1"
+    "slick-carousel": "^1.8.1",
+    "@mantine/hooks": "^7.5.3"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.5",

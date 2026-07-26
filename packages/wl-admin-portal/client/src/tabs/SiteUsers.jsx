@@ -3,7 +3,7 @@ import React from 'react'
 import { Loading } from "@nextui-org/react"
 
 // Component Imports
-import NoPerms from "../components/noPerms"
+import NoPerms from "../components/NoPerms"
 import { CurrentSiteContext, CurrentUserContext, HOSTNAME } from '../App';
 import { WLSpinnerPage } from '../libraries/Web-Legos/components/Layout';
 import { sortFieldsAlphabetically } from '../libraries/Web-Legos/api/sorting';

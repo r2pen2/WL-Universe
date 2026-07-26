@@ -11,7 +11,7 @@ import { FormResponse, SiteModule } from '../libraries/Web-Legos/api/admin.ts';
 import { CurrentSiteContext, CurrentUserContext, HOSTNAME } from '../App';
 import { WLSpinnerPage } from '../libraries/Web-Legos/components/Layout';
 import { WLDateTime, getSlashDateString, getTimeOfDay } from '../libraries/Web-Legos/api/strings';
-import NoPerms from '../components/noPerms.jsx';
+import NoPerms from '../components/NoPerms.jsx';
 
 // Constants
 /** Minimum width for DataGrid columns */
