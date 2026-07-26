@@ -1,0 +1,23 @@
+.web-legos-social-icon-hover-effect {
+  transition: all .5s ease;
+}
+
+.web-legos-social-icon-hover-effect:hover {
+  transform: scale(1.1);
+}
+
+.web-legos-youtube:hover {
+  color: #FF0000;
+}
+
+.web-legos-instagram:hover {
+  color: #E4405F;
+}
+
+.web-legos-facebook:hover {
+  color: #1877F2;
+}
+
+.web-legos-tiktok:hover {
+  color: #15cbc5;
+}

@@ -1,0 +1,87 @@
+/* Define Colors */
+html {
+  /* Swan Scheme Colors */
+  --swan-white: #f4fbfc;
+  --swan-gray: #8C8C8C;
+  --swan-darkgray: #8C8C8C;
+  --swan-bluegray: #2B3C60;
+  --swan-purple: #5738B3;
+}
+
+/* Font */
+.App { font-family: "Inter", sans; }
+
+/* Padding / Layout */
+hgroup {
+  padding-inline: 2rem;
+}
+
+/* Borders */
+.b-red { border: 2px solid red }
+.b-green { border: 2px solid green }
+.b-blue { border: 2px solid blue }
+.b-white { border: 2px solid white }
+.b-black { border: 2px solid black }
+
+/* Interior Border Radius */
+.bri-1 { border-radius: 0.6rem }
+
+/* Border Radius */
+.br-1 { border-radius: 1rem }
+.br-2 { border-radius: 2rem }
+.br-3 { border-radius: 3rem }
+.br-4 { border-radius: 4rem }
+.br-5 { border-radius: 5rem }
+
+/* Backgrounds */
+.wl-section-dark { background: var(--wl-background-dark) !important }
+
+/* Color Declarations */
+a:hover { color: var(--wl-link-hover) !important; }
+.wl-text-primary { color: var(--wl-text-primary); }
+.wl-section-dark .wl-text-primary { color: var(--wl-text-ondark-primary); }
+.wl-text-secondary { color: var(--wl-text-secondary); }
+.wl-section-dark .wl-text-secondary { color: var(--wl-text-ondark-secondary); }
+.wl-text-tertiary { color: var(--wl-text-tertiary) }
+.wl-section-dark .wl-text-tertiary { color: var(--wl-text-ondark-tertiary) }
+
+/* Cursor Settings */
+.c-pointer { cursor: pointer; }
+
+/* Font Weights */
+.fw500 { font-weight: 500; }
+.fw-r { font-weight: 500; }
+.fw600 { font-weight: 600; }
+.fw-sb { font-weight: 600; }
+.fw700 { font-weight: 700; }
+.fw-b { font-weight: 700; }
+
+/* Font Sizes */
+.f-lg { font-size: 1.125rem !important }
+.f-xl { font-size: 1.25rem !important }
+.f-2xl { font-size: 1.5rem !important }
+
+/* Maximums */
+.mw-1000 { max-width: 1000px !important; }
+.mw-800 { max-width: 800px !important; }
+.mw-650 { max-width: 650px !important; }
+
+/* Gaps */
+.wl-gap-3 { gap: 3rem; }
+
+/* Text */
+.underline { text-decoration: underline; }
+.text-left { text-align: start; }
+.text-right { text-align: end; }
+
+/* Spacers */
+.wl-spacer-1 { height: 1rem; }
+.wl-spacer-2 { height: 2rem; }
+
+/* Shapes */
+.wl-section-bottom {
+  position: absolute;
+  bottom: 0;
+  left: center;
+  width: 101%;
+}

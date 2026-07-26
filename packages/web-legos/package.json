@@ -1,0 +1,46 @@
+{
+  "name": "@wl-universe/web-legos",
+  "version": "1.0.0",
+  "private": true,
+  "description": "r2pen2's React web design toolkit using NextUI and MaterialUI",
+  "main": "index.js",
+  "scripts": {
+    "test": "react-scripts test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/r2pen2/Web-Legos.git"
+  },
+  "author": "r2pen2",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/r2pen2/Web-Legos/issues"
+  },
+  "homepage": "https://github.com/r2pen2/Web-Legos#readme",
+  "dependencies": {
+    "@emotion/react": "^11.11.0",
+    "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.11.16",
+    "@mui/material": "^5.13.5",
+    "@nextui-org/react": "1.0.0-beta.13",
+    "bootstrap": "^5.2.3",
+    "browser-image-compression": "^2.0.2",
+    "firebase": "^12.16.0",
+    "flickity": "^3.0.0",
+    "react": "^18.2.0",
+    "react-alice-carousel": "^2.9.1",
+    "react-dom": "^18.2.0",
+    "react-flickity-component": "^5.0.0",
+    "react-material-ui-carousel": "^3.4.2",
+    "react-responsive-carousel": "^3.2.23",
+    "react-scripts": "5.0.1",
+    "react-slick": "^0.31.0",
+    "react-sparkle": "^2.0.0",
+    "slick-carousel": "^1.8.1",
+    "wl-universe": "file:../.."
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^14.0.0"
+  }
+}

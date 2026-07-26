@@ -1,0 +1,73 @@
+.psychotherapy-container {
+  background: url("../images/psychotherapy.png");
+  background-repeat: no-repeat;
+  position: relative;
+  background-size: cover;
+  width: 100vw;
+  padding-top: 200px;
+  padding-bottom: 200px;
+}
+
+.psychotherapy-header {
+  font-size: 40px;
+}
+
+.treatments-header {
+  font-weight: normal !important;
+}
+
+.chair {
+  height: 100%;
+  width: 100%;
+  max-width: 300px;
+  max-height: 300px;
+  aspect-ratio: 1/1;
+}
+
+.psychotherapy-card-container {
+  border-radius: 20px;
+  max-width: 1200px;
+}
+
+.card-top {
+  background: white;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+}
+
+.card-bottom {
+  background: #1e1e1e;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+
+.psychotherapy-header {
+  font-weight: bold;
+}
+
+.card-glyph {
+  height: 40px;
+  width: 40px;
+}
+
+.line-right {
+  border-right-width: 1px;
+  border-right-style: solid;
+  border-right-color: #e6e6e6;
+}
+
+@media (max-width: 991px) {
+  .line-right {
+    border-right-width: 0px;
+  }
+}
+
+.services-header {
+  font-size: 1.5rem;
+}
+
+.treatment p::before {
+  margin-right: 0.25rem;
+  content: "\2055";
+  color: #281250;
+}

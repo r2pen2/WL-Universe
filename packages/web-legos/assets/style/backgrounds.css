@@ -1,0 +1,91 @@
+.wl-background {
+  position: absolute;
+  background-repeat: no-repeat;
+  background-position-y: bottom;
+  opacity: var(--opacity);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100%;
+  width: 100%;
+  mask-image: var(--mask);
+  -webkit-mask-image: var(--mask);
+  left: 0;
+  top: 0;
+}
+
+.wl-background-v2 {
+  background-repeat: no-repeat;
+  background-position-y: bottom;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100%;
+  width: 100%;
+  mask-image: var(--mask);
+  -webkit-mask-image: var(--mask);
+}
+
+.growing-circle-container {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+}
+
+.growing-circle {
+  position: absolute;
+  border-radius: 50%;
+  border-width: 1.5px;
+  border-style: solid;
+  border-image: initial;
+  animation-timing-function: ease-out;
+  animation-duration: 6s;
+  animation-direction: normal;
+  animation-name: circle-grow-keyframes;
+  animation-iteration-count: infinite;
+}
+
+.growing-circle-static {
+  animation-name: circle-static-keyframes;
+  animation-delay: 1s;
+}
+
+.growing-circle-1 {
+  animation-delay: 0s;
+}
+.growing-circle-2 {
+  animation-delay: 0.5s;
+}
+.growing-circle-2 {
+  animation-delay: 1s;
+}
+
+@keyframes circle-grow-keyframes {
+  0% {
+    opacity: 0;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.3);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.295);
+  }
+}
+
+@keyframes circle-static-keyframes {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}

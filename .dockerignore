@@ -1,0 +1,14 @@
+.git
+.github
+node_modules
+packages/*/node_modules
+packages/nicole-levin/client/node_modules
+packages/nicole-levin/client/build
+
+.env
+.env.*
+packages/nicole-levin/config
+**/serviceAccountKey.json
+
+npm-debug.log*
+coverage

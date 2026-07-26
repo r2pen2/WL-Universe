@@ -1,0 +1,20 @@
+{
+  "name": "wl-universe",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "packages/web-legos",
+    "packages/server-legos",
+    "packages/nicole-levin",
+    "packages/nicole-levin/client"
+  ],
+  "scripts": {
+    "sync:nicole": "node scripts/sync-local-packages.mjs nicole-levin",
+    "build:nicole": "npm run sync:nicole && npm run build -w @wl-universe/nicole-levin-client",
+    "test:nicole": "npm run sync:nicole && npm run test -w @wl-universe/nicole-levin-client -- --watchAll=false",
+    "docker:build:nicole": "docker build -f packages/nicole-levin/Dockerfile -t wl-universe/nicole-levin:local ."
+  },
+  "devDependencies": {
+    "ajv": "^8.20.0"
+  }
+}

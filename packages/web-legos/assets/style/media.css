@@ -1,0 +1,14 @@
+.web-legos-video-responsive {
+  overflow: hidden;
+	width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.web-legos-video-responsive iframe {
+	aspect-ratio: 16 / 9;
+  height: 100%;
+  width: 100%;
+}

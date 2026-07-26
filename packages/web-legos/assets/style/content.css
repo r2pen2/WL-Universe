@@ -1,0 +1,90 @@
+.alice-carousel__prev-btn-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.alice-carousel__next-btn-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.alice-carousel__stage-item {
+  height: 100%;
+}
+
+.__target .item {
+  border-width: 0px;
+  border-bottom-width: .2rem;
+  border-style: solid;
+}
+
+.item-inner.underline-color {
+  padding-bottom: 20px;
+}
+
+.carousel-button {
+  padding: 1rem;
+  border-radius: 50%;
+  background-color: #494949;
+}
+
+.carousel-button:hover {
+  background-color: #737373;
+}
+
+.item .item-inner.scale-active {
+  transition: all 0.5s ease;
+  transform: scale(0.9);
+}
+
+.__target .item .item-inner.scale-active {
+  transition: all 0.5s ease;
+  transform: scale(1);
+}
+
+.hover-action-box {
+  background-color: transparent;
+  transition: all 1s ease;
+  background: var(--background);
+  padding: 1rem;
+  height: 100%;
+  margin: 0;
+  display: flex;
+}
+
+.hover-action-box:hover {
+  background: var(--mainColor);
+  filter: drop-shadow(0px 0px 5px var(--mainColorAlpha))
+}
+
+.hover-action-box:hover .hover-action-box-icon-container {
+  border: 0.25rem solid var(--accentColor);
+}
+
+.hover-action-box-icon-container {
+  border: 0.25rem solid var(--mainColor);
+  transition: border-color 1s ease;
+  min-width: 5rem;
+  min-height: 5rem;
+}
+
+.hover-action-box-icon {
+  color: var(--accentColor);
+}
+
+.hover-action-box.active {
+  width: 100%;
+}
+.hover-action-box-items {
+  height: 100%;
+}
+
+.custom-slick-button::before {
+  display: none;
+  color: var(--buttonColor);
+  font-size: var(--buttonSize);
+}

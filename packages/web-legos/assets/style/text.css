@@ -1,0 +1,67 @@
+.web-legos-text-indent {
+  text-indent: 2rem;
+}
+
+.web-legos-span-intent {
+  width: 2rem;
+}
+
+.web-legos-header-block-color {
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+  z-index: -1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background-size: cover;
+  overflow: hidden;
+  gap: 2rem;
+}
+
+.web-legos-text-editable:hover {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: .5rem;
+  cursor: pointer;
+}
+
+@media (max-width: 1200px) {
+  .web-legos-scaling-header.web-legos-header-1 {
+    font-size: 2rem;
+  }
+
+  .web-legos-scaling-header.web-legos-header-2 {
+    font-size: 1.8rem;
+  }
+
+  .web-legos-scaling-header.web-legos-header-3 {
+    font-size: 1.75rem;
+  }
+
+  .web-legos-scaling-header.web-legos-header-4 {
+    font-size: 1.6rem;
+  }
+
+  .web-legos-scaling-header.web-legos-header-5 {
+    font-size: 1.5rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .web-legos-scaling-text-block {
+    font-size: large;
+  }
+}
+
+.web-legos-header-block {
+  background: url("../images/hexagons.svg");
+  background-size: cover;
+  background-position: center -600px;
+  filter: drop-shadow(0px 0px 10px rgba(0,0,0,0.25));
+  width: 100%;
+}
+
+
+.web-legos-header-block-color.web-legos-header-block-short {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}

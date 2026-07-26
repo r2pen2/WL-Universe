@@ -1,0 +1,41 @@
+.workshops-container {
+  background: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  width: 100vw;
+}
+
+.workshops-content {
+  max-width: 800px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.workshop-details {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-left-color: #1E1E1E;
+  border-right-color: #1E1E1E;
+  border-left-width: 1px;
+  border-right-width: 1px;
+  border-left-style: solid;
+  border-right-style: solid;
+}
+
+.workshop-image {
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+}
+
+.text-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}

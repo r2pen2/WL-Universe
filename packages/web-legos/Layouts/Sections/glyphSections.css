@@ -1,0 +1,30 @@
+/* Glyph Section Two Items No Actions */
+.wl-glyph-section-two-items-no-actions {
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  min-height: 300px;
+  flex-direction: row;
+  background: var(--wl-background);
+}
+
+.wl-glyph-section-two-items-no-actions-item {
+  max-width: 650px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.wl-glyph-section-two-items-no-actions-glyph-container { height: 200px; aspect-ratio: 1/1;  }
+.wl-glyph-section-two-items-no-actions-glyph-container img { height: 200px; aspect-ratio: 1/1;  }
+.wl-glyph-section-two-items-no-actions h1 { font-size: 1.25rem; font-weight: 600 !important; }
+.wl-glyph-section-two-items-no-actions-md-container { display: flex; flex-direction: row; align-items: center; justify-content: center; }
+
+/* Dark Mode */
+.wl-section-dark .wl-glyph-section-two-items-no-actions { background: var(--wl-background-dark);}
+
+/* Md Styles */
+@media (max-width: 991px) {
+  .wl-glyph-section-two-items-no-actions { flex-direction: column; }
+}

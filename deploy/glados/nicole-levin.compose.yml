@@ -1,0 +1,24 @@
+services:
+  nicole-levin:
+    image: ghcr.io/r2pen2/wl-universe/nicole-levin:${NICOLE_IMAGE_TAG:-latest}
+    container_name: nicole-levin
+    restart: unless-stopped
+    env_file:
+      - /opt/services/data/app-env/nicole-levin.env
+    environment:
+      PORT: "3005"
+    volumes:
+      - /opt/services/data/app-assets/nicole-levin/static:/repo/packages/nicole-levin/static
+      - /opt/services/data/app-env/nicole-levin-serviceAccountKey.json:/repo/packages/nicole-levin/config/serviceAccountKey.json:ro
+    networks:
+      - proxy
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+      traefik.enable: "true"
+      traefik.http.routers.nicole-levin.rule: Host(`nicolelevin.org`) || Host(`www.nicolelevin.org`)
+      traefik.http.routers.nicole-levin.entrypoints: web
+      traefik.http.services.nicole-levin.loadbalancer.server.port: "3005"
+
+networks:
+  proxy:
+    external: true

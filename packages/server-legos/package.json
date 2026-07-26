@@ -1,0 +1,20 @@
+{
+  "name": "@wl-universe/server-legos",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A library of web server assets that I include as a git submodule in my Express.js projects",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "Joe Dobbelaar",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-fileupload": "^1.4.0",
+    "firebase-admin": "^11.9.0",
+    "fs": "^0.0.1-security",
+    "nodemailer": "^6.9.4",
+    "wl-universe": "file:../.."
+  }
+}

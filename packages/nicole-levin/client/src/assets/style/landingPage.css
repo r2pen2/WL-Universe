@@ -1,0 +1,32 @@
+.landing-page-header-container {
+  background-image: url("../images/watercolor.png");
+  background-repeat: no-repeat;
+  background-position: top center;
+  position: relative;
+  width: 100vw;
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 816px;
+  max-height: 100vh;
+}
+
+.landing-button {
+  filter: drop-shadow(0px 2px 5px black);
+}
+
+.lcsw {
+  font-size: 1.5rem !important;
+}
+
+@media (min-width: 1201px) {
+  .lcsw {
+    margin-top: -0.75rem;
+  }
+}
+
+.splash-header {
+  margin-bottom: 0px !important;
+}

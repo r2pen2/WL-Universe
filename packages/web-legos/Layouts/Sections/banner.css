@@ -1,0 +1,11 @@
+.wl-banner {
+ display: flex;
+ background-color: var(--wl-background);
+ padding-top: 2.5rem;
+ padding-bottom: 2.5rem;
+}
+.wl-banner h1 { font-size: 2rem; font-weight: 600; }
+
+.wl-banner-with-image-image-container {
+  max-width: 300px;
+}

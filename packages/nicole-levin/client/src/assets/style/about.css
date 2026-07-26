@@ -1,0 +1,23 @@
+.about-container {
+  width: 100vw;
+  z-index: 2;
+  background: #1e1e1e;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.headshot {
+  object-fit: cover;
+  width: 100%;
+  height: auto;
+  border-radius: 50%;
+  filter: drop-shadow(0px 0px 5px black);
+  max-height: 250px;
+  max-width: 250px;
+  min-height: 250px;
+  min-width: 250px;
+}

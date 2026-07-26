@@ -1,0 +1,66 @@
+{
+  "name": "@wl-universe/nicole-levin-client",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@emotion/react": "^11.11.0",
+    "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.11.16",
+    "@mui/material": "^5.13.5",
+    "@mui/styles": "^5.13.2",
+    "@nextui-org/react": "1.0.0-beta.13",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/user-event": "^13.5.0",
+    "bootstrap": "^5.2.3",
+    "browser-image-compression": "^2.0.2",
+    "canvas-confetti": "^1.6.0",
+    "firebase": "^12.16.0",
+    "flickity": "^3.0.0",
+    "react": "^18.2.0",
+    "react-alice-carousel": "^2.9.1",
+    "react-dom": "^18.2.0",
+    "react-flickity-component": "^5.0.0",
+    "react-google-recaptcha": "^3.1.0",
+    "react-material-ui-carousel": "^3.4.2",
+    "react-responsive-carousel": "^3.2.23",
+    "react-router-dom": "^6.11.2",
+    "react-scripts": "5.0.1",
+    "react-slick": "^0.31.0",
+    "react-sparkle": "^2.0.0",
+    "slick-carousel": "^1.8.1",
+    "typescript": "^4.9.5",
+    "web-vitals": "^2.1.4",
+    "wl-universe": "file:../../.."
+  },
+  "scripts": {
+    "sync:packages": "node ../../../scripts/sync-local-packages.mjs nicole-levin",
+    "prestart": "npm run sync:packages",
+    "start": "react-scripts start",
+    "prebuild": "npm run sync:packages",
+    "build": "react-scripts build",
+    "pretest": "npm run sync:packages",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@testing-library/react": "^14.0.0"
+  }
+}
