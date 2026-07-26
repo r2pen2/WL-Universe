@@ -19,13 +19,15 @@
   },
   "homepage": "https://github.com/r2pen2/ANewDayCoachingCRM#readme",
   "dependencies": {
+    "express": "^4.19.2",
+    "express-fileupload": "^1.4.0",
+    "firebase-admin": "^12.1.0",
+    "fs": "^0.0.1-security",
+    "nodemailer": "^7.0.4",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
-    "express": "^4.19.2",
-    "firebase-admin": "^12.1.0",
     "googleapis": "^135.0.0",
-    "nodemailer": "^7.0.4",
     "stripe": "^15.2.0"
   },
   "private": true
