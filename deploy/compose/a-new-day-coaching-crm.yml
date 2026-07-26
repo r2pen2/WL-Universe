@@ -11,6 +11,7 @@ services:
       - ${A_NEW_DAY_COACHING_CRM_STATIC_PATH:-/opt/services/data/app-assets/a-new-day-coaching-crm/static}:/repo/packages/a-new-day-coaching-crm/static
       - ${A_NEW_DAY_COACHING_CRM_IMAGES_PATH:-/opt/services/data/app-assets/a-new-day-coaching-crm/images}:/repo/packages/a-new-day-coaching-crm/images
       - ${A_NEW_DAY_COACHING_CRM_FIREBASE_SERVICE_ACCOUNT_PATH:-/opt/services/data/app-env/a-new-day-coaching-crm-serviceAccountKey.json}:/repo/packages/a-new-day-coaching-crm/config/serviceAccountKey.json:ro
+      - ${A_NEW_DAY_COACHING_CRM_CALENDAR_SERVICE_ACCOUNT_PATH:-/opt/services/data/app-env/a-new-day-coaching-crm-cal.json}:/repo/packages/a-new-day-coaching-crm/config/cal.json:ro
     networks:
       - proxy
     labels:
