@@ -1,0 +1,25 @@
+services:
+  wl-admin-portal:
+    image: ghcr.io/r2pen2/wl-universe-wl-admin-portal:${WL_ADMIN_PORTAL_IMAGE_TAG:-latest}
+    container_name: wl-admin-portal
+    restart: unless-stopped
+    env_file:
+      - ${WL_ADMIN_PORTAL_ENV_FILE:-/opt/services/data/app-env/wl-admin-portal.env}
+    environment:
+      PORT: "25565"
+    volumes:
+      - ${WL_ADMIN_PORTAL_STATIC_PATH:-/opt/services/data/app-assets/wl-admin-portal/static}:/repo/packages/wl-admin-portal/static
+      - ${WL_ADMIN_PORTAL_IMAGES_PATH:-/opt/services/data/app-assets/wl-admin-portal/images}:/repo/packages/wl-admin-portal/images
+      - ${WL_ADMIN_PORTAL_FIREBASE_SERVICE_ACCOUNT_PATH:-/opt/services/data/app-env/wl-admin-portal-serviceAccountKey.json}:/repo/packages/wl-admin-portal/config/serviceAccountKey.json:ro
+    networks:
+      - proxy
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+      traefik.enable: "true"
+      traefik.http.routers.wl-admin-portal.rule: Host(`admin.youcandoitgardening.com`) || Host(`www.admin.youcandoitgardening.com`) || Host(`admin.beyondthebelleducation.com`) || Host(`www.admin.beyondthebelleducation.com`) || Host(`admin.joed.dev`) || Host(`www.admin.joed.dev`)
+      traefik.http.routers.wl-admin-portal.entrypoints: web
+      traefik.http.services.wl-admin-portal.loadbalancer.server.port: "25565"
+
+networks:
+  proxy:
+    external: true

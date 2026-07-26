@@ -42,7 +42,7 @@ COPY --from=server-deps /repo/${APP_DIR}/node_modules ./${APP_DIR}/node_modules
 COPY --from=client-builder /repo/${APP_DIR}/client/build ./${APP_DIR}/client/build
 
 RUN node scripts/sync-local-packages.mjs ${APP_NAME} \
-  && mkdir -p /repo/${APP_DIR}/static/images /repo/${APP_DIR}/config
+  && mkdir -p /repo/${APP_DIR}/static/images /repo/${APP_DIR}/images /repo/${APP_DIR}/config
 
 WORKDIR /repo/${APP_DIR}
 EXPOSE ${PORT}

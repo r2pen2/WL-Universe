@@ -1,0 +1,1 @@
+export const notifStyle = {marginBottom:"0.5rem"}

@@ -1,0 +1,82 @@
+.background-pattern {
+  min-height: 600px;
+  object-fit: cover;
+  margin-top: -300px;
+  filter: drop-shadow(1px 1px 4px black);
+}
+
+.elevated {
+  z-index: 5;
+}
+
+.background-image {
+  width: 100%;
+  background-image: url("../images/home-flower-min2.webp");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.testimonial-img {
+  width: 10rem;
+  height: 10rem;
+  border-radius: 50%;
+  filter: drop-shadow(2px 2px 10px black);
+  margin-bottom: 2rem;
+}
+
+.word-hover {
+  transition: 1s ease;
+}
+
+.word-hover:hover {
+  transform: scale(1.1);
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.transparent-card {  
+  min-height: 100%;
+  max-width: 80vw;
+  min-width: 100%;
+  border: 2px solid lightsteelblue;
+  background-color: rgba(255,255,255,0.55);
+  border-radius: .5rem;
+  padding: .5rem;
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
+}
+
+.hook-card-col-padding {
+  padding: 0.0625rem;
+}
+
+.no-select {
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
+}
+
+@media (max-width: 1200px) {
+  .transparent-card {  
+    width: 100%;
+  }
+}
+
+.text-background {
+  box-shadow: 0px 0px 5px rgba(0,0,0,.5);
+  width: 100vw;
+  color: black;
+  background-color: rgba(255,255,255,0.60);
+}
+
+.text-large {
+  font-size: 4rem;
+}
+
+.jess-image {
+  width: 100%;
+  height: auto;
+  max-width: 450px;
+}

@@ -1,0 +1,98 @@
+.App {
+  text-align: center;
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+.app-content {
+  width: 100%;
+}
+
+header {
+  z-index: 2;
+}
+
+footer {
+  overflow: hidden;
+  position: relative;
+}
+
+.footer-background {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: auto;
+}
+
+.footer-content {
+  position: relative;
+}
+
+.bg-blue {
+  background-image: url("./assets/images/gradient/blueToPurple.svg");
+  background-size: cover;
+}
+
+.bg-orange {
+  background: linear-gradient(rgba(255,79,15, 0.90), rgba(255,79,15, 0.90)), url("./assets/images/gradient/hexagons.svg");
+  filter: drop-shadow(0px 0px 10px rgba(0,0,0,0.25));
+  background-size: cover;
+  background-position: center -600px;
+}
+
+.line-underneath {
+  border-width: 2px;
+  border-bottom: rgb(255,79,15);
+}
+
+.bg-orange-gradient {
+  background-image: url("./assets/images/gradient/yellowToOrange.svg");
+  background-size: cover;
+}
+
+.navbar-brand-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 10px;
+}
+
+section {
+  scroll-margin-top: 80px;
+}
+
+.img-shadow {
+  filter: drop-shadow(0px 0px 6px black);
+}
+
+.img-round {
+  border-radius: 50%;
+}
+
+.edit:hover {
+  opacity: .5;
+  border: 2px solid black;
+}
+
+
+.section-divider {
+  content: '';
+  height: 4px;
+  width: 100%;
+  display: block;
+  background: url("./assets/images/purple-stripe.jpg") repeat-x;
+}
+
+@media (max-width: 768px) {
+  html {
+    font-size: 18px;
+  }
+}
+
+
+html {
+  font-size: 20px;
+}

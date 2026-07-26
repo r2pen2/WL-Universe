@@ -1,0 +1,31 @@
+.splash {
+  background-image: url("../images/Waves2.png");
+  background-position-x: center;
+  background-position-y: 80%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 900px;
+  width: 100%;
+  position: relative;
+}
+
+.dreams-line {
+  background-color: #C2BF59;
+  height: 5px;
+  width: 100%;
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
+  max-width: 200px;
+  border-radius: 3px;
+}
+
+.dreams-line.full {
+  max-width: 100% !important;
+}
+
+.moon-logo {
+  width: 100%;
+  max-width: 300px;
+  height: 100%;
+  max-height: 300px;
+}

@@ -1,0 +1,100 @@
+.pay-button {
+  height: 200px;
+}
+
+.clickable {
+  cursor: pointer;
+  position: relative;
+  display: flex;
+}
+
+.clickable::after {
+  transition: all 0.5s ease;
+  position: absolute;
+  content: '';
+  height: 0%;
+  width: 100%;
+  bottom: 0;
+  background-color: var(--icon-color);
+}
+
+.clickable:hover::after {
+  height: 100%;
+} 
+
+.clickable p {
+  margin-top: 1rem;
+  transition: all 0.5s ease;
+}
+
+.clickable:hover p {
+  color: white !important;
+  z-index: 2;
+  font-weight: 600;
+} 
+
+
+.pay-button svg {
+  fill: var(--icon-color);
+  transition: all 0.5s ease;
+  height: 100px;
+  width: 100px;
+
+}
+
+.pay-button:hover svg {
+  z-index: 2;
+  fill: white !important;
+}
+
+.pay-button:hover svg.alt-fill {
+  z-index: 2;
+  fill: transparent !important;
+  stroke: white !important;
+}
+
+.pay-button:hover svg.stroke {
+  z-index: 2;
+  fill: transparent !important;
+  stroke: white !important;
+}
+
+.pay-modal-card {
+  background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6));
+}
+
+.pay-modal-title {
+  font-family:
+    Greycliff CF,
+    var(--mantine-font-family);
+  font-weight: 700;
+}
+
+.pay-modal-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border-radius: var(--mantine-radius-md);
+  height: rem(90px);
+  background-color: light-dark(var(--mantine-color-white), var(--mantine-color-dark-7));
+  transition:
+    box-shadow 150ms ease,
+    transform 100ms ease;
+}
+
+.pay-modal-item:hover {
+  box-shadow: var(--mantine-shadow-md);
+  transform: scale(1.05);
+}
+
+.pay-modal-icon-svg {
+  max-height: 40px;
+  max-width: 40px;
+  fill: var(--icon-color);
+}
+
+.pay-modal-item p {
+  margin-bottom: 0;
+}

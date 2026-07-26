@@ -1,0 +1,17 @@
+.home-image {
+  background: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.2)), url("../images/stock/writing.jpg");
+  background-size: cover;
+}
+
+.testimonial-img {
+  width: 10rem;
+  height: 10rem;
+  border-radius: 50%;
+  filter: drop-shadow(2px 2px 10px black);
+  margin-bottom: 2rem;
+}
+
+img.spinning {
+  transition: all 0.5s ease;
+  transform: rotate(360deg);
+}

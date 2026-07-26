@@ -1,0 +1,43 @@
+@keyframes wiggle {
+  0%, 100% {
+    transform: translateY(-0.25rem) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-0.25rem) rotate(10deg);
+  }
+  75% {
+    transform: translateY(-0.25rem) rotate(-10deg);
+  }
+}
+
+.wiggle * svg.nav-icon { animation: wiggle 0.5s ease; }
+
+a.nav-link-hover-catcher[data-active="true"] .nav-icon {
+  background-color: #D6E3D1;
+}
+
+a.nav-link-hover-catcher:hover .nav-icon {
+  transform: translateY(-0.25rem);
+}
+
+span:has(> svg.nav-icon) { position: relative; }
+
+span:has(> svg.nav-icon)::before  {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  background: #00000055;
+  height: 1px;
+  width: 0%;
+  z-index: 1;
+  border-radius: 50%;
+  opacity: 0;
+  transition: all 0.5s ease;
+}
+
+a.nav-link-hover-catcher:hover span:has(> svg.nav-icon)::before {
+  opacity: 1;
+  width: 50%;
+  left: 25%;
+}

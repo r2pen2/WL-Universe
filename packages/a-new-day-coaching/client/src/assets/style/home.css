@@ -1,0 +1,90 @@
+button.coaching-button {
+  background-color: #647659;
+  color: #F4FBFC !important;
+  padding: 10px 40px;
+  border: none;
+  filter: drop-shadow(0px 5px 3px rgba(0, 0, 0, 0.5));
+}
+
+h1 {
+  font-size: 36px !important;
+  font-weight: 400 !important;
+}
+
+p {
+  font-size: 24px;
+  font-family: "Kiwi Maru", serif !important;
+  font-style: normal !important;
+}
+
+.kiwi * {
+  font-family: "Kiwi Maru", serif !important;
+}
+
+.coaching-line {
+  background-color: #9FB8AD;
+  height: 5px;
+  width: 100%;
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.why-paper::after {
+  pointer-events: none;
+  content: "";
+  background-color: #E6F2EF33;
+  height: 0%;
+  width: 100%;
+  display: block;
+  position: absolute;
+  bottom: 0;
+  transition: all 0.25s ease;
+}
+
+.why-paper {
+  position: relative;
+}
+
+.why-paper:hover::after {
+  height: 100%;
+}
+
+.why-paper strong {
+  transition: all 0.25s ease;
+}
+.why-paper p {
+  transition: all 0.25s ease;
+}
+
+.why-paper:hover p {
+  font-size: large !important;
+}
+
+.why-paper:hover strong {
+  color: #54962b;
+  font-size: x-large !important;
+}
+
+.raleway {
+  color: white !important; 
+  font-family: "Raleway", sans-serif !important;
+  font-optical-sizing: auto;
+  font-weight: 500;
+}
+
+.animation-stick {
+  height: 5px;
+  background-color: #647659;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+@keyframes stick {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}

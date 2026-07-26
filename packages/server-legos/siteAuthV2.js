@@ -26,12 +26,11 @@ class SiteAuthenticationManager {
   }
 
   initialize() {
-    console.log("Creating new SiteAuthenticationManager with user key: " + this.userKey + " and site key: " + this.siteKey);
+    console.log("Creating new SiteAuthenticationManager for site key: " + this.siteKey);
     this.router = express.Router();
 
     this.router.get('/' , (req, res) => {
       const key = req.query.key;
-      console.log(key)
       if (key) {
         if (key !== this.userKey || !this.userKey) {
           res.send(400)

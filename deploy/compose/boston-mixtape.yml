@@ -1,0 +1,25 @@
+services:
+  boston-mixtape:
+    image: ghcr.io/r2pen2/wl-universe-boston-mixtape:${BOSTON_MIXTAPE_IMAGE_TAG:-latest}
+    container_name: boston-mixtape
+    restart: unless-stopped
+    env_file:
+      - ${BOSTON_MIXTAPE_ENV_FILE:-/opt/services/data/app-env/boston-mixtape.env}
+    environment:
+      PORT: "3010"
+    volumes:
+      - ${BOSTON_MIXTAPE_STATIC_PATH:-/opt/services/data/app-assets/boston-mixtape/static}:/repo/packages/boston-mixtape/static
+      - ${BOSTON_MIXTAPE_IMAGES_PATH:-/opt/services/data/app-assets/boston-mixtape/images}:/repo/packages/boston-mixtape/images
+      - ${BOSTON_MIXTAPE_FIREBASE_SERVICE_ACCOUNT_PATH:-/opt/services/data/app-env/boston-mixtape-serviceAccountKey.json}:/repo/packages/boston-mixtape/config/serviceAccountKey.json:ro
+    networks:
+      - proxy
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+      traefik.enable: "true"
+      traefik.http.routers.boston-mixtape.rule: Host(`bostonmixtape.com`) || Host(`www.bostonmixtape.com`) || Host(`bostonsoundtrack.com`) || Host(`www.bostonsoundtrack.com`) || Host(`berachmusic.com`) || Host(`www.berachmusic.com`) || Host(`bostonsbestmusic.com`) || Host(`www.bostonsbestmusic.com`) || Host(`berachorchestra.com`) || Host(`www.berachorchestra.com`)
+      traefik.http.routers.boston-mixtape.entrypoints: web
+      traefik.http.services.boston-mixtape.loadbalancer.server.port: "3010"
+
+networks:
+  proxy:
+    external: true

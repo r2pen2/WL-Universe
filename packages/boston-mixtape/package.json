@@ -1,0 +1,33 @@
+{
+  "name": "@wl-universe/boston-mixtape",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "sync:packages": "node ../../scripts/sync-local-packages.mjs boston-mixtape",
+    "prestart": "npm run sync:packages"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/r2pen2/BP-10700.git"
+  },
+  "author": "Joe Dobbelaar",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/r2pen2/BP-10700/issues"
+  },
+  "homepage": "https://github.com/r2pen2/BP-10700#readme",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "expres": "^0.0.5",
+    "express": "^4.18.2",
+    "express-fileupload": "^1.4.0",
+    "firebase-admin": "^11.10.1",
+    "fs": "^0.0.1-security",
+    "react-scripts": "^5.0.1"
+  },
+  "private": true
+}

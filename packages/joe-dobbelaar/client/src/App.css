@@ -1,0 +1,19 @@
+.App {
+  text-align: center;
+  box-sizing: border-box;
+  max-width: 100%;
+  overflow-x: hidden;
+  background: #1E1E1E;
+}
+
+.app-content {
+  width: 100vw;
+}
+
+.App *::selection {
+  background: #ffffff22; /* WebKit/Blink Browsers */
+}
+
+.App *::-moz-selection {
+  background: #ffffff22; /* Gecko Browsers */
+}

@@ -1,0 +1,25 @@
+services:
+  a-new-day-coaching-crm:
+    image: ghcr.io/r2pen2/wl-universe-a-new-day-coaching-crm:${A_NEW_DAY_COACHING_CRM_IMAGE_TAG:-latest}
+    container_name: a-new-day-coaching-crm
+    restart: unless-stopped
+    env_file:
+      - ${A_NEW_DAY_COACHING_CRM_ENV_FILE:-/opt/services/data/app-env/a-new-day-coaching-crm.env}
+    environment:
+      PORT: "3008"
+    volumes:
+      - ${A_NEW_DAY_COACHING_CRM_STATIC_PATH:-/opt/services/data/app-assets/a-new-day-coaching-crm/static}:/repo/packages/a-new-day-coaching-crm/static
+      - ${A_NEW_DAY_COACHING_CRM_IMAGES_PATH:-/opt/services/data/app-assets/a-new-day-coaching-crm/images}:/repo/packages/a-new-day-coaching-crm/images
+      - ${A_NEW_DAY_COACHING_CRM_FIREBASE_SERVICE_ACCOUNT_PATH:-/opt/services/data/app-env/a-new-day-coaching-crm-serviceAccountKey.json}:/repo/packages/a-new-day-coaching-crm/config/serviceAccountKey.json:ro
+    networks:
+      - proxy
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+      traefik.enable: "true"
+      traefik.http.routers.a-new-day-coaching-crm.rule: Host(`bluprint.anewdaycoaching.com`) || Host(`www.bluprint.anewdaycoaching.com`)
+      traefik.http.routers.a-new-day-coaching-crm.entrypoints: web
+      traefik.http.services.a-new-day-coaching-crm.loadbalancer.server.port: "3008"
+
+networks:
+  proxy:
+    external: true

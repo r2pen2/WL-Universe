@@ -1,0 +1,8 @@
+.hover-card {
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+.hover-card:hover {
+  transform: translateY(-0.25rem);
+}

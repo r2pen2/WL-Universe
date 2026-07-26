@@ -1,0 +1,25 @@
+services:
+  beyond-the-bell:
+    image: ghcr.io/r2pen2/wl-universe-beyond-the-bell:${BEYOND_THE_BELL_IMAGE_TAG:-latest}
+    container_name: beyond-the-bell
+    restart: unless-stopped
+    env_file:
+      - ${BEYOND_THE_BELL_ENV_FILE:-/opt/services/data/app-env/beyond-the-bell.env}
+    environment:
+      PORT: "3000"
+    volumes:
+      - ${BEYOND_THE_BELL_STATIC_PATH:-/opt/services/data/app-assets/beyond-the-bell/static}:/repo/packages/beyond-the-bell/static
+      - ${BEYOND_THE_BELL_IMAGES_PATH:-/opt/services/data/app-assets/beyond-the-bell/images}:/repo/packages/beyond-the-bell/images
+      - ${BEYOND_THE_BELL_FIREBASE_SERVICE_ACCOUNT_PATH:-/opt/services/data/app-env/beyond-the-bell-serviceAccountKey.json}:/repo/packages/beyond-the-bell/config/serviceAccountKey.json:ro
+    networks:
+      - proxy
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+      traefik.enable: "true"
+      traefik.http.routers.beyond-the-bell.rule: Host(`beyondthebelleducation.com`) || Host(`www.beyondthebelleducation.com`)
+      traefik.http.routers.beyond-the-bell.entrypoints: web
+      traefik.http.services.beyond-the-bell.loadbalancer.server.port: "3000"
+
+networks:
+  proxy:
+    external: true

@@ -1,0 +1,26 @@
+.service-image {
+  height: 100%;
+  object-fit: cover;
+  padding: 1em;
+}
+
+.no-select {
+  pointer-events: none;
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
+}
+
+.fade-to-pink {
+  background-image: url("../images/gradient/FadeToPink.svg");
+  background-position: center bottom;
+  background-repeat: no-repeat;
+  background-size: 100vw;
+}
+
+.slideshow-background {
+  background-image: url("../images/gradient/SlideshowBackground.svg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}

@@ -28,7 +28,6 @@
     "express-fileupload": "^1.4.0",
     "firebase-admin": "^11.10.1",
     "fs": "^0.0.1-security",
-    "react-scripts": "^5.0.1",
-    "wl-universe": "file:../.."
+    "react-scripts": "^5.0.1"
   }
 }

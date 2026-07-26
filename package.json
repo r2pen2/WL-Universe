@@ -3,10 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "workspaces": [
-    "packages/web-legos",
-    "packages/server-legos",
-    "packages/nicole-levin",
-    "packages/nicole-levin/client"
+    "packages/*",
+    "packages/*/client"
   ],
   "scripts": {
     "sync:nicole": "node scripts/sync-local-packages.mjs nicole-levin",

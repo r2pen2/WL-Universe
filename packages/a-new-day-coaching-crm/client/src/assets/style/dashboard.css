@@ -1,0 +1,179 @@
+.indicator-container button.mantine-Carousel-indicator {
+  background: #60a483;
+  &[data-active] {
+    width: 40px;
+  }
+  transition: all 0.5s ease;
+}
+
+.mantine-Carousel-indicators {
+  bottom: 0 !important;
+}
+
+.indicator-container {
+  padding-bottom: 1rem;
+}
+
+.picker-button {
+  border: 1px solid #ced4da !important;
+}
+
+.hover-clickable {
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.top-green {
+  position: relative;
+}
+
+.top-green::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 50px;
+  background-color: #60A483;
+}
+
+.ring {
+  animation: spin 120s linear infinite;
+  border-radius: 50%;
+}
+
+.subject-chip {
+  overflow: hidden;
+  border-radius: 1rem;
+  min-width: fit-content !important;
+}
+
+.subject-chip-dark .chip-text, .subject-chip-dark * svg {
+  color: black;
+}
+
+.line-icon {
+  animation: spinverse 120s linear infinite;
+  border-radius: 50%;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spinverse {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+.right-panel {
+  padding-top: 0.5rem;
+  padding-left: 0.5rem;  /* To make room for scrollbar on other side */
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+  overflow-x: hidden;
+  }
+  
+  @media (min-width: 1400px) {
+    .right-panel {
+      overflow-y: scroll;
+      height: calc(100vh - 60px);
+  }
+}
+
+.left-panel {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  overflow-y: scroll;
+  height: calc(100vh - 60px);
+}
+
+.green-bg {
+  background-color: #60A483;
+}
+
+.border-gray-top {
+  border-top: 1px solid #00000022;
+}
+
+.border-gray-bottom {
+  border-bottom: 1px solid #00000022;
+}
+
+.intent-container .intent-text {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.intent-container .intent-text:not(.disable-interaction)::after {
+  cursor: pointer;
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: none;
+  z-index: 1;
+}
+
+.intent-container:hover .intent-text::after {
+  pointer-events: none;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 0.5rem;
+}
+
+.homework-completed * .homework-deadline-info {
+  display: none !important;
+}
+
+.completed-check {
+  display: none;
+}
+
+.homework-completed * .completed-check {
+  display: block !important;
+}
+
+.homework-completed * .complete-button {
+  display: none !important;
+}
+
+.homework-incomplete * .incomplete-button {
+  display: none !important;
+}
+
+.homework-completed * .incomplete-button {
+  display: block !important;
+}
+
+.homework-completed * .start-button {
+  display: none !important;
+}
+
+.assignment-bar {
+  border: 1px solid #dee2e6;
+}
+
+svg.tracker-ring-svg circle.green-space {
+  fill: light-dark(#D6E3D1, #60A483);
+}
+
+svg.tracker-ring-svg circle.white-space {
+  fill: light-dark(var(--mantine-color-white), var(--mantine-color-dark-7));
+}

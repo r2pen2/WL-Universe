@@ -1,0 +1,17 @@
+nav.custom {
+  top: 0;
+  left: 0;
+  right: 0;
+  position: absolute;
+  margin-bottom: -60px;
+  z-index: 5;
+  height: 60px;
+  background-color: #F4FBFC;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center !important;
+  gap: 2rem;
+  padding-right: 2rem;
+  justify-content: flex-end;
+}

@@ -1,0 +1,25 @@
+services:
+  you-can-do-it-gardening:
+    image: ghcr.io/r2pen2/wl-universe-you-can-do-it-gardening:${YOU_CAN_DO_IT_GARDENING_IMAGE_TAG:-latest}
+    container_name: you-can-do-it-gardening
+    restart: unless-stopped
+    env_file:
+      - ${YOU_CAN_DO_IT_GARDENING_ENV_FILE:-/opt/services/data/app-env/you-can-do-it-gardening.env}
+    environment:
+      PORT: "3003"
+    volumes:
+      - ${YOU_CAN_DO_IT_GARDENING_STATIC_PATH:-/opt/services/data/app-assets/you-can-do-it-gardening/static}:/repo/packages/you-can-do-it-gardening/static
+      - ${YOU_CAN_DO_IT_GARDENING_IMAGES_PATH:-/opt/services/data/app-assets/you-can-do-it-gardening/images}:/repo/packages/you-can-do-it-gardening/images
+      - ${YOU_CAN_DO_IT_GARDENING_FIREBASE_SERVICE_ACCOUNT_PATH:-/opt/services/data/app-env/you-can-do-it-gardening-serviceAccountKey.json}:/repo/packages/you-can-do-it-gardening/config/serviceAccountKey.json:ro
+    networks:
+      - proxy
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+      traefik.enable: "true"
+      traefik.http.routers.you-can-do-it-gardening.rule: Host(`youcandoitgardening.com`) || Host(`www.youcandoitgardening.com`)
+      traefik.http.routers.you-can-do-it-gardening.entrypoints: web
+      traefik.http.services.you-can-do-it-gardening.loadbalancer.server.port: "3003"
+
+networks:
+  proxy:
+    external: true

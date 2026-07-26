@@ -1,0 +1,25 @@
+services:
+  a-new-day-coaching:
+    image: ghcr.io/r2pen2/wl-universe-a-new-day-coaching:${A_NEW_DAY_COACHING_IMAGE_TAG:-latest}
+    container_name: a-new-day-coaching
+    restart: unless-stopped
+    env_file:
+      - ${A_NEW_DAY_COACHING_ENV_FILE:-/opt/services/data/app-env/a-new-day-coaching.env}
+    environment:
+      PORT: "3007"
+    volumes:
+      - ${A_NEW_DAY_COACHING_STATIC_PATH:-/opt/services/data/app-assets/a-new-day-coaching/static}:/repo/packages/a-new-day-coaching/static
+      - ${A_NEW_DAY_COACHING_IMAGES_PATH:-/opt/services/data/app-assets/a-new-day-coaching/images}:/repo/packages/a-new-day-coaching/images
+      - ${A_NEW_DAY_COACHING_FIREBASE_SERVICE_ACCOUNT_PATH:-/opt/services/data/app-env/a-new-day-coaching-serviceAccountKey.json}:/repo/packages/a-new-day-coaching/config/serviceAccountKey.json:ro
+    networks:
+      - proxy
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+      traefik.enable: "true"
+      traefik.http.routers.a-new-day-coaching.rule: Host(`anewdaycoaching.com`) || Host(`www.anewdaycoaching.com`)
+      traefik.http.routers.a-new-day-coaching.entrypoints: web
+      traefik.http.services.a-new-day-coaching.loadbalancer.server.port: "3007"
+
+networks:
+  proxy:
+    external: true

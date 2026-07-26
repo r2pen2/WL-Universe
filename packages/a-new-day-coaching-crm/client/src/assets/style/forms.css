@@ -1,0 +1,55 @@
+.form-paper {
+  position: relative;
+  cursor: pointer;
+}
+
+.form-title {
+  padding-left: 1.5rem !important;
+}
+
+.form-paper p {
+  margin: 0;
+  padding: 0;
+}
+
+.form-decor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1rem;
+  height: 100%;
+  background-color: #647659; /* This is, at present, ignored and overwritten by component style */
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+
+.form-card-card {
+  background-color: var(--mantine-color-body);
+}
+
+.form-card-image-section {
+  padding: var(--mantine-spacing-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: rem(1px) solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
+}
+
+.form-card-label {
+  margin-bottom: var(--mantine-spacing-xs);
+  line-height: 1;
+  font-weight: 700;
+  font-size: var(--mantine-font-size-xs);
+  letter-spacing: rem(-0.25px);
+  text-transform: uppercase;
+}
+
+.form-card-section {
+  padding: var(--mantine-spacing-md);
+  border-top: rem(1px) solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
+}
+
+.form-card-icon {
+  margin-right: rem(5px);
+  color: light-dark(var(--mantine-color-gray-5), var(--mantine-color-dark-2));
+}

@@ -5,21 +5,30 @@ import { fileURLToPath } from "node:url";
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const appName = process.argv[2];
 
-if (appName !== "nicole-levin") {
-  console.error(`Unsupported app "${appName ?? ""}". Expected "nicole-levin".`);
+if (!appName) {
+  console.error("Usage: node scripts/sync-local-packages.mjs <app-package-directory>");
   process.exit(1);
 }
 
-const copies = [
-  {
+const appDir = path.join(repoRoot, "packages", appName);
+const copies = [];
+
+if (!fs.existsSync(appDir)) {
+  console.error(`Unknown app package "${appName}". Expected ${path.relative(repoRoot, appDir)} to exist.`);
+  process.exit(1);
+}
+
+if (fs.existsSync(path.join(appDir, "client"))) {
+  copies.push({
     from: path.join(repoRoot, "packages", "web-legos"),
-    to: path.join(repoRoot, "packages", "nicole-levin", "client", "src", "libraries", "Web-Legos")
-  },
-  {
-    from: path.join(repoRoot, "packages", "server-legos"),
-    to: path.join(repoRoot, "packages", "nicole-levin", "libraries", "Server-Legos")
-  }
-];
+    to: path.join(appDir, "client", "src", "libraries", "Web-Legos")
+  });
+}
+
+copies.push({
+  from: path.join(repoRoot, "packages", "server-legos"),
+  to: path.join(appDir, "libraries", "Server-Legos")
+});
 
 const excludedNames = new Set([".git", "node_modules"]);
 

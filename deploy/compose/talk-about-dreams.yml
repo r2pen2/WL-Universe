@@ -1,0 +1,25 @@
+services:
+  talk-about-dreams:
+    image: ghcr.io/r2pen2/wl-universe-talk-about-dreams:${TALK_ABOUT_DREAMS_IMAGE_TAG:-latest}
+    container_name: talk-about-dreams
+    restart: unless-stopped
+    env_file:
+      - ${TALK_ABOUT_DREAMS_ENV_FILE:-/opt/services/data/app-env/talk-about-dreams.env}
+    environment:
+      PORT: "3004"
+    volumes:
+      - ${TALK_ABOUT_DREAMS_STATIC_PATH:-/opt/services/data/app-assets/talk-about-dreams/static}:/repo/packages/talk-about-dreams/static
+      - ${TALK_ABOUT_DREAMS_IMAGES_PATH:-/opt/services/data/app-assets/talk-about-dreams/images}:/repo/packages/talk-about-dreams/images
+      - ${TALK_ABOUT_DREAMS_FIREBASE_SERVICE_ACCOUNT_PATH:-/opt/services/data/app-env/talk-about-dreams-serviceAccountKey.json}:/repo/packages/talk-about-dreams/config/serviceAccountKey.json:ro
+    networks:
+      - proxy
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+      traefik.enable: "true"
+      traefik.http.routers.talk-about-dreams.rule: Host(`talkaboutdreams.com`) || Host(`www.talkaboutdreams.com`)
+      traefik.http.routers.talk-about-dreams.entrypoints: web
+      traefik.http.services.talk-about-dreams.loadbalancer.server.port: "3004"
+
+networks:
+  proxy:
+    external: true

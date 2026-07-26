@@ -1,0 +1,75 @@
+.App {
+  text-align: center;
+  height: 100vh;
+  overflow-y: hidden;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.coaching-line {
+  background-color: #60A483;
+  height: 5px;
+  width: 100%;
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.nav-icon {
+  background-color: #e9efe7;
+  padding: 0.25rem;
+  border-radius: 0.5rem;
+  transition: all 0.25s ease;
+  position: relative;
+  border-bottom: 1px solid #00000022;
+}
+
+.no-shadow { box-shadow: none !important; }
+
+::-webkit-scrollbar-track {
+  background-color: light-dark(var(--mantine-color-white), var(--mantine-color-dark-7));
+  border-radius: 0.25rem;
+}
+
+::-webkit-scrollbar {
+  width: 0.5rem;
+  height: 0.25rem;
+  border: 4px solid light-dark(var(--mantine-color-white), var(--mantine-color-dark-7));
+}
+  
+  ::-webkit-scrollbar-thumb {
+  background-color: #60A483;
+  border-radius: 1rem;
+}

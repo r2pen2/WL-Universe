@@ -1,0 +1,47 @@
+.invoice-stat-progress-label {
+  font-family:
+    Greycliff CF,
+    var(--mantine-font-family);
+  line-height: 1;
+  font-size: var(--mantine-font-size-sm);
+}
+
+.invoice-stat-stat {
+  border-bottom: rem(3px) solid;
+  padding-bottom: rem(5px);
+}
+
+.invoice-stat-stat-count {
+  font-family:
+    Greycliff CF,
+    var(--mantine-font-family);
+  line-height: 1.3;
+}
+
+.invoice-stat-diff {
+  font-family:
+    Greycliff CF,
+    var(--mantine-font-family);
+  display: flex;
+  align-items: center;
+}
+
+.invoice-stat-icon {
+  color: light-dark(var(--mantine-color-gray-4), var(--mantine-color-dark-3));
+}
+
+.invoice-settings-item {
+  & + & {
+    border-top: rem(1px) solid light-dark(var(--mantine-color-gray-2) var(--mantine-color-dark-4));
+  }
+}
+
+.invoice-settings-switch {
+  & * {
+    cursor: pointer;
+  }
+}
+
+.invoice-settings-title {
+  line-height: 1;
+}

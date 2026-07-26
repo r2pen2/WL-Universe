@@ -1,0 +1,67 @@
+.card-bg-1 {
+  background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6));
+}
+
+.bg-gray-1 {
+  background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6));
+}
+  
+.bg-light-platform {
+  background-color: light-dark(var(--mantine-color-white), var(--mantine-color-dark-8));  
+}
+
+/* Coloring for Light / Dark */
+
+.text-dimmed {
+  color: light-dark(var(--mantine-color-gray-5), var(--mantine-color-dark-3));
+}
+
+button:not(:disabled):not(.google-button) span:not(.mantine-Tabs-tabLabel):not(:has(.tabler-icon)) {
+  color: light-dark(var(--mantine-color-white), var(--mantine-color-dark-7));
+}
+button:not(:disabled) span:not(.mantine-Tabs-tabLabel):has(.tabler-icon) {
+  color: light-dark(var(--mantine-color-white), var(--mantine-color-dark-9));
+}
+.mantine-Badge-label *:not(.text-black) {
+  color: light-dark(var(--mantine-color-white), var(--mantine-color-dark-9));
+}
+button {
+  --ai-hover: var(--ai-bg) !important;
+}
+button.mantine-ActionIcon-root {
+  transition: all 0.25s ease;
+}
+button.mantine-ActionIcon-root:hover {
+  opacity: 0.5 !important;
+  transform: scale(1.1);
+}
+button:disabled {
+  background-color: light-dark(var(--mantine-color-gray-1), #424242);
+}
+button:disabled span {
+  color: light-dark(var(--mantine-color-gray-5), var(--mantine-color-dark-9));
+}
+
+.mantine-Switch-trackLabel {
+  color: light-dark(var(--mantine-color-gray-6), #c9c9c9);
+}
+
+.mantine-Switch-body:has(> input:checked) .mantine-Switch-trackLabel {
+  color: light-dark(var(--mantine-color-white), var(--mantine-color-dark-7));
+}
+.mantine-Switch-thumb {
+  background-color: light-dark(var(--mantine-color-white), var(--mantine-color-dark-7));
+  border-color: light-dark(var(--mantine-color-white), var(--mantine-color-black));
+}
+
+body {
+  color: var(--mantine-color-text) !important;
+}
+
+svg.nav-icon {
+  stroke: light-dark(var(--mantine-color-black), var(--mantine-color-dark-7));
+}
+
+.line-icon svg {
+  color: light-dark(var(--mantine-color-cool-green-6), var(--mantine-color-white));
+}

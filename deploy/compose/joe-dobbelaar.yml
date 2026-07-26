@@ -1,0 +1,25 @@
+services:
+  joe-dobbelaar:
+    image: ghcr.io/r2pen2/wl-universe-joe-dobbelaar:${JOE_DOBBELAAR_IMAGE_TAG:-latest}
+    container_name: joe-dobbelaar
+    restart: unless-stopped
+    env_file:
+      - ${JOE_DOBBELAAR_ENV_FILE:-/opt/services/data/app-env/joe-dobbelaar.env}
+    environment:
+      PORT: "3002"
+    volumes:
+      - ${JOE_DOBBELAAR_STATIC_PATH:-/opt/services/data/app-assets/joe-dobbelaar/static}:/repo/packages/joe-dobbelaar/static
+      - ${JOE_DOBBELAAR_IMAGES_PATH:-/opt/services/data/app-assets/joe-dobbelaar/images}:/repo/packages/joe-dobbelaar/images
+      - ${JOE_DOBBELAAR_FIREBASE_SERVICE_ACCOUNT_PATH:-/opt/services/data/app-env/joe-dobbelaar-serviceAccountKey.json}:/repo/packages/joe-dobbelaar/config/serviceAccountKey.json:ro
+    networks:
+      - proxy
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+      traefik.enable: "true"
+      traefik.http.routers.joe-dobbelaar.rule: Host(`joed.dev`) || Host(`www.joed.dev`) || Host(`bbm.joed.dev`) || Host(`www.bbm.joed.dev`)
+      traefik.http.routers.joe-dobbelaar.entrypoints: web
+      traefik.http.services.joe-dobbelaar.loadbalancer.server.port: "3002"
+
+networks:
+  proxy:
+    external: true

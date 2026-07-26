@@ -1,0 +1,32 @@
+{
+  "name": "@wl-universe/a-new-day-coaching-crm",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "sync:packages": "node ../../scripts/sync-local-packages.mjs a-new-day-coaching-crm",
+    "prestart": "npm run sync:packages",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/r2pen2/ANewDayCoachingCRM.git"
+  },
+  "author": "Joe Dobbelaar",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/r2pen2/ANewDayCoachingCRM/issues"
+  },
+  "homepage": "https://github.com/r2pen2/ANewDayCoachingCRM#readme",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "firebase-admin": "^12.1.0",
+    "googleapis": "^135.0.0",
+    "nodemailer": "^7.0.4",
+    "stripe": "^15.2.0"
+  },
+  "private": true
+}

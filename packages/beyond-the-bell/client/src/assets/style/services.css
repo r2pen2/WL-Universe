@@ -1,0 +1,13 @@
+.service-image {
+  height: 100%;
+  object-fit: cover;
+  padding: 1em;
+}
+
+@media screen and (max-width: 1400px) and (min-width: 768px) {
+  .service-image {
+    height: auto;
+    max-width: 60vw;
+    padding: 1em;
+  }
+}
