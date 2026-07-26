@@ -27,6 +27,7 @@ ENV PORT=3005
 
 WORKDIR /repo
 COPY scripts ./scripts
+COPY packages/web-legos ./packages/web-legos
 COPY packages/server-legos ./packages/server-legos
 COPY packages/nicole-levin ./packages/nicole-levin
 COPY --from=server-deps /repo/packages/nicole-levin/node_modules ./packages/nicole-levin/node_modules
