@@ -16,6 +16,7 @@ const SiteFormManager = require("./libraries/Server-Legos/siteForms.js")
 const SiteAuthenticationManager = require("./libraries/Server-Legos/siteAuth.js")
 const { siteMailConfigHandler } = require("./libraries/Server-Legos/siteMailConfig.js")
 const { mountLiveness } = require("./libraries/Server-Legos/siteHealth.js")
+const { umamiShellHit } = require('./libraries/Server-Legos/siteUmami.js');
 
 // Init express application
 const app = express();
@@ -145,6 +146,6 @@ app.post("/delete-img", (req, res) => {
 
 
 // Serve react app
-app.get("*", (req, res) => {
+app.get("*", umamiShellHit, (req, res) => {
     res.sendFile(__dirname + "/client/build/index.html");
 });

@@ -1,8 +1,14 @@
 # @wl-universe/docs
 
-Static component reference for WL-Universe (GitHub Pages).
+Static component reference for WL-Universe.
 
 **Hard rule:** only indexes existing JSDoc/TSDoc/file headers. Missing docs → “No docstring in source”.
+
+## Hosting
+
+Served on glados at **https://wl-universe.joed.dev** (nginx static export → Traefik → Cloudflare tunnel).
+
+Owner one-time Cloudflare: public hostname `wl-universe.joed.dev` → `http://traefik:80` (same pattern as `site-mail.joed.dev`).
 
 ## Scripts
 
@@ -13,9 +19,3 @@ Static component reference for WL-Universe (GitHub Pages).
 | `npm run dev` | Generate then local Next dev server |
 
 Root shortcuts: `npm run docs:generate`, `npm run docs:build`.
-
-## Pages URL
-
-Configured `basePath` / `assetPrefix`: `/WL-Universe` → https://r2pen2.github.io/WL-Universe/
-
-One-time repo setting: **Settings → Pages → Source = GitHub Actions**.

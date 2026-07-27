@@ -8,6 +8,8 @@ const siteText = require('./libraries/Server-Legos/siteText');
 const siteModels = require('./libraries/Server-Legos/siteModels');
 const SiteAuthenticationManager = require('./libraries/Server-Legos/siteAuth');
 const { mountLiveness } = require('./libraries/Server-Legos/siteHealth');
+const { umamiShellHit } = require('./libraries/Server-Legos/siteUmami');
+
 const fileUpload = require('express-fileupload');
 
 // Init express application
@@ -77,6 +79,6 @@ app.post("/delete-img", (req, res) => {
 app.use(express.static(__dirname + "/client/build"));
 
 // Serve react app
-app.get("*", (req, res) => {
+app.get("*", umamiShellHit, (req, res) => {
     res.sendFile(__dirname + "/client/build/index.html");
 });

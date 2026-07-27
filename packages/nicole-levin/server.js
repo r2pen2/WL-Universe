@@ -9,6 +9,8 @@ const SiteAuthenticationManager = require('./libraries/Server-Legos/siteAuthV2')
 const SiteModelManager = require('./libraries/Server-Legos/siteModelsV2');
 const siteRules = require('./libraries/Server-Legos/siteRules');
 const { mountLiveness } = require('./libraries/Server-Legos/siteHealth');
+const { umamiShellHit } = require('./libraries/Server-Legos/siteUmami');
+
 const fileUpload = require('express-fileupload');
 
 // Init express application
@@ -91,6 +93,6 @@ app.post("/delete-img", (req, res) => {
 app.use(express.static(__dirname + "/client/build"));
 
 // Serve react app
-app.get("*", (req, res) => {
+app.get("*", umamiShellHit, (req, res) => {
     res.sendFile(__dirname + "/client/build/index.html");
 });

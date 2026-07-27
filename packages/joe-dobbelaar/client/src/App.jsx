@@ -7,13 +7,11 @@ import { useState } from 'react';
 
 // Component Imports
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import powerBrick from "./assets/images/power-brick.gif";
-import { Text } from '@nextui-org/react';
 import { createContext } from 'react';
 
 // API Imports
-import { AuthenticationManager, WLPermissionsConfig } from './libraries/Web-Legos/api/auth.ts'
 import { AnalyticsManager } from './libraries/Web-Legos/api/analytics.ts'
+import { umamiConfigFor } from './libraries/Web-Legos/api/umamiRegistry.ts'
 import { WLThemeProvider, createWLTheme } from './libraries/Web-Legos/Layouts/WLThemes';
 import LandingPage from './routes/LandingPage';
 import Projects from './routes/Projects';
@@ -26,10 +24,10 @@ export const CurrentSignInContext = createContext();
 /** Context to keep track whether we're running tests right now */
 export const TestingContext = createContext();
 
-/** Site specific permissions */
-const permissions = new WLPermissionsConfig();
-
 const theme = createWLTheme();
+
+const analyticsManager = new AnalyticsManager(umamiConfigFor("joe-dobbelaar"));
+analyticsManager.initialize();
 
 export function App(props) {
 
@@ -41,15 +39,13 @@ export function App(props) {
   /** Provider for all app contexts */
   function AppContextProvider(props) {
     return (
-      // <AuthenticationManager.Context.Provider value={{authenticationManager}} >
-      // <AnalyticsManager.Context.Provider value={{analyticsManager}} >
+      <AnalyticsManager.Context.Provider value={{analyticsManager}} >
       <TestingContext.Provider value={{isTestingEnvironment}} >
       <CurrentSignInContext.Provider value={{currentSignIn}} >
         {props.children}
       </CurrentSignInContext.Provider>
       </TestingContext.Provider>
-      // </AnalyticsManager.Context.Provider>
-      // </AuthenticationManager.Context.Provider >
+      </AnalyticsManager.Context.Provider>
     )
   }
 
@@ -62,6 +58,8 @@ export function App(props) {
       </AppContextProvider>
     )
   }
+
+  analyticsManager.logPageView("home");
 
   // Return the app
   return (

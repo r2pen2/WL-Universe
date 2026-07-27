@@ -33,3 +33,12 @@ Cloudflare Tunnel public hostnames still need to point each external hostname at
 ## Ephemeral QA
 
 PR preview hosts use `pr-<n>.<app>.qa.joed.dev`. See [`deploy/qa/README.md`](./qa/README.md) and [`docs/ephemeral-qa-environments.md`](../docs/ephemeral-qa-environments.md).
+## Site analytics (Umami)
+
+Self-hosted Umami runs as infra (like Dozzle), not as a GHCR app image:
+
+- Compose template: `deploy/compose/umami.yml`
+- Runtime: `/opt/services/infra/umami/`
+- Secrets: `/opt/services/data/app-env/umami.env`
+- Docs: [`deploy/analytics/README.md`](analytics/README.md) and [`docs/site-analytics-umami.md`](../docs/site-analytics-umami.md)
+- Public host: `analytics.joed.dev`

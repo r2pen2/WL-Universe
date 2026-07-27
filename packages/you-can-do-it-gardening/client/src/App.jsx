@@ -17,6 +17,7 @@ import { useState } from 'react';
 import { themeLarge } from './assets/style/theme';
 import { NextUIProvider } from '@nextui-org/react';
 import { AnalyticsManager } from './libraries/Web-Legos/api/analytics.ts';
+import { umamiConfigFor } from './libraries/Web-Legos/api/umamiRegistry.ts';
 import { firebaseConfig } from './api/firebase.ts';
 
 export const CurrentSignInContext = createContext(null);
@@ -37,7 +38,7 @@ const authenticationManager = new AuthenticationManager(
 );
 authenticationManager.initialize();
 
-const analyticsManager = new AnalyticsManager(firebaseConfig)
+const analyticsManager = new AnalyticsManager(umamiConfigFor("you-can-do-it-gardening"));
 analyticsManager.initialize();
 
 function App() {

@@ -15,6 +15,8 @@ import { auth, firestore } from './api/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import { MailManager } from './libraries/Web-Legos/api/mail.ts';
 import { AuthenticationManager, WLPermissionsConfig } from "./libraries/Web-Legos/api/auth.ts"
+import { AnalyticsManager } from './libraries/Web-Legos/api/analytics.ts';
+import { umamiConfigFor } from './libraries/Web-Legos/api/umamiRegistry.ts';
 
 export const serverURL = '/';
 
@@ -25,6 +27,9 @@ BTBMailManager.addRecipientEmail("joedobbelaar@gmail.com");
 BTBMailManager.addRecipientEmail("nancy@beyondthebelleducation.com");
 
 export const AuthenticationManagerContext = createContext(null);
+
+const analyticsManager = new AnalyticsManager(umamiConfigFor("beyond-the-bell"));
+analyticsManager.initialize();
 
 function App() {
 
@@ -48,7 +53,10 @@ function App() {
 
   const [currentSignIn, setCurrentSignIn] = useState(null);
 
+  analyticsManager.logPageView("home");
+
   return (
+    <AnalyticsManager.Context.Provider value={{analyticsManager}} >
     <AuthenticationManagerContext.Provider value={{authenticationManager}} >
     <CurrentSignInContext.Provider value={{currentSignIn, setCurrentSignIn}} >
       <div className="App d-flex flex-column align-items-center w-100">
@@ -69,6 +77,7 @@ function App() {
       </div>
     </CurrentSignInContext.Provider>
     </AuthenticationManagerContext.Provider>
+    </AnalyticsManager.Context.Provider>
   );
 }
 
