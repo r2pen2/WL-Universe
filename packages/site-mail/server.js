@@ -50,6 +50,15 @@ app.get("/health", (_req, res) => {
   });
 });
 
+app.get("/liveness", (_req, res) => {
+  res.status(200).json({
+    ok: true,
+    service: "site-mail",
+    sites: listConfiguredSites().length,
+    ts: new Date().toISOString(),
+  });
+});
+
 app.post("/v1/send", sendLimiter, requireApiKey, async (req, res) => {
   const { site, to, subject, text, html } = req.body || {};
 

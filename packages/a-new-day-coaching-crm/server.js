@@ -8,10 +8,12 @@ const forms = require("./routes/forms");
 const { router: tools } = require('./routes/tools');
 const { router: users } = require('./routes/users');
 const { router: invoices } = require('./routes/invoices');
+const { mountLiveness } = require('./libraries/Server-Legos/siteHealth');
 // const document = require('./routes/document');
 
 // Init express application
 const app = express();
+mountLiveness(app, "a-new-day-coaching-crm");
 
 // Init env files
 dotenv.config();

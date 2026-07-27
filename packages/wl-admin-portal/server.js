@@ -6,6 +6,7 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const fs = require('fs');
 const siteModels = require('./adminSiteModels');
+const { mountLiveness } = require('./libraries/Server-Legos/siteHealth');
 const fileUpload = require('express-fileupload');
 
 
@@ -13,6 +14,7 @@ const {db, auth} = require("./firebase")
 
 // Init express application
 const app = express();
+mountLiveness(app, "wl-admin-portal");
 
 // Allow for CORS and file upload
 app.use(cors());

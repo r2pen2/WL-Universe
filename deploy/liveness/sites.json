@@ -1,0 +1,15 @@
+{
+  "timeoutMs": 15000,
+  "targets": [
+    { "name": "nicole-levin", "url": "https://nicolelevin.org/liveness" },
+    { "name": "a-new-day-coaching", "url": "https://anewdaycoaching.com/liveness" },
+    { "name": "a-new-day-coaching-crm", "url": "https://bluprint.anewdaycoaching.com/liveness" },
+    { "name": "beyond-the-bell", "url": "https://beyondthebelleducation.com/liveness" },
+    { "name": "you-can-do-it-gardening", "url": "https://youcandoitgardening.com/liveness" },
+    { "name": "joe-dobbelaar", "url": "https://joed.dev/liveness" },
+    { "name": "talk-about-dreams", "url": "https://talkaboutdreams.com/liveness" },
+    { "name": "boston-mixtape", "url": "https://bostonmixtape.com/liveness" },
+    { "name": "wl-admin-portal", "url": "https://admin.joed.dev/liveness" },
+    { "name": "site-mail", "url": "https://site-mail.joed.dev/liveness" }
+  ]
+}

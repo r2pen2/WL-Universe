@@ -12,11 +12,13 @@ const fileUpload = require('express-fileupload');
 
 const SiteFormManager = require('./libraries/Server-Legos/siteForms.js');
 const { siteMailConfigHandler } = require('./libraries/Server-Legos/siteMailConfig.js');
+const { mountLiveness } = require('./libraries/Server-Legos/siteHealth.js');
 
 const serverKey = "ANDC"
 
 // Init express application
 const app = express();
+mountLiveness(app, "a-new-day-coaching");
 
 // Allow for CORS and file upload
 app.use(cors());

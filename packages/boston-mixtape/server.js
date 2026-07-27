@@ -10,6 +10,7 @@ const siteRules = require('./libraries/Server-Legos/siteRules');
 const SiteAuthenticationManager = require('./libraries/Server-Legos/siteAuthV2');
 const SiteFormManager = require('./libraries/Server-Legos/siteForms');
 const { siteMailConfigHandler } = require('./libraries/Server-Legos/siteMailConfig');
+const { mountLiveness } = require('./libraries/Server-Legos/siteHealth');
 const fileUpload = require('express-fileupload');
 
 /** Key for this server in DB */
@@ -17,6 +18,7 @@ const serverKey = "BBM";
 
 // Init express application
 const app = express();
+mountLiveness(app, "boston-mixtape");
 
 // Allow for CORS and file upload
 app.use(cors());
