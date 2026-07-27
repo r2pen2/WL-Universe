@@ -2,11 +2,9 @@
 /**
  * Probe one or more /liveness URLs.
  *
- * Usage:
  *   node scripts/liveness/check.mjs
  *   node scripts/liveness/check.mjs --only beyond-the-bell
  *   node scripts/liveness/check.mjs --only beyond-the-bell --pr 42
- *   node scripts/liveness/check.mjs --url https://example.com/liveness --name smoke
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -73,9 +71,7 @@ async function probe(label, url, timeoutMs) {
     try {
       text = await response.text();
       if (contentType.includes("application/json")) body = JSON.parse(text);
-    } catch {
-      /* ignore */
-    }
+    } catch {}
     const looksLikeSpaHtml =
       !contentType.includes("application/json") &&
       /<!doctype html|<html/i.test(text.slice(0, 200));
@@ -112,7 +108,6 @@ async function probe(label, url, timeoutMs) {
 
 async function main() {
   const args = parseArgs(process.argv.slice(2));
-  /** @type {{ label: string, url: string }[]} */
   const jobs = [];
   let timeoutMs = 15000;
 
@@ -139,21 +134,16 @@ async function main() {
   }
 
   const results = [];
-  for (const job of jobs) {
-    results.push(await probe(job.label, job.url, timeoutMs));
-  }
-
+  for (const job of jobs) results.push(await probe(job.label, job.url, timeoutMs));
   const failed = results.filter((r) => !r.ok);
-  console.log(
-    JSON.stringify({
-      ts: new Date().toISOString(),
-      ok: failed.length === 0,
-      checked: results.length,
-      failed: failed.length,
-      pr: args.pr || null,
-      results,
-    }),
-  );
+  console.log(JSON.stringify({
+    ts: new Date().toISOString(),
+    ok: failed.length === 0,
+    checked: results.length,
+    failed: failed.length,
+    pr: args.pr || null,
+    results,
+  }));
   if (failed.length) {
     for (const f of failed) console.error(`FAIL ${f.label} ${f.url}: ${f.error || f.status}`);
     process.exit(1);
