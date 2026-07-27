@@ -1,0 +1,379 @@
+{
+  "package": "server-legos",
+  "generatedAt": "2026-07-27T14:44:10.853Z",
+  "rule": "only-index-existing-jsdoc",
+  "modules": [
+    {
+      "name": "siteAuth",
+      "slug": "siteauth",
+      "file": "packages/server-legos/siteAuth.js",
+      "headerText": null,
+      "header": null,
+      "exports": [
+        {
+          "name": "SiteAuthenticationManager",
+          "slug": "siteauth--site-authentication-manager",
+          "kind": "module",
+          "file": "packages/server-legos/siteAuth.js",
+          "line": 118,
+          "description": null,
+          "params": [],
+          "defaults": null,
+          "deprecated": null,
+          "links": [],
+          "see": null,
+          "returns": null,
+          "undocumented": true,
+          "demoId": null
+        }
+      ],
+      "undocumented": true
+    },
+    {
+      "name": "siteAuthV2",
+      "slug": "siteauthv2",
+      "file": "packages/server-legos/siteAuthV2.js",
+      "headerText": null,
+      "header": null,
+      "exports": [
+        {
+          "name": "SiteAuthenticationManager",
+          "slug": "siteauthv2--site-authentication-manager",
+          "kind": "module",
+          "file": "packages/server-legos/siteAuthV2.js",
+          "line": 125,
+          "description": null,
+          "params": [],
+          "defaults": null,
+          "deprecated": null,
+          "links": [],
+          "see": null,
+          "returns": null,
+          "undocumented": true,
+          "demoId": null
+        }
+      ],
+      "undocumented": true
+    },
+    {
+      "name": "siteForms",
+      "slug": "siteforms",
+      "file": "packages/server-legos/siteForms.js",
+      "headerText": null,
+      "header": null,
+      "exports": [
+        {
+          "name": "SiteFormManager",
+          "slug": "siteforms--site-form-manager",
+          "kind": "module",
+          "file": "packages/server-legos/siteForms.js",
+          "line": 59,
+          "description": null,
+          "params": [],
+          "defaults": null,
+          "deprecated": null,
+          "links": [],
+          "see": null,
+          "returns": null,
+          "undocumented": true,
+          "demoId": null
+        }
+      ],
+      "undocumented": true
+    },
+    {
+      "name": "siteHealth",
+      "slug": "sitehealth",
+      "file": "packages/server-legos/siteHealth.js",
+      "headerText": "/**\n * Shared process liveness probe for WL-Universe Express apps.\n * Mount BEFORE SPA catch-all (`app.get(\"*\", …)`).\n *\n *   const { mountLiveness } = require(\"./libraries/Server-Legos/siteHealth\");\n *   mountLiveness(app, \"beyond-the-bell\");\n */",
+      "header": {
+        "description": "Shared process liveness probe for WL-Universe Express apps.\nMount BEFORE SPA catch-all (`app.get(\"*\", …)`).\n\n  const { mountLiveness } = require(\"./libraries/Server-Legos/siteHealth\");\n  mountLiveness(app, \"beyond-the-bell\");",
+        "deprecated": null,
+        "params": [],
+        "defaults": null,
+        "links": []
+      },
+      "exports": [
+        {
+          "name": "mountLiveness",
+          "slug": "sitehealth--mount-liveness",
+          "kind": "module-export",
+          "file": "packages/server-legos/siteHealth.js",
+          "line": 18,
+          "description": "Shared process liveness probe for WL-Universe Express apps.\nMount BEFORE SPA catch-all (`app.get(\"*\", …)`).\n\n  const { mountLiveness } = require(\"./libraries/Server-Legos/siteHealth\");\n  mountLiveness(app, \"beyond-the-bell\");",
+          "params": [],
+          "defaults": null,
+          "deprecated": null,
+          "links": [],
+          "see": null,
+          "returns": null,
+          "undocumented": false,
+          "demoId": null
+        },
+        {
+          "name": "createLivenessRouter",
+          "slug": "sitehealth--create-liveness-router",
+          "kind": "module-export",
+          "file": "packages/server-legos/siteHealth.js",
+          "line": 28,
+          "description": "Shared process liveness probe for WL-Universe Express apps.\nMount BEFORE SPA catch-all (`app.get(\"*\", …)`).\n\n  const { mountLiveness } = require(\"./libraries/Server-Legos/siteHealth\");\n  mountLiveness(app, \"beyond-the-bell\");",
+          "params": [],
+          "defaults": null,
+          "deprecated": null,
+          "links": [],
+          "see": null,
+          "returns": null,
+          "undocumented": false,
+          "demoId": null
+        }
+      ],
+      "undocumented": false
+    },
+    {
+      "name": "siteImages",
+      "slug": "siteimages",
+      "file": "packages/server-legos/siteImages.js",
+      "headerText": null,
+      "header": null,
+      "exports": [
+        {
+          "name": "router",
+          "slug": "siteimages--router",
+          "kind": "module",
+          "file": "packages/server-legos/siteImages.js",
+          "line": 53,
+          "description": null,
+          "params": [],
+          "defaults": null,
+          "deprecated": null,
+          "links": [],
+          "see": null,
+          "returns": null,
+          "undocumented": true,
+          "demoId": null
+        }
+      ],
+      "undocumented": true
+    },
+    {
+      "name": "siteImagesV2",
+      "slug": "siteimagesv2",
+      "file": "packages/server-legos/siteImagesV2.js",
+      "headerText": null,
+      "header": null,
+      "exports": [
+        {
+          "name": "SiteImageManager",
+          "slug": "siteimagesv2--site-image-manager",
+          "kind": "module",
+          "file": "packages/server-legos/siteImagesV2.js",
+          "line": 73,
+          "description": null,
+          "params": [],
+          "defaults": null,
+          "deprecated": null,
+          "links": [],
+          "see": null,
+          "returns": null,
+          "undocumented": true,
+          "demoId": null
+        }
+      ],
+      "undocumented": true
+    },
+    {
+      "name": "siteMail",
+      "slug": "sitemail",
+      "file": "packages/server-legos/siteMail.js",
+      "headerText": "/**\n * @deprecated Site mail has moved to the standalone `packages/site-mail` microservice\n * (public host: https://site-mail.joed.dev). Do not mount this router.\n *\n * Clients should use web-legos `MailManager` (or server-side fetch to `/v1/send`).\n */",
+      "header": {
+        "description": null,
+        "deprecated": "Site mail has moved to the standalone `packages/site-mail` microservice (public host: https://site-mail.joed.dev). Do not mount this router. Clients should use web-legos `MailManager` (or server-side fetch to `/v1/send`).",
+        "params": [],
+        "defaults": null,
+        "links": []
+      },
+      "exports": [
+        {
+          "name": "SiteMailManager",
+          "slug": "sitemail--site-mail-manager",
+          "kind": "module",
+          "file": "packages/server-legos/siteMail.js",
+          "line": 23,
+          "description": null,
+          "params": [],
+          "defaults": null,
+          "deprecated": "Site mail has moved to the standalone `packages/site-mail` microservice (public host: https://site-mail.joed.dev). Do not mount this router. Clients should use web-legos `MailManager` (or server-side fetch to `/v1/send`).",
+          "links": [],
+          "see": null,
+          "returns": null,
+          "undocumented": false,
+          "demoId": null
+        }
+      ],
+      "undocumented": false
+    },
+    {
+      "name": "siteMailConfig",
+      "slug": "sitemailconfig",
+      "file": "packages/server-legos/siteMailConfig.js",
+      "headerText": "/**\n * Express helper: expose site-mail runtime config for browser MailManager.\n * Mount with: app.get(\"/wl-mail-config\", siteMailConfigHandler)\n */",
+      "header": {
+        "description": "Express helper: expose site-mail runtime config for browser MailManager.\nMount with: app.get(\"/wl-mail-config\", siteMailConfigHandler)",
+        "deprecated": null,
+        "params": [],
+        "defaults": null,
+        "links": []
+      },
+      "exports": [
+        {
+          "name": "siteMailConfigHandler",
+          "slug": "sitemailconfig--site-mail-config-handler",
+          "kind": "module-export",
+          "file": "packages/server-legos/siteMailConfig.js",
+          "line": 5,
+          "description": "Express helper: expose site-mail runtime config for browser MailManager.\nMount with: app.get(\"/wl-mail-config\", siteMailConfigHandler)",
+          "params": [],
+          "defaults": null,
+          "deprecated": null,
+          "links": [],
+          "see": null,
+          "returns": null,
+          "undocumented": false,
+          "demoId": null
+        }
+      ],
+      "undocumented": false
+    },
+    {
+      "name": "siteModels",
+      "slug": "sitemodels",
+      "file": "packages/server-legos/siteModels.js",
+      "headerText": null,
+      "header": null,
+      "exports": [
+        {
+          "name": "router",
+          "slug": "sitemodels--router",
+          "kind": "module",
+          "file": "packages/server-legos/siteModels.js",
+          "line": 61,
+          "description": null,
+          "params": [],
+          "defaults": null,
+          "deprecated": null,
+          "links": [],
+          "see": null,
+          "returns": null,
+          "undocumented": true,
+          "demoId": null
+        }
+      ],
+      "undocumented": true
+    },
+    {
+      "name": "siteModelsV2",
+      "slug": "sitemodelsv2",
+      "file": "packages/server-legos/siteModelsV2.js",
+      "headerText": null,
+      "header": null,
+      "exports": [
+        {
+          "name": "SiteModelManager",
+          "slug": "sitemodelsv2--site-model-manager",
+          "kind": "module",
+          "file": "packages/server-legos/siteModelsV2.js",
+          "line": 85,
+          "description": null,
+          "params": [],
+          "defaults": null,
+          "deprecated": null,
+          "links": [],
+          "see": null,
+          "returns": null,
+          "undocumented": true,
+          "demoId": null
+        }
+      ],
+      "undocumented": true
+    },
+    {
+      "name": "siteRules",
+      "slug": "siterules",
+      "file": "packages/server-legos/siteRules.js",
+      "headerText": null,
+      "header": null,
+      "exports": [
+        {
+          "name": "router",
+          "slug": "siterules--router",
+          "kind": "module",
+          "file": "packages/server-legos/siteRules.js",
+          "line": 15,
+          "description": null,
+          "params": [],
+          "defaults": null,
+          "deprecated": null,
+          "links": [],
+          "see": null,
+          "returns": null,
+          "undocumented": true,
+          "demoId": null
+        }
+      ],
+      "undocumented": true
+    },
+    {
+      "name": "siteText",
+      "slug": "sitetext",
+      "file": "packages/server-legos/siteText.js",
+      "headerText": null,
+      "header": null,
+      "exports": [
+        {
+          "name": "router",
+          "slug": "sitetext--router",
+          "kind": "module",
+          "file": "packages/server-legos/siteText.js",
+          "line": 36,
+          "description": null,
+          "params": [],
+          "defaults": null,
+          "deprecated": null,
+          "links": [],
+          "see": null,
+          "returns": null,
+          "undocumented": true,
+          "demoId": null
+        }
+      ],
+      "undocumented": true
+    },
+    {
+      "name": "siteTextV2",
+      "slug": "sitetextv2",
+      "file": "packages/server-legos/siteTextV2.js",
+      "headerText": null,
+      "header": null,
+      "exports": [
+        {
+          "name": "SiteTextManager",
+          "slug": "sitetextv2--site-text-manager",
+          "kind": "module",
+          "file": "packages/server-legos/siteTextV2.js",
+          "line": 56,
+          "description": null,
+          "params": [],
+          "defaults": null,
+          "deprecated": null,
+          "links": [],
+          "see": null,
+          "returns": null,
+          "undocumented": true,
+          "demoId": null
+        }
+      ],
+      "undocumented": true
+    }
+  ]
+}

@@ -1,0 +1,2964 @@
+{
+  "package": "web-legos",
+  "generatedAt": "2026-07-27T14:44:10.844Z",
+  "rule": "only-index-existing-jsdoc",
+  "exports": [
+    {
+      "name": "FooterAuthButton",
+      "slug": "auth--footer-auth-button",
+      "kind": "export",
+      "file": "packages/web-legos/components/Auth.jsx",
+      "line": 14,
+      "description": null,
+      "params": [
+        {
+          "name": "authManager",
+          "type": "AuthenticationManager",
+          "description": "AuthenticationManager instance for this site"
+        },
+        {
+          "name": "currentSignIn",
+          "type": "FirebaseAuthentication",
+          "description": "currently signed in user state"
+        },
+        {
+          "name": "setCurrentSignIn",
+          "type": "Function",
+          "description": "currently signed in user state setter function"
+        },
+        {
+          "name": "link",
+          "type": "boolean",
+          "description": "whether to display as link"
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "description": "link color"
+        }
+      ],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "WLBackground",
+      "slug": "backgrounds--wlbackground",
+      "kind": "export",
+      "file": "packages/web-legos/components/Backgrounds.jsx",
+      "line": 24,
+      "description": "A background container class",
+      "params": [
+        {
+          "name": "fadeIn",
+          "type": "number",
+          "description": "% stop for fade in"
+        },
+        {
+          "name": "fadeOut",
+          "type": "number",
+          "description": "% stop for fade out"
+        },
+        {
+          "name": "mask",
+          "type": "string",
+          "description": "mask-image for flipping out unwanted parts"
+        },
+        {
+          "name": "scaleX",
+          "type": "number",
+          "description": "X scale"
+        },
+        {
+          "name": "scaleY",
+          "type": "number",
+          "description": "Y scale"
+        },
+        {
+          "name": "flipX",
+          "type": "boolean",
+          "description": "wheter to flip horizontal"
+        },
+        {
+          "name": "flipY",
+          "type": "boolean",
+          "description": "wheter to flip vertical"
+        },
+        {
+          "name": "opacity",
+          "type": "number",
+          "description": "background opacity"
+        }
+      ],
+      "defaults": "fadeIn = 10;\nfadeOut = 80;\nmask = \"linear-gradient(to bottom, transparent 0%, black 10%, black 80%, transparent 100%)\";\nscaleX = 1;\nscaleY = 1;\nflipX = false;\nflipY = false;\nopacity = 0.6;",
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "RockCandyBackground1",
+      "slug": "backgrounds--rock-candy-background1",
+      "kind": "export",
+      "file": "packages/web-legos/components/Backgrounds.jsx",
+      "line": 72,
+      "description": null,
+      "params": [],
+      "defaults": null,
+      "deprecated": "Don't use this! Just add a background on your own.",
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "GrowingCircles",
+      "slug": "backgrounds--growing-circles",
+      "kind": "export",
+      "file": "packages/web-legos/components/Backgrounds.jsx",
+      "line": 114,
+      "description": "A breathing circle background",
+      "params": [
+        {
+          "name": "color",
+          "type": "string",
+          "description": "circle color"
+        },
+        {
+          "name": "size",
+          "type": "number",
+          "description": "max size for circle"
+        },
+        {
+          "name": "trasnparency",
+          "type": "string",
+          "description": "circle transparency (as hex)"
+        }
+      ],
+      "defaults": "color = \"rgba(121, 40, 202, 0.2)\";\ntransparency = \"05\";",
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": "",
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "TornadoBackground1",
+      "slug": "backgrounds--tornado-background1",
+      "kind": "export",
+      "file": "packages/web-legos/components/Backgrounds.jsx",
+      "line": 133,
+      "description": null,
+      "params": [],
+      "defaults": null,
+      "deprecated": "this isn't working as intended",
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "LineButton",
+      "slug": "buttons--line-button",
+      "kind": "export",
+      "file": "packages/web-legos/components/Buttons.jsx",
+      "line": 13,
+      "description": null,
+      "params": [
+        {
+          "name": "text",
+          "type": "string",
+          "description": "button text"
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "description": "button color"
+        },
+        {
+          "name": "b",
+          "type": "boolean",
+          "description": "whether to bold text"
+        },
+        {
+          "name": "onClick",
+          "type": "Function",
+          "description": "function to call when clicked"
+        },
+        {
+          "name": "size",
+          "type": "string",
+          "description": "button size"
+        }
+      ],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": "",
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "WLAliceCarousel",
+      "slug": "content--wlalice-carousel",
+      "kind": "export",
+      "file": "packages/web-legos/components/Content.jsx",
+      "line": 42,
+      "description": null,
+      "params": [
+        {
+          "name": "autoPlay",
+          "type": "boolean",
+          "description": "autoplay timer setting"
+        },
+        {
+          "name": "inlineWidth",
+          "type": "string",
+          "description": "width to display carousel as inline"
+        },
+        {
+          "name": "buttonBlock",
+          "type": "boolean",
+          "description": "whether to display block buttons"
+        },
+        {
+          "name": "buttonSpacing",
+          "type": "number",
+          "description": "distance between inline buttons"
+        },
+        {
+          "name": "buttonSize",
+          "type": "string",
+          "description": "size of inline buttons"
+        },
+        {
+          "name": "backgroundColor",
+          "type": "string",
+          "description": "background color of carousel (not pagination)"
+        },
+        {
+          "name": "controlsStrategy",
+          "type": "string",
+          "description": "set a strategy for gallery controls (default, alternate, or responsive)"
+        },
+        {
+          "name": "forceButtons",
+          "type": "boolean",
+          "description": "show buttons even when pagination is enabled"
+        },
+        {
+          "name": "scaleActive",
+          "type": "boolean",
+          "description": "whether to scale down un-targeted elements"
+        }
+      ],
+      "defaults": "autoPlay = false;\ninfinute = true;\nbuttonBlock = false;\nbuttonSpacing = 20;",
+      "deprecated": "since 9/2/23— this is getting too gross. I'm re-writing it as {@link WLResponsiveCarousel}",
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "WLAliceCarouselItem",
+      "slug": "content--wlalice-carousel-item",
+      "kind": "export",
+      "file": "packages/web-legos/components/Content.jsx",
+      "line": 160,
+      "description": null,
+      "params": [],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": true,
+      "demoId": null
+    },
+    {
+      "name": "createCarouselBreakpoints",
+      "slug": "content--create-carousel-breakpoints",
+      "kind": "export",
+      "file": "packages/web-legos/components/Content.jsx",
+      "line": 173,
+      "description": null,
+      "params": [],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": true,
+      "demoId": null
+    },
+    {
+      "name": "HoverActionBox",
+      "slug": "content--hover-action-box",
+      "kind": "export",
+      "file": "packages/web-legos/components/Content.jsx",
+      "line": 200,
+      "description": null,
+      "params": [
+        {
+          "name": "buttonText",
+          "type": "string",
+          "description": "button text"
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "description": "action box color"
+        },
+        {
+          "name": "borderColor",
+          "type": "string",
+          "description": "action box border color"
+        },
+        {
+          "name": "icon",
+          "type": "Image",
+          "description": "action box icon"
+        },
+        {
+          "name": "onClick",
+          "type": "Function",
+          "description": "onClick function"
+        }
+      ],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "TestimonialCard",
+      "slug": "content--testimonial-card",
+      "kind": "export",
+      "file": "packages/web-legos/components/Content.jsx",
+      "line": 293,
+      "description": "A pre-made WLTestimonial card",
+      "params": [
+        {
+          "name": "color",
+          "type": "string",
+          "description": "testimonial color"
+        },
+        {
+          "name": "editButton",
+          "type": "ModalEditButton",
+          "description": "modal edit button"
+        },
+        {
+          "name": "wlTestimonial",
+          "type": "WLTestimonial",
+          "description": "WLTestimonial object"
+        },
+        {
+          "name": "outlineWeight",
+          "type": "string",
+          "description": "weight of glyph outline"
+        }
+      ],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": "",
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "WLResponsiveCarousel",
+      "slug": "content--wlresponsive-carousel",
+      "kind": "export",
+      "file": "packages/web-legos/components/Content.jsx",
+      "line": 308,
+      "description": null,
+      "params": [],
+      "defaults": null,
+      "deprecated": "This doesn't work at all",
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "WLSlick",
+      "slug": "content--wlslick",
+      "kind": "export",
+      "file": "packages/web-legos/components/Content.jsx",
+      "line": 324,
+      "description": "A ReactSlick slider with custom arrows",
+      "params": [
+        {
+          "name": "nextArrow",
+          "type": "React.Element",
+          "description": "custom next arrow"
+        },
+        {
+          "name": "prevArrow",
+          "type": "React.Element",
+          "description": "custom previous arrow"
+        },
+        {
+          "name": "autoPlay",
+          "type": "boolean",
+          "description": "whether to autoplay carousel"
+        },
+        {
+          "name": "autoPlaySpeed",
+          "type": "number",
+          "description": "speed (in ms) of autoplay"
+        }
+      ],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": "",
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "WLFlickity",
+      "slug": "content--wlflickity",
+      "kind": "export",
+      "file": "packages/web-legos/components/Content.jsx",
+      "line": 384,
+      "description": null,
+      "params": [],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": true,
+      "demoId": null
+    },
+    {
+      "name": "FloatingIsland",
+      "slug": "decoration--floating-island",
+      "kind": "export",
+      "file": "packages/web-legos/components/Decoration.jsx",
+      "line": 20,
+      "description": "A little floating island looking thing",
+      "params": [
+        {
+          "name": "color",
+          "type": "string",
+          "description": "island color"
+        },
+        {
+          "name": "width",
+          "type": "number",
+          "description": "width of widest island"
+        },
+        {
+          "name": "weight",
+          "type": "string",
+          "description": "line weight"
+        },
+        {
+          "name": "flipY",
+          "type": "boolean",
+          "description": "whether to flip vertically"
+        },
+        {
+          "name": "steepness",
+          "type": "number",
+          "description": "how much to subtract from width on each island"
+        },
+        {
+          "name": "islandCount",
+          "type": "number",
+          "description": "how many islands to render"
+        },
+        {
+          "name": "zIndex",
+          "type": "number",
+          "description": "custom zIndex"
+        }
+      ],
+      "defaults": "weight = \".25rem\";\nflipY = false;\nsteepness = 20;\nislandCount = 4;",
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": "",
+      "undocumented": false,
+      "demoId": "floating-island"
+    },
+    {
+      "name": "Mountains",
+      "slug": "decoration--mountains",
+      "kind": "export",
+      "file": "packages/web-legos/components/Decoration.jsx",
+      "line": 49,
+      "description": null,
+      "params": [],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": true,
+      "demoId": null
+    },
+    {
+      "name": "ThreeDots",
+      "slug": "decoration--three-dots",
+      "kind": "export",
+      "file": "packages/web-legos/components/Decoration.jsx",
+      "line": 86,
+      "description": null,
+      "params": [],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": true,
+      "demoId": "three-dots"
+    },
+    {
+      "name": "QuoteIcon",
+      "slug": "decoration--quote-icon",
+      "kind": "export",
+      "file": "packages/web-legos/components/Decoration.jsx",
+      "line": 107,
+      "description": null,
+      "params": [],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": true,
+      "demoId": null
+    },
+    {
+      "name": "Copyright",
+      "slug": "footer--copyright",
+      "kind": "export",
+      "file": "packages/web-legos/components/Footer.jsx",
+      "line": 6,
+      "description": null,
+      "params": [],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": true,
+      "demoId": null
+    },
+    {
+      "name": "WLFooterSocials",
+      "slug": "footer--wlfooter-socials",
+      "kind": "export",
+      "file": "packages/web-legos/components/Footer.jsx",
+      "line": 19,
+      "description": "Component to show a list of socials in the footer",
+      "params": [
+        {
+          "name": "lineTop",
+          "type": "boolean",
+          "description": "whether to show a line on top of this social list"
+        },
+        {
+          "name": "lineBottom",
+          "type": "boolean",
+          "description": "whether to show a line below this social list"
+        }
+      ],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "WLFooterLogo",
+      "slug": "footer--wlfooter-logo",
+      "kind": "export",
+      "file": "packages/web-legos/components/Footer.jsx",
+      "line": 53,
+      "description": "Styled icon for Web-Legos site footers",
+      "params": [
+        {
+          "name": "source",
+          "type": "ImageSource",
+          "description": "source for footer icon"
+        }
+      ],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "WLFooterSignature",
+      "slug": "footer--wlfooter-signature",
+      "kind": "export",
+      "file": "packages/web-legos/components/Footer.jsx",
+      "line": 57,
+      "description": null,
+      "params": [],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": true,
+      "demoId": null
+    },
+    {
+      "name": "iconColors",
+      "slug": "icons--icon-colors",
+      "kind": "export",
+      "file": "packages/web-legos/components/Icons.jsx",
+      "line": 17,
+      "description": "Brand hex colors for all supported icons",
+      "params": [],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": false,
+      "demoId": "icons-social"
+    },
+    {
+      "name": "platformKeys",
+      "slug": "icons--platform-keys",
+      "kind": "export",
+      "file": "packages/web-legos/components/Icons.jsx",
+      "line": 68,
+      "description": "Strings for all supported platform keys",
+      "params": [],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "SocialIcon",
+      "slug": "icons--social-icon",
+      "kind": "export",
+      "file": "packages/web-legos/components/Icons.jsx",
+      "line": 90,
+      "description": "Parent component for all social icons: {@link TikTokIcon}, {@link InstagramIcon}, etc.",
+      "params": [
+        {
+          "name": "platformKey",
+          "type": "string",
+          "description": "playform key for interfacing with {@link iconColors}, {@link iconTitles}, and {@link iconSvgPaths}"
+        },
+        {
+          "name": "size",
+          "type": "number",
+          "description": "icon size in pixels"
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "description": "SVG fill color override"
+        }
+      ],
+      "defaults": "const defaultIconSize = \"40px\";",
+      "deprecated": null,
+      "links": [
+        "{@link SocialButton} if you would like to redirect the user on click."
+      ],
+      "see": "{@link SocialButton} if you would like to redirect the user on click.",
+      "returns": null,
+      "undocumented": false,
+      "demoId": "icons-social"
+    },
+    {
+      "name": "CalendarIcon",
+      "slug": "icons--calendar-icon",
+      "kind": "export",
+      "file": "packages/web-legos/components/Icons.jsx",
+      "line": 122,
+      "description": "A Web-Legos custom calendar icon",
+      "params": [
+        {
+          "name": "color",
+          "type": "string",
+          "description": "icon fill color override"
+        },
+        {
+          "name": "size",
+          "type": "number",
+          "description": "icon size in pixels"
+        }
+      ],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": "A {@link SocialIcon} with the calendar logo",
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "FaceblockIcon",
+      "slug": "icons--faceblock-icon",
+      "kind": "export",
+      "file": "packages/web-legos/components/Icons.jsx",
+      "line": 133,
+      "description": "A Web-Legos custom square Facebook icon",
+      "params": [
+        {
+          "name": "color",
+          "type": "string",
+          "description": "icon fill color override"
+        },
+        {
+          "name": "size",
+          "type": "number",
+          "description": "icon size in pixels"
+        }
+      ],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": "A {@link SocialIcon} with the Faceblock logo",
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "FacebookIcon",
+      "slug": "icons--facebook-icon",
+      "kind": "export",
+      "file": "packages/web-legos/components/Icons.jsx",
+      "line": 143,
+      "description": "A Web-Legos custom Facebook icon",
+      "params": [
+        {
+          "name": "color",
+          "type": "string",
+          "description": "icon fill color override"
+        },
+        {
+          "name": "size",
+          "type": "number",
+          "description": "icon size in pixels"
+        }
+      ],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": "A {@link SocialIcon} with the Facebook logo",
+      "undocumented": false,
+      "demoId": "icons-social"
+    },
+    {
+      "name": "InstagramIcon",
+      "slug": "icons--instagram-icon",
+      "kind": "export",
+      "file": "packages/web-legos/components/Icons.jsx",
+      "line": 153,
+      "description": "A Web-Legos custom Instagram icon",
+      "params": [
+        {
+          "name": "color",
+          "type": "string",
+          "description": "icon fill color override"
+        },
+        {
+          "name": "size",
+          "type": "number",
+          "description": "icon size in pixels"
+        }
+      ],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": "A {@link SocialIcon} with the Instagram logo",
+      "undocumented": false,
+      "demoId": "icons-social"
+    },
+    {
+      "name": "LocationIcon",
+      "slug": "icons--location-icon",
+      "kind": "export",
+      "file": "packages/web-legos/components/Icons.jsx",
+      "line": 163,
+      "description": "A Web-Legos custom Location icon",
+      "params": [
+        {
+          "name": "color",
+          "type": "string",
+          "description": "icon fill color override"
+        },
+        {
+          "name": "size",
+          "type": "number",
+          "description": "icon size in pixels"
+        }
+      ],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": "A {@link SocialIcon} with the Location logo",
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "MailIcon",
+      "slug": "icons--mail-icon",
+      "kind": "export",
+      "file": "packages/web-legos/components/Icons.jsx",
+      "line": 173,
+      "description": "A Web-Legos custom Mail icon",
+      "params": [
+        {
+          "name": "color",
+          "type": "string",
+          "description": "icon fill color override"
+        },
+        {
+          "name": "size",
+          "type": "number",
+          "description": "icon size in pixels"
+        }
+      ],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": "A {@link SocialIcon} with the Mail logo",
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "PhoneIcon",
+      "slug": "icons--phone-icon",
+      "kind": "export",
+      "file": "packages/web-legos/components/Icons.jsx",
+      "line": 183,
+      "description": "A Web-Legos custom Phone icon",
+      "params": [
+        {
+          "name": "color",
+          "type": "string",
+          "description": "icon fill color override"
+        },
+        {
+          "name": "size",
+          "type": "number",
+          "description": "icon size in pixels"
+        }
+      ],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": "A {@link SocialIcon} with the Phone logo",
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "TikTokIcon",
+      "slug": "icons--tik-tok-icon",
+      "kind": "export",
+      "file": "packages/web-legos/components/Icons.jsx",
+      "line": 193,
+      "description": "A Web-Legos custom TikTok icon",
+      "params": [
+        {
+          "name": "color",
+          "type": "string",
+          "description": "icon fill color override"
+        },
+        {
+          "name": "size",
+          "type": "number",
+          "description": "icon size in pixels"
+        }
+      ],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": "A {@link SocialIcon} with the TikTok logo",
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "YouTubeIcon",
+      "slug": "icons--you-tube-icon",
+      "kind": "export",
+      "file": "packages/web-legos/components/Icons.jsx",
+      "line": 202,
+      "description": "A Web-Legos custom YouTube icon",
+      "params": [
+        {
+          "name": "size",
+          "type": "number",
+          "description": "icon size in pixels"
+        }
+      ],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": "A {@link SocialIcon} with the YouTube logo",
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "SocialButton",
+      "slug": "icons--social-button",
+      "kind": "export",
+      "file": "packages/web-legos/components/Icons.jsx",
+      "line": 216,
+      "description": "Parent component for all social buttons: {@link TikTokButton}, {@link InstagramButton}, etc.",
+      "params": [
+        {
+          "name": "socialIcon",
+          "type": "string",
+          "description": "icon for the button ({@link TikTokIcon}, {@link InstagramIcon}, etc.)"
+        },
+        {
+          "name": "socialLink",
+          "type": "number",
+          "description": "redirect link for onClick event"
+        },
+        {
+          "name": "bordered",
+          "type": "boolean",
+          "description": "whether to include border around icon"
+        },
+        {
+          "name": "borderColor",
+          "type": "string",
+          "description": "color for border"
+        }
+      ],
+      "defaults": "bordered = false",
+      "deprecated": null,
+      "links": [
+        "{@link SocialButton} if you would don't want to allow onClick events"
+      ],
+      "see": "{@link SocialButton} if you would don't want to allow onClick events",
+      "returns": null,
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "CalendarButton",
+      "slug": "icons--calendar-button",
+      "kind": "export",
+      "file": "packages/web-legos/components/Icons.jsx",
+      "line": 227,
+      "description": "A Web-Legos custom calendar button",
+      "params": [
+        {
+          "name": "color",
+          "type": "string",
+          "description": "icon fill color override"
+        },
+        {
+          "name": "iconSize",
+          "type": "number",
+          "description": "icon size in pixels"
+        },
+        {
+          "name": "calendarLink",
+          "type": "string",
+          "description": "a link to some calendar related thing"
+        }
+      ],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": "A {@link SocialButton} with the YouTube logo",
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "FaceblockButton",
+      "slug": "icons--faceblock-button",
+      "kind": "export",
+      "file": "packages/web-legos/components/Icons.jsx",
+      "line": 238,
+      "description": "A Web-Legos custom Faceblock button",
+      "params": [
+        {
+          "name": "color",
+          "type": "string",
+          "description": "icon fill color override"
+        },
+        {
+          "name": "iconSize",
+          "type": "number",
+          "description": "icon size in pixels"
+        },
+        {
+          "name": "faceblockLink",
+          "type": "string",
+          "description": "a link to somewhere on Faceblock"
+        }
+      ],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": "A {@link SocialButton} with the Faceblock logo",
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "FacebookButton",
+      "slug": "icons--facebook-button",
+      "kind": "export",
+      "file": "packages/web-legos/components/Icons.jsx",
+      "line": 249,
+      "description": "A Web-Legos custom Facebook button",
+      "params": [
+        {
+          "name": "color",
+          "type": "string",
+          "description": "icon fill color override"
+        },
+        {
+          "name": "iconSize",
+          "type": "number",
+          "description": "icon size in pixels"
+        },
+        {
+          "name": "facebookLink",
+          "type": "string",
+          "description": "a link to somewhere on Facebook"
+        }
+      ],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": "A {@link SocialButton} with the Facebook logo",
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "TikTokButton",
+      "slug": "icons--tik-tok-button",
+      "kind": "export",
+      "file": "packages/web-legos/components/Icons.jsx",
+      "line": 260,
+      "description": "A Web-Legos custom TikTok button",
+      "params": [
+        {
+          "name": "color",
+          "type": "string",
+          "description": "icon fill color override"
+        },
+        {
+          "name": "iconSize",
+          "type": "number",
+          "description": "icon size in pixels"
+        },
+        {
+          "name": "tikTokLink",
+          "type": "string",
+          "description": "a link to somewhere on TikTok"
+        }
+      ],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": "A {@link SocialButton} with the TikTok logo",
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "InstagramButton",
+      "slug": "icons--instagram-button",
+      "kind": "export",
+      "file": "packages/web-legos/components/Icons.jsx",
+      "line": 271,
+      "description": "A Web-Legos custom Instagram button",
+      "params": [
+        {
+          "name": "color",
+          "type": "string",
+          "description": "icon fill color override"
+        },
+        {
+          "name": "iconSize",
+          "type": "number",
+          "description": "icon size in pixels"
+        },
+        {
+          "name": "instagramLink",
+          "type": "string",
+          "description": "a link to somewhere on Instagram"
+        }
+      ],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": "A {@link SocialButton} with the Instagram logo",
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "LocationButton",
+      "slug": "icons--location-button",
+      "kind": "export",
+      "file": "packages/web-legos/components/Icons.jsx",
+      "line": 282,
+      "description": "A Web-Legos custom Location button",
+      "params": [
+        {
+          "name": "color",
+          "type": "string",
+          "description": "icon fill color override"
+        },
+        {
+          "name": "iconSize",
+          "type": "number",
+          "description": "icon size in pixels"
+        },
+        {
+          "name": "locationLink",
+          "type": "string",
+          "description": "a link to somewhere on Location"
+        }
+      ],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": "A {@link SocialButton} with the Location logo",
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "MailButton",
+      "slug": "icons--mail-button",
+      "kind": "export",
+      "file": "packages/web-legos/components/Icons.jsx",
+      "line": 293,
+      "description": "A Web-Legos custom Mail button",
+      "params": [
+        {
+          "name": "color",
+          "type": "string",
+          "description": "icon fill color override"
+        },
+        {
+          "name": "iconSize",
+          "type": "number",
+          "description": "icon size in pixels"
+        },
+        {
+          "name": "mailLink",
+          "type": "string",
+          "description": "a link to somewhere on Mail"
+        }
+      ],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": "A {@link SocialButton} with the Mail logo",
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "PhoneButton",
+      "slug": "icons--phone-button",
+      "kind": "export",
+      "file": "packages/web-legos/components/Icons.jsx",
+      "line": 304,
+      "description": "A Web-Legos custom Phone button",
+      "params": [
+        {
+          "name": "color",
+          "type": "string",
+          "description": "icon fill color override"
+        },
+        {
+          "name": "iconSize",
+          "type": "number",
+          "description": "icon size in pixels"
+        },
+        {
+          "name": "phoneLink",
+          "type": "string",
+          "description": "a link to somewhere on Phone"
+        }
+      ],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": "A {@link SocialButton} with the Phone logo",
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "YouTubeButton",
+      "slug": "icons--you-tube-button",
+      "kind": "export",
+      "file": "packages/web-legos/components/Icons.jsx",
+      "line": 315,
+      "description": "A Web-Legos custom YouTube button",
+      "params": [
+        {
+          "name": "color",
+          "type": "string",
+          "description": "icon fill color override"
+        },
+        {
+          "name": "iconSize",
+          "type": "number",
+          "description": "icon size in pixels"
+        },
+        {
+          "name": "youtubeLink",
+          "type": "string",
+          "description": "a link to somewhere on YouTube"
+        }
+      ],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": "A {@link SocialButton} with the YouTube logo",
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "UploadImageCard",
+      "slug": "images--upload-image-card",
+      "kind": "export",
+      "file": "packages/web-legos/components/Images.jsx",
+      "line": 21,
+      "description": "A card component that prompts a user to upload an image",
+      "params": [
+        {
+          "name": "params.onClick",
+          "type": "Function",
+          "description": "function to call when the user clicks the card"
+        },
+        {
+          "name": "params.size",
+          "type": "number",
+          "description": "size of the card"
+        }
+      ],
+      "defaults": "const size = 300;",
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "WLImage",
+      "slug": "images--wlimage",
+      "kind": "export",
+      "file": "packages/web-legos/components/Images.jsx",
+      "line": 48,
+      "description": null,
+      "params": [
+        {
+          "name": "firestoreId",
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "editable",
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "imgCss",
+          "type": "Object",
+          "description": "css to apply on image"
+        },
+        {
+          "name": "imgClasses",
+          "type": "string",
+          "description": "classes to apply on image"
+        }
+      ],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": "",
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "WLImageV2",
+      "slug": "images--wlimage-v2",
+      "kind": "export",
+      "file": "packages/web-legos/components/Images.jsx",
+      "line": 133,
+      "description": null,
+      "params": [
+        {
+          "name": "firestoreId",
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "editable",
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "imgCss",
+          "type": "Object",
+          "description": "css to apply on image"
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "description": "classes to apply on image"
+        }
+      ],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": "",
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "WLResponsiveSection",
+      "slug": "layout--wlresponsive-section",
+      "kind": "export",
+      "file": "packages/web-legos/components/Layout.jsx",
+      "line": 29,
+      "description": "Web-Legos section that renders from firestoreId",
+      "params": [
+        {
+          "name": "justifyTop",
+          "type": "string",
+          "description": "top section justification"
+        },
+        {
+          "name": "justifyLeft",
+          "type": "string",
+          "description": "left section justification"
+        },
+        {
+          "name": "justifyRight",
+          "type": "string",
+          "description": "right section justification"
+        },
+        {
+          "name": "columnWidthLeft",
+          "type": "string",
+          "description": "column width for left section"
+        },
+        {
+          "name": "columnWidthRight",
+          "type": "string",
+          "description": "column width for right section"
+        },
+        {
+          "name": "sectionClasses",
+          "type": "string",
+          "description": "classes to apply on rendered <section /> element"
+        },
+        {
+          "name": "sectionId",
+          "type": "string",
+          "description": "id of the section to render"
+        },
+        {
+          "name": "topContent",
+          "type": "React.ReactNode",
+          "description": "content to place in top section"
+        },
+        {
+          "name": "leftContent",
+          "type": "React.ReactNode",
+          "description": "content to place in left section"
+        },
+        {
+          "name": "rightContent",
+          "type": "React.ReactNode",
+          "description": "content to place in right section"
+        },
+        {
+          "name": "bottomContent",
+          "type": "React.ReactNode",
+          "description": "content to place in bottom section"
+        }
+      ],
+      "defaults": "justifyTop = \"center\"\njustifyLeft = \"center\"\njustifyRight = \"center\"\ncolumnWidthLeft = \"6\"\ncolumnWidthRight = \"6\"",
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "WLResponsiveSectionEditable",
+      "slug": "layout--wlresponsive-section-editable",
+      "kind": "export",
+      "file": "packages/web-legos/components/Layout.jsx",
+      "line": 89,
+      "description": "Web-Legos section that renders from firestoreId",
+      "params": [
+        {
+          "name": "justifyTop",
+          "type": "string",
+          "description": "top section justification"
+        },
+        {
+          "name": "justifyLeft",
+          "type": "string",
+          "description": "left section justification"
+        },
+        {
+          "name": "justifyRight",
+          "type": "string",
+          "description": "right section justification"
+        },
+        {
+          "name": "columnWidthLeft",
+          "type": "string",
+          "description": "column width for left section"
+        },
+        {
+          "name": "columnWidthRight",
+          "type": "string",
+          "description": "column width for right section"
+        },
+        {
+          "name": "sectionClasses",
+          "type": "string",
+          "description": "classes to apply on rendered <section /> element"
+        },
+        {
+          "name": "textColor",
+          "type": "string",
+          "description": "color of text in this section"
+        },
+        {
+          "name": "editable",
+          "type": "boolean",
+          "description": "whether current user has permission to edit this section"
+        },
+        {
+          "name": "firestoreId",
+          "type": "string",
+          "description": "id of the section to render from firestore"
+        },
+        {
+          "name": "topContent",
+          "type": "React.ReactNode",
+          "description": "content to place in top section"
+        },
+        {
+          "name": "bottomContent",
+          "type": "React.ReactNode",
+          "description": "content to place in bottom section"
+        },
+        {
+          "name": "header",
+          "type": "React.ReactNode",
+          "description": "replacement header component"
+        },
+        {
+          "name": "text",
+          "type": "React.ReactNode",
+          "description": "replacement text component"
+        },
+        {
+          "name": "image",
+          "type": "React.ReactNode",
+          "description": "replacement image component"
+        },
+        {
+          "name": "textRight",
+          "type": "boolean",
+          "description": "whether to display text on the right side of the section"
+        },
+        {
+          "name": "stackHeader",
+          "type": "boolean",
+          "description": "whether to stack header on top of text"
+        },
+        {
+          "name": "setLoaded",
+          "type": "Function",
+          "description": "function to tell parent components that all parts of section have been loaded"
+        },
+        {
+          "name": "headerBlack",
+          "type": "boolean",
+          "description": "whether to color header black"
+        },
+        {
+          "name": "headerWhite",
+          "type": "boolean",
+          "description": "whether to color header white"
+        },
+        {
+          "name": "headerAlign",
+          "type": "string",
+          "description": "header flex alignment"
+        }
+      ],
+      "defaults": "justifyTop = \"center\"\njustifyLeft = \"center\"\njustifyRight = \"center\"\ncolumnWidthLeft = \"6\"\ncolumnWidthRight = \"6\"",
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "WLCenteredColumn",
+      "slug": "layout--wlcentered-column",
+      "kind": "export",
+      "file": "packages/web-legos/components/Layout.jsx",
+      "line": 149,
+      "description": "A full-width centered column component",
+      "params": [
+        {
+          "name": "children",
+          "type": "React.ReactNode",
+          "description": "content to render inside column"
+        }
+      ],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "WLLoading",
+      "slug": "layout--wlloading",
+      "kind": "export",
+      "file": "packages/web-legos/components/Layout.jsx",
+      "line": 160,
+      "description": "A loading indicator",
+      "params": [],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "WLSpinnerPage",
+      "slug": "layout--wlspinner-page",
+      "kind": "export",
+      "file": "packages/web-legos/components/Layout.jsx",
+      "line": 178,
+      "description": "A page that renders a spinner until all dependencies are resolved",
+      "params": [
+        {
+          "name": "dependencies",
+          "type": "boolean[]",
+          "description": "displays spinner until all dependencies are true"
+        },
+        {
+          "name": "itemsCentered",
+          "type": "boolean",
+          "description": "whether to center items"
+        },
+        {
+          "name": "children",
+          "type": "React.ReactNode",
+          "description": "content to render inside of screen"
+        },
+        {
+          "name": "containerClasses",
+          "type": "string",
+          "description": "classes to apply to rendered div"
+        }
+      ],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "VerticalDivider",
+      "slug": "layout--vertical-divider",
+      "kind": "export",
+      "file": "packages/web-legos/components/Layout.jsx",
+      "line": 228,
+      "description": null,
+      "params": [
+        {
+          "name": "height",
+          "type": "number",
+          "description": "height of divider"
+        },
+        {
+          "name": "padding",
+          "type": "number",
+          "description": "space around divider"
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "description": "color of divider"
+        },
+        {
+          "name": "showIn",
+          "type": "string",
+          "description": "breakpoint to show divider"
+        }
+      ],
+      "defaults": "padding = \"0.5rem\"",
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": "",
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "WLToggleableSection",
+      "slug": "layout--wltoggleable-section",
+      "kind": "export",
+      "file": "packages/web-legos/components/Layout.jsx",
+      "line": 247,
+      "description": "A toggleable section that disappears when not logged in— unfinished",
+      "params": [],
+      "defaults": null,
+      "deprecated": "lol I don't ever use this or really intend on it",
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "ColoredShadowBox",
+      "slug": "layout--colored-shadow-box",
+      "kind": "export",
+      "file": "packages/web-legos/components/Layout.jsx",
+      "line": 280,
+      "description": null,
+      "params": [
+        {
+          "name": "backgroundColor1",
+          "type": "string",
+          "description": "first background color"
+        },
+        {
+          "name": "backgroundColor2",
+          "type": "string",
+          "description": "second background color"
+        },
+        {
+          "name": "zIndex",
+          "type": "number",
+          "description": "new zIndex if shadow does not appear"
+        }
+      ],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": "",
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "TogglePane",
+      "slug": "layout--toggle-pane",
+      "kind": "export",
+      "file": "packages/web-legos/components/Layout.jsx",
+      "line": 317,
+      "description": null,
+      "params": [
+        {
+          "name": "flipped",
+          "type": "boolean",
+          "description": "whether showing component 2"
+        }
+      ],
+      "defaults": null,
+      "deprecated": "i didn't get this working last time I tried",
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "WLYoutubeEmbed",
+      "slug": "media--wlyoutube-embed",
+      "kind": "export",
+      "file": "packages/web-legos/components/Media.jsx",
+      "line": 5,
+      "description": null,
+      "params": [],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": true,
+      "demoId": null
+    },
+    {
+      "name": "CardModal",
+      "slug": "modals--card-modal",
+      "kind": "export",
+      "file": "packages/web-legos/components/Modals.jsx",
+      "line": 26,
+      "description": null,
+      "params": [
+        {
+          "name": "open",
+          "type": "boolean",
+          "description": "whether modal is open"
+        },
+        {
+          "name": "setOpen",
+          "type": "Function",
+          "description": "set whether modal is open"
+        },
+        {
+          "name": "buttonBordered",
+          "type": "boolean",
+          "description": "whether to display bordered close button instead of flat"
+        }
+      ],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "ModelEditModal",
+      "slug": "modals--model-edit-modal",
+      "kind": "export",
+      "file": "packages/web-legos/components/Modals.jsx",
+      "line": 95,
+      "description": null,
+      "params": [
+        {
+          "name": "open",
+          "type": "boolean",
+          "description": "whether modal is open"
+        },
+        {
+          "name": "setOpen",
+          "type": "Function",
+          "description": "set open value"
+        },
+        {
+          "name": "model",
+          "type": "SiteModel",
+          "description": "model to edit"
+        }
+      ],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": "",
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "AddModelButton",
+      "slug": "modals--add-model-button",
+      "kind": "export",
+      "file": "packages/web-legos/components/Modals.jsx",
+      "line": 499,
+      "description": "Component for opening model adder",
+      "params": [
+        {
+          "name": "userCanEdit",
+          "type": "boolean",
+          "description": "whether current user can edit this model type"
+        },
+        {
+          "name": "model",
+          "type": "SiteModel",
+          "description": "model to create"
+        },
+        {
+          "name": "setCurrentModel",
+          "type": "Function",
+          "description": "current model setter function"
+        },
+        {
+          "name": "setEditModalOpen",
+          "type": "Function",
+          "description": "edit modal open setter function"
+        }
+      ],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "ModelEditButton",
+      "slug": "modals--model-edit-button",
+      "kind": "export",
+      "file": "packages/web-legos/components/Modals.jsx",
+      "line": 525,
+      "description": "Component for opening model edit modal",
+      "params": [
+        {
+          "name": "userCanEdit",
+          "type": "boolean",
+          "description": "whether current user can edit this model type"
+        },
+        {
+          "name": "solid",
+          "type": "boolean",
+          "description": "whether display button as solid"
+        },
+        {
+          "name": "model",
+          "type": "SiteModel",
+          "description": "model to edit"
+        },
+        {
+          "name": "data",
+          "type": "any",
+          "description": "current model data"
+        },
+        {
+          "name": "setCurrentModel",
+          "type": "Function",
+          "description": "current model setter function"
+        },
+        {
+          "name": "setEditModalOpen",
+          "type": "Function",
+          "description": "edit modal open setter function"
+        },
+        {
+          "name": "small",
+          "type": "boolean",
+          "description": "whether to just display icon"
+        }
+      ],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "WLNav",
+      "slug": "navigation--wlnav",
+      "kind": "export",
+      "file": "packages/web-legos/components/Navigation.jsx",
+      "line": 7,
+      "description": null,
+      "params": [],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": true,
+      "demoId": null
+    },
+    {
+      "name": "WLNavSocials",
+      "slug": "navigation--wlnav-socials",
+      "kind": "export",
+      "file": "packages/web-legos/components/Navigation.jsx",
+      "line": 55,
+      "description": null,
+      "params": [
+        {
+          "name": "showIn",
+          "type": "string",
+          "description": "breakpoint to start showing WLNavSocials"
+        },
+        {
+          "name": "lineLeft",
+          "type": "boolean",
+          "description": "whether to show a line on the left side"
+        },
+        {
+          "name": "lineRight",
+          "type": "boolean",
+          "description": "whether to show a line on the right side"
+        }
+      ],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "WLNavContent",
+      "slug": "navigation--wlnav-content",
+      "kind": "export",
+      "file": "packages/web-legos/components/Navigation.jsx",
+      "line": 86,
+      "description": null,
+      "params": [],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": true,
+      "demoId": null
+    },
+    {
+      "name": "WLNavDropdownMenu",
+      "slug": "navigation--wlnav-dropdown-menu",
+      "kind": "export",
+      "file": "packages/web-legos/components/Navigation.jsx",
+      "line": 109,
+      "description": null,
+      "params": [
+        {
+          "name": "buttonLight",
+          "type": "boolean",
+          "description": "whether to display light button for dropdown menu"
+        },
+        {
+          "name": "buttonBordered",
+          "type": "boolean",
+          "description": "whether to display bordered button for dropdown menu"
+        },
+        {
+          "name": "buttonText",
+          "type": "string",
+          "description": "text to display in button"
+        },
+        {
+          "name": "buttonFontSize",
+          "type": "string",
+          "description": "font size inside button"
+        },
+        {
+          "name": "buttonIcon",
+          "type": "React.ReactNode",
+          "description": "icon to place in button when text is too large"
+        },
+        {
+          "name": "hideTextIn",
+          "type": "string",
+          "description": "breakpoint to switch from text to image"
+        }
+      ],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "WLNavBrandLeft",
+      "slug": "navigation--wlnav-brand-left",
+      "kind": "export",
+      "file": "packages/web-legos/components/Navigation.jsx",
+      "line": 207,
+      "description": null,
+      "params": [],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": true,
+      "demoId": null
+    },
+    {
+      "name": "WLNavBrandCenter",
+      "slug": "navigation--wlnav-brand-center",
+      "kind": "export",
+      "file": "packages/web-legos/components/Navigation.jsx",
+      "line": 226,
+      "description": null,
+      "params": [],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": true,
+      "demoId": null
+    },
+    {
+      "name": "FacebookButton",
+      "slug": "socials--facebook-button",
+      "kind": "export",
+      "file": "packages/web-legos/components/Socials.jsx",
+      "line": 137,
+      "description": "A Web-Legos custom Facebook button",
+      "params": [
+        {
+          "name": "params.color",
+          "type": "string",
+          "description": "icon fill color override"
+        },
+        {
+          "name": "params.iconSize",
+          "type": "number",
+          "description": "icon size in pixels"
+        },
+        {
+          "name": "params.facebookLink",
+          "type": "string",
+          "description": "a link to somewhere on Facebook"
+        }
+      ],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": "A {@link SocialButton} with the Facebook logo",
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "TikTokButton",
+      "slug": "socials--tik-tok-button",
+      "kind": "export",
+      "file": "packages/web-legos/components/Socials.jsx",
+      "line": 148,
+      "description": "A Web-Legos custom TikTok button",
+      "params": [
+        {
+          "name": "params.color",
+          "type": "string",
+          "description": "icon fill color override"
+        },
+        {
+          "name": "params.iconSize",
+          "type": "number",
+          "description": "icon size in pixels"
+        },
+        {
+          "name": "params.tikTokLink",
+          "type": "string",
+          "description": "a link to somewhere on TikTok"
+        }
+      ],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": "A {@link SocialButton} with the TikTok logo",
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "InstagramButton",
+      "slug": "socials--instagram-button",
+      "kind": "export",
+      "file": "packages/web-legos/components/Socials.jsx",
+      "line": 159,
+      "description": "A Web-Legos custom Instagram button",
+      "params": [
+        {
+          "name": "params.color",
+          "type": "string",
+          "description": "icon fill color override"
+        },
+        {
+          "name": "params.iconSize",
+          "type": "number",
+          "description": "icon size in pixels"
+        },
+        {
+          "name": "params.instagramLink",
+          "type": "string",
+          "description": "a link to somewhere on Instagram"
+        }
+      ],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": "A {@link SocialButton} with the Instagram logo",
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "YouTubeButton",
+      "slug": "socials--you-tube-button",
+      "kind": "export",
+      "file": "packages/web-legos/components/Socials.jsx",
+      "line": 170,
+      "description": "A Web-Legos custom YouTube button",
+      "params": [
+        {
+          "name": "params.color",
+          "type": "string",
+          "description": "icon fill color override"
+        },
+        {
+          "name": "params.iconSize",
+          "type": "number",
+          "description": "icon size in pixels"
+        },
+        {
+          "name": "params.youtubeLink",
+          "type": "string",
+          "description": "a link to somewhere on YouTube"
+        }
+      ],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": "A {@link SocialButton} with the YouTube logo",
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "TextBlock",
+      "slug": "text--text-block",
+      "kind": "export",
+      "file": "packages/web-legos/components/Text.jsx",
+      "line": 19,
+      "description": "A simple indented text block",
+      "params": [
+        {
+          "name": "size",
+          "type": "string",
+          "description": "text size"
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "description": "text block color"
+        },
+        {
+          "name": "children",
+          "type": "React.ReactNode",
+          "description": "text to render"
+        }
+      ],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": "",
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "WLText",
+      "slug": "text--wltext",
+      "kind": "export",
+      "file": "packages/web-legos/components/Text.jsx",
+      "line": 44,
+      "description": "Editable text component compatible with {@link https://github.com/r2pen2/Server-Legos}. Fetches text from the server\non mount and sends updates onBlur when in edit mode.",
+      "params": [
+        {
+          "name": "setLoaded",
+          "type": "Function",
+          "description": "function for {@link WLText} to call when the text is fetched from server"
+        },
+        {
+          "name": "children",
+          "type": "React.JSX.Element",
+          "description": "whether to indent text"
+        },
+        {
+          "name": "indent",
+          "type": "boolean",
+          "description": "whether to indent text"
+        },
+        {
+          "name": "align",
+          "type": "string",
+          "description": "text alignment"
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "description": "text color"
+        },
+        {
+          "name": "size",
+          "type": "number",
+          "description": "text size"
+        },
+        {
+          "name": "editable",
+          "type": "boolean",
+          "description": "whether this text is currently editable"
+        },
+        {
+          "name": "firestoreId",
+          "type": "string",
+          "description": "id for this text in its firestoreCollection"
+        },
+        {
+          "name": "showSpinner",
+          "type": "boolean",
+          "description": "whether to show a loading spinner"
+        }
+      ],
+      "defaults": "shopSpinner = false;",
+      "deprecated": "in favor of {@link WLTextV2}",
+      "links": [],
+      "see": null,
+      "returns": "",
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "WLTextBlock",
+      "slug": "text--wltext-block",
+      "kind": "export",
+      "file": "packages/web-legos/components/Text.jsx",
+      "line": 214,
+      "description": "Web-Legos text block. Aligns paragraphs left and indents by default.",
+      "params": [
+        {
+          "name": "setLoaded",
+          "type": "Function",
+          "description": "function for {@link WLText} to call when the text is fetched from server"
+        },
+        {
+          "name": "indent",
+          "type": "boolean",
+          "description": "whether paragraphs are indented"
+        },
+        {
+          "name": "align",
+          "type": "string",
+          "description": "paragraph alignment"
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "description": "text color"
+        },
+        {
+          "name": "size",
+          "type": "string",
+          "description": "text size"
+        },
+        {
+          "name": "firestoreId",
+          "type": "string",
+          "description": "ID of the siteText that this header pulls from"
+        },
+        {
+          "name": "editable",
+          "type": "boolean",
+          "description": "whether the current user has permission to edit this header"
+        },
+        {
+          "name": "textClasses",
+          "type": "string",
+          "description": "classes to apply on text inside the returned {@link WLText} component"
+        },
+        {
+          "name": "children",
+          "type": "React.ReactNode",
+          "description": "component children (static text)"
+        },
+        {
+          "name": "showSpinner",
+          "type": "boolean",
+          "description": "whether to show a loading spinner"
+        }
+      ],
+      "defaults": "indent = true\nalign = \"left\"\nheaderLevel = 1",
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": "",
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "WLHeader",
+      "slug": "text--wlheader",
+      "kind": "export",
+      "file": "packages/web-legos/components/Text.jsx",
+      "line": 236,
+      "description": "Web-Legos editable header",
+      "params": [
+        {
+          "name": "setLoaded",
+          "type": "Function",
+          "description": "function for {@link WLText} to call when the text is fetched from server"
+        },
+        {
+          "name": "align",
+          "type": "string",
+          "description": "header alignment"
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "description": "header color"
+        },
+        {
+          "name": "size",
+          "type": "string",
+          "description": "header size"
+        },
+        {
+          "name": "firestoreId",
+          "type": "string",
+          "description": "ID of the siteText that this header pulls from"
+        },
+        {
+          "name": "editable",
+          "type": "boolean",
+          "description": "whether the current user has permission to edit this header"
+        },
+        {
+          "name": "headerLevel",
+          "type": "number",
+          "description": "level of header to display (ex. 1, 2, 3, etc.)"
+        },
+        {
+          "name": "textClasses",
+          "type": "string",
+          "description": "classes to apply on text inside the returned {@link WLText} component"
+        },
+        {
+          "name": "children",
+          "type": "React.ReactNode",
+          "description": "component children (static text)"
+        },
+        {
+          "name": "showSpinner",
+          "type": "boolean",
+          "description": "whether to show a loading spinner"
+        }
+      ],
+      "defaults": "align = \"center\"\nheaderLevel = 1",
+      "deprecated": "in favor of {@link WLHeaderV2}",
+      "links": [],
+      "see": null,
+      "returns": "",
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "WLHeaderV2",
+      "slug": "text--wlheader-v2",
+      "kind": "export",
+      "file": "packages/web-legos/components/Text.jsx",
+      "line": 259,
+      "description": "Web-Legos editable header",
+      "params": [
+        {
+          "name": "setLoaded",
+          "type": "Function",
+          "description": "function for {@link WLText} to call when the text is fetched from server"
+        },
+        {
+          "name": "align",
+          "type": "string",
+          "description": "header alignment"
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "description": "header color"
+        },
+        {
+          "name": "size",
+          "type": "string",
+          "description": "header size"
+        },
+        {
+          "name": "firestoreId",
+          "type": "string",
+          "description": "ID of the siteText that this header pulls from"
+        },
+        {
+          "name": "editable",
+          "type": "boolean",
+          "description": "whether the current user has permission to edit this header"
+        },
+        {
+          "name": "headerLevel",
+          "type": "number",
+          "description": "level of header to display (ex. 1, 2, 3, etc.)"
+        },
+        {
+          "name": "textClasses",
+          "type": "string",
+          "description": "classes to apply on text inside the returned {@link WLText} component"
+        },
+        {
+          "name": "children",
+          "type": "React.ReactNode",
+          "description": "component children (static text)"
+        },
+        {
+          "name": "showSpinner",
+          "type": "boolean",
+          "description": "whether to show a loading spinner"
+        },
+        {
+          "name": "spinnerStyle",
+          "type": "string",
+          "description": "loading spinner type"
+        },
+        {
+          "name": "spinnerCss",
+          "type": "Object",
+          "description": "loading spinner css"
+        }
+      ],
+      "defaults": "align = \"center\"\nheaderLevel = 1",
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": "",
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "WLCopyright",
+      "slug": "text--wlcopyright",
+      "kind": "export",
+      "file": "packages/web-legos/components/Text.jsx",
+      "line": 279,
+      "description": "Web-Legos editable text, size small, with a built in copyright prefix. Always looks for siteText with firestoreId=\"copyright\"",
+      "params": [
+        {
+          "name": "editable",
+          "type": "boolean",
+          "description": "whether the current user has permission to edit the copyright"
+        }
+      ],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "WLBlockHeader",
+      "slug": "text--wlblock-header",
+      "kind": "export",
+      "file": "packages/web-legos/components/Text.jsx",
+      "line": 292,
+      "description": "A page header with a textured background",
+      "params": [
+        {
+          "name": "color",
+          "type": "string",
+          "description": "color to overlay on background"
+        },
+        {
+          "name": "backgroundVariant",
+          "type": "string",
+          "description": "background variant key (ex. )"
+        },
+        {
+          "name": "text",
+          "type": "string",
+          "description": "text to place inside WLBlockHeader"
+        }
+      ],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "QuoteBlock",
+      "slug": "text--quote-block",
+      "kind": "export",
+      "file": "packages/web-legos/components/Text.jsx",
+      "line": 340,
+      "description": "A quote block with colors and author decorations",
+      "params": [],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "getWLText",
+      "slug": "text--get-wltext",
+      "kind": "export",
+      "file": "packages/web-legos/components/Text.jsx",
+      "line": 395,
+      "description": null,
+      "params": [],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": true,
+      "demoId": null
+    },
+    {
+      "name": "WLTextV2",
+      "slug": "text--wltext-v2",
+      "kind": "export",
+      "file": "packages/web-legos/components/Text.jsx",
+      "line": 424,
+      "description": "Editable text component compatible with {@link https://github.com/r2pen2/Server-Legos}. Fetches text from the server\non mount and sends updates onBlur when in edit mode.",
+      "params": [
+        {
+          "name": "setLoaded",
+          "type": "Function",
+          "description": "function for {@link WLText} to call when the text is fetched from server"
+        },
+        {
+          "name": "children",
+          "type": "React.JSX.Element",
+          "description": "whether to indent text"
+        },
+        {
+          "name": "indent",
+          "type": "boolean",
+          "description": "whether to indent text"
+        },
+        {
+          "name": "align",
+          "type": "string",
+          "description": "text alignment"
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "description": "text color"
+        },
+        {
+          "name": "size",
+          "type": "number",
+          "description": "text size"
+        },
+        {
+          "name": "editable",
+          "type": "boolean",
+          "description": "whether this text is currently editable"
+        },
+        {
+          "name": "firestoreId",
+          "type": "string",
+          "description": "id for this text in its firestoreCollection"
+        },
+        {
+          "name": "showSpinner",
+          "type": "boolean",
+          "description": "whether to show a loading spinner"
+        },
+        {
+          "name": "spinnerStyle",
+          "type": "string",
+          "description": "loading spinner type"
+        },
+        {
+          "name": "spinnerCss",
+          "type": "Object",
+          "description": "loading spinner css"
+        }
+      ],
+      "defaults": "shopSpinner = false;",
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": "",
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "WLLayoutText",
+      "slug": "text--wllayout-text",
+      "kind": "export",
+      "file": "packages/web-legos/components/Text.jsx",
+      "line": 594,
+      "description": "Editable text component compatible with {@link https://github.com/r2pen2/Server-Legos}. Fetches text from the server\non mount and sends updates onBlur when in edit mode.",
+      "params": [
+        {
+          "name": "setLoaded",
+          "type": "Function",
+          "description": "function for {@link WLText} to call when the text is fetched from server"
+        },
+        {
+          "name": "children",
+          "type": "React.JSX.Element",
+          "description": "whether to indent text"
+        },
+        {
+          "name": "indent",
+          "type": "boolean",
+          "description": "whether to indent text"
+        },
+        {
+          "name": "align",
+          "type": "string",
+          "description": "text alignment"
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "description": "text color"
+        },
+        {
+          "name": "size",
+          "type": "number",
+          "description": "text size"
+        },
+        {
+          "name": "editable",
+          "type": "boolean",
+          "description": "whether this text is currently editable"
+        },
+        {
+          "name": "firestoreId",
+          "type": "string",
+          "description": "id for this text in its firestoreCollection"
+        },
+        {
+          "name": "showSpinner",
+          "type": "boolean",
+          "description": "whether to show a loading spinner"
+        },
+        {
+          "name": "spinnerStyle",
+          "type": "string",
+          "description": "loading spinner type"
+        }
+      ],
+      "defaults": "shopSpinner = false;",
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": "",
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "WLLayoutHeader",
+      "slug": "text--wllayout-header",
+      "kind": "export",
+      "file": "packages/web-legos/components/Text.jsx",
+      "line": 780,
+      "description": "Web-Legos editable header",
+      "params": [
+        {
+          "name": "setLoaded",
+          "type": "Function",
+          "description": "function for {@link WLText} to call when the text is fetched from server"
+        },
+        {
+          "name": "firestoreId",
+          "type": "string",
+          "description": "ID of the siteText that this header pulls from"
+        },
+        {
+          "name": "editable",
+          "type": "boolean",
+          "description": "whether the current user has permission to edit this header"
+        },
+        {
+          "name": "headerLevel",
+          "type": "number",
+          "description": "level of header to display (ex. 1, 2, 3, etc.)"
+        },
+        {
+          "name": "textClasses",
+          "type": "string",
+          "description": "classes to apply on text inside the returned {@link WLText} component"
+        },
+        {
+          "name": "children",
+          "type": "React.ReactNode",
+          "description": "component children (static text)"
+        },
+        {
+          "name": "showSpinner",
+          "type": "boolean",
+          "description": "whether to show a loading spinner"
+        }
+      ],
+      "defaults": "headerLevel = 1",
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": "",
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "WaveTop",
+      "slug": "waves--wave-top",
+      "kind": "export",
+      "file": "packages/web-legos/components/Waves.jsx",
+      "line": 1,
+      "description": null,
+      "params": [],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": true,
+      "demoId": "waves"
+    },
+    {
+      "name": "WaveBottom",
+      "slug": "waves--wave-bottom",
+      "kind": "export",
+      "file": "packages/web-legos/components/Waves.jsx",
+      "line": 19,
+      "description": null,
+      "params": [],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": true,
+      "demoId": "waves"
+    },
+    {
+      "name": "Swoosh",
+      "slug": "waves--swoosh",
+      "kind": "export",
+      "file": "packages/web-legos/components/Waves.jsx",
+      "line": 38,
+      "description": null,
+      "params": [],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": true,
+      "demoId": "waves"
+    },
+    {
+      "name": "ButtonRounded",
+      "slug": "buttons--button-rounded",
+      "kind": "export",
+      "file": "packages/web-legos/Layouts/Buttons/Buttons.jsx",
+      "line": 7,
+      "description": null,
+      "params": [],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": true,
+      "demoId": null
+    },
+    {
+      "name": "FooterCentered",
+      "slug": "footercentered--footer-centered",
+      "kind": "export",
+      "file": "packages/web-legos/Layouts/Footers/FooterCentered.jsx",
+      "line": 14,
+      "description": null,
+      "params": [
+        {
+          "name": "loginLink",
+          "type": "string",
+          "description": "firebase login link"
+        }
+      ],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "HeaderThreeLevels",
+      "slug": "headers--header-three-levels",
+      "kind": "export",
+      "file": "packages/web-legos/Layouts/Headers/Headers.jsx",
+      "line": 11,
+      "description": null,
+      "params": [
+        {
+          "name": null,
+          "type": "textAlign",
+          "description": "- Text alignment"
+        }
+      ],
+      "defaults": "textAlign = \"center\";",
+      "deprecated": "don't use this lol it sucks",
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": false,
+      "demoId": null
+    },
+    {
+      "name": "NavbarMinimal",
+      "slug": "navbars--navbar-minimal",
+      "kind": "export",
+      "file": "packages/web-legos/Layouts/Navigation/Navbars.jsx",
+      "line": 5,
+      "description": null,
+      "params": [],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": true,
+      "demoId": null
+    },
+    {
+      "name": "BannerCentered",
+      "slug": "banner--banner-centered",
+      "kind": "export",
+      "file": "packages/web-legos/Layouts/Sections/Banner.jsx",
+      "line": 15,
+      "description": null,
+      "params": [],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": true,
+      "demoId": null
+    },
+    {
+      "name": "BannerWithImage",
+      "slug": "banner--banner-with-image",
+      "kind": "export",
+      "file": "packages/web-legos/Layouts/Sections/Banner.jsx",
+      "line": 26,
+      "description": null,
+      "params": [],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": true,
+      "demoId": null
+    },
+    {
+      "name": "GlyphSectionTwoItemsNoActions",
+      "slug": "glyphsection--glyph-section-two-items-no-actions",
+      "kind": "export",
+      "file": "packages/web-legos/Layouts/Sections/GlyphSection.jsx",
+      "line": 12,
+      "description": null,
+      "params": [],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": true,
+      "demoId": null
+    },
+    {
+      "name": "WLThemeProvider",
+      "slug": "wlthemes--wltheme-provider",
+      "kind": "export",
+      "file": "packages/web-legos/Layouts/WLThemes.jsx",
+      "line": 3,
+      "description": null,
+      "params": [],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": true,
+      "demoId": null
+    },
+    {
+      "name": "createWLTheme",
+      "slug": "wlthemes--create-wltheme",
+      "kind": "export",
+      "file": "packages/web-legos/Layouts/WLThemes.jsx",
+      "line": 26,
+      "description": null,
+      "params": [],
+      "defaults": null,
+      "deprecated": null,
+      "links": [],
+      "see": null,
+      "returns": null,
+      "undocumented": true,
+      "demoId": null
+    }
+  ]
+}
