@@ -24,35 +24,10 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # Single runner so Buildx boots once (moby/buildkit pull). A matrix of
+  # ubuntu-latest jobs cannot share that image — each cell is a fresh VM.
   publish:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - app: nicole-levin
-            port: 3005
-          - app: a-new-day-coaching
-            port: 3007
-          - app: a-new-day-coaching-crm
-            port: 3008
-          - app: beyond-the-bell
-            port: 3000
-          - app: wl-admin-portal
-            port: 25565
-          - app: you-can-do-it-gardening
-            port: 3003
-          - app: joe-dobbelaar
-            port: 3002
-          - app: talk-about-dreams
-            port: 3004
-          - app: boston-mixtape
-            port: 3010
-          - app: site-mail
-            port: 3020
-            dockerfile: deploy/docker/node-express.Dockerfile
-    env:
-      IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/wl-universe-${{ matrix.app }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -67,21 +42,89 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push image
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          file: ${{ matrix.dockerfile || 'deploy/docker/node-react-express.Dockerfile' }}
-          build-args: |
-            APP_DIR=packages/${{ matrix.app }}
-            APP_NAME=${{ matrix.app }}
-            PORT=${{ matrix.port }}
-          push: true
-          tags: |
-            ${{ env.IMAGE_NAME }}:latest
-            ${{ env.IMAGE_NAME }}:${{ github.sha }}
-          cache-from: type=gha,scope=${{ matrix.app }}
-          cache-to: type=gha,mode=max,scope=${{ matrix.app }}
+      - name: Build and push all app images
+        env:
+          OWNER: ${{ github.repository_owner }}
+          SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+
+          # app|port|dockerfile (dockerfile optional)
+          apps=(
+            "nicole-levin|3005|"
+            "a-new-day-coaching|3007|"
+            "a-new-day-coaching-crm|3008|"
+            "beyond-the-bell|3000|"
+            "wl-admin-portal|25565|"
+            "you-can-do-it-gardening|3003|"
+            "joe-dobbelaar|3002|"
+            "talk-about-dreams|3004|"
+            "boston-mixtape|3010|"
+            "site-mail|3020|deploy/docker/node-express.Dockerfile"
+          )
+
+          build_one() {
+            local app="$1" port="$2" dockerfile="$3"
+            local image="ghcr.io/${OWNER}/wl-universe-${app}"
+            local file="${dockerfile:-deploy/docker/node-react-express.Dockerfile}"
+
+            echo "::group::Build ${app}"
+            docker buildx build \
+              --file "${file}" \
+              --build-arg "APP_DIR=packages/${app}" \
+              --build-arg "APP_NAME=${app}" \
+              --build-arg "PORT=${port}" \
+              --tag "${image}:latest" \
+              --tag "${image}:${SHA}" \
+              --cache-from "type=gha,scope=${app}" \
+              --cache-to "type=gha,mode=max,scope=${app}" \
+              --push \
+              .
+            echo "::endgroup::"
+          }
+
+          # Limited parallelism on one Buildx builder (one moby/buildkit pull).
+          max_jobs=3
+          fail=0
+          declare -a pids=()
+          declare -a names=()
+
+          reap() {
+            local new_pids=() new_names=()
+            local i
+            for i in "${!pids[@]}"; do
+              local pid="${pids[$i]}"
+              if kill -0 "${pid}" 2>/dev/null; then
+                new_pids+=("${pid}")
+                new_names+=("${names[$i]}")
+                continue
+              fi
+              if ! wait "${pid}"; then
+                echo "::error::Build failed for ${names[$i]}"
+                fail=1
+              fi
+            done
+            pids=("${new_pids[@]}")
+            names=("${new_names[@]}")
+          }
+
+          for entry in "${apps[@]}"; do
+            IFS='|' read -r app port dockerfile <<< "${entry}"
+            while [ "${#pids[@]}" -ge "${max_jobs}" ]; do
+              sleep 2
+              reap
+            done
+            build_one "${app}" "${port}" "${dockerfile}" &
+            pids+=("$!")
+            names+=("${app}")
+          done
+
+          while [ "${#pids[@]}" -gt 0 ]; do
+            reap
+            [ "${#pids[@]}" -eq 0 ] || sleep 1
+          done
+
+          exit "${fail}"
 
   deploy:
     name: deploy (${{ matrix.app }})
