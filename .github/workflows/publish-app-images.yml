@@ -9,6 +9,7 @@ on:
       - "packages/**"
       - "deploy/docker/**"
       - "deploy/compose/**"
+      - "deploy/dns/**"
       - "scripts/**"
       - ".github/workflows/publish-app-images.yml"
       - "package.json"
@@ -118,3 +119,15 @@ jobs:
           sudo docker compose -f "${compose_file}" pull
           sudo docker compose -f "${compose_file}" up -d
           sudo docker compose -f "${compose_file}" ps
+
+      # Idempotent: only apps mapped in deploy/dns/godaddy-domains.json.
+      # Already-correct Cloudflare NS are left alone.
+      - name: Sync GoDaddy nameservers
+        if: contains(fromJSON('["a-new-day-coaching","a-new-day-coaching-crm","you-can-do-it-gardening","wl-admin-portal","talk-about-dreams","boston-mixtape"]'), matrix.app)
+        env:
+          GODADDY_PAT: ${{ secrets.GODADDY_PAT }}
+          GODADDY_API_KEY: ${{ secrets.GODADDY_API_KEY }}
+          GODADDY_API_SECRET: ${{ secrets.GODADDY_API_SECRET }}
+          GODADDY_SHOPPER_ID: ${{ secrets.GODADDY_SHOPPER_ID }}
+        run: |
+          node scripts/dns/set-godaddy-nameservers.mjs --app "${{ matrix.app }}"

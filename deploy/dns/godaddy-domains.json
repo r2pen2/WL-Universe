@@ -1,0 +1,57 @@
+{
+  "cloudflareNameservers": [
+    "athena.ns.cloudflare.com",
+    "hank.ns.cloudflare.com"
+  ],
+  "domains": [
+    {
+      "domain": "anewdaycoaching.com",
+      "apps": ["a-new-day-coaching", "a-new-day-coaching-crm"]
+    },
+    {
+      "domain": "youcandoitgardening.com",
+      "apps": ["you-can-do-it-gardening", "wl-admin-portal"]
+    },
+    {
+      "domain": "talkaboutdreams.com",
+      "apps": ["talk-about-dreams"]
+    },
+    {
+      "domain": "bostonmixtape.com",
+      "apps": ["boston-mixtape"]
+    },
+    {
+      "domain": "bostonsoundtrack.com",
+      "apps": ["boston-mixtape"]
+    },
+    {
+      "domain": "berachmusic.com",
+      "apps": ["boston-mixtape"]
+    },
+    {
+      "domain": "bostonsbestmusic.com",
+      "apps": ["boston-mixtape"]
+    },
+    {
+      "domain": "berachorchestra.com",
+      "apps": ["boston-mixtape"]
+    }
+  ],
+  "manualRegistrars": [
+    {
+      "domain": "beyondthebelleducation.com",
+      "registrar": "Network Solutions, LLC",
+      "apps": ["beyond-the-bell", "wl-admin-portal"]
+    },
+    {
+      "domain": "joed.dev",
+      "registrar": "Squarespace Domains II LLC",
+      "apps": ["joe-dobbelaar", "wl-admin-portal"]
+    },
+    {
+      "domain": "nicolelevin.org",
+      "registrar": "Cloudflare (already active)",
+      "apps": ["nicole-levin"]
+    }
+  ]
+}

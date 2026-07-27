@@ -1,0 +1,67 @@
+name: DNS GoDaddy nameservers
+
+# Idempotent: queries each listed GoDaddy domain and only updates when NS
+# are not already athena/hank.cloudflare.com. Manual dispatch only.
+#
+# Secrets:
+#   GODADDY_PAT  (Personal Access Token — preferred)
+#     scopes: domains.domain:read, domains.nameserver:update
+#   Legacy fallback: GODADDY_API_KEY + GODADDY_API_SECRET
+#   GODADDY_SHOPPER_ID  (optional; legacy only)
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Log intended changes without writing
+        type: boolean
+        required: true
+        default: true
+      domain:
+        description: Optional single domain (must be in deploy/dns/godaddy-domains.json)
+        type: string
+        required: false
+        default: ""
+      app:
+        description: Optional app slug (syncs only domains mapped to that app)
+        type: string
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dns-godaddy-nameservers
+  cancel-in-progress: false
+
+jobs:
+  godaddy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Sync GoDaddy nameservers
+        env:
+          GODADDY_PAT: ${{ secrets.GODADDY_PAT }}
+          GODADDY_API_KEY: ${{ secrets.GODADDY_API_KEY }}
+          GODADDY_API_SECRET: ${{ secrets.GODADDY_API_SECRET }}
+          GODADDY_SHOPPER_ID: ${{ secrets.GODADDY_SHOPPER_ID }}
+        run: |
+          ARGS=()
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            ARGS+=(--dry-run)
+          fi
+          if [ -n "${{ github.event.inputs.domain }}" ]; then
+            ARGS+=(--domain "${{ github.event.inputs.domain }}")
+          fi
+          if [ -n "${{ github.event.inputs.app }}" ]; then
+            ARGS+=(--app "${{ github.event.inputs.app }}")
+          fi
+          node scripts/dns/set-godaddy-nameservers.mjs "${ARGS[@]}"
