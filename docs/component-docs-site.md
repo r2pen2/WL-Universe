@@ -1,6 +1,6 @@
 # Component Docs Site — Agent Handoff Plan
 
-> **Goal:** Publish a Mantine-style component reference for WL-Universe on **GitHub Pages**, deployed on push to `main`.  
+> **Goal:** Publish a Mantine-style component reference for WL-Universe at **https://wl-universe.joed.dev** (glados Traefik + Cloudflare tunnel), deployed on push to `main`.  
 > **Hard rule:** Do **not** invent documentation prose. Index and surface text that already exists in source JSDoc/TSDoc/file headers. Missing docs → show “No docstring in source” (or omit the page), never AI filler.
 
 ## Why
@@ -12,8 +12,8 @@ Joe’s existing docstrings in `web-legos` (and sparse ones in `server-legos`) a
 | Piece | Choice | Why |
 |-------|--------|-----|
 | App | **Next.js App Router** in `packages/docs` | MDX pages, static export, familiar React |
-| Hosting | **GitHub Pages** via `actions/deploy-pages` | Deploy on push to `main` |
-| Export | `output: 'export'` + `basePath: '/WL-Universe'` (or repo name) | Pages is static-only |
+| Hosting | **glados** nginx static + Traefik + Cloudflare tunnel | Same path as `site-mail.joed.dev` |
+| Export | `output: 'export'` (no `basePath`) | Apex of `wl-universe.joed.dev` |
 | Doc extract | **react-docgen** (JSX) + **TypeDoc** (`api/*.ts`) + light custom parse for **server-legos** CJS | Fits current JSDoc style; no PropTypes |
 | Live demos | Inline **client demos** on the component page (Mantine pattern), not Storybook-first | User asked for “a little example on the page” |
 | Styling | Clean docs chrome (sidebar + content). Avoid purple/AI-default theme; keep readable | Match “reference” feel, not marketing |
@@ -71,16 +71,11 @@ Generated MDX must only include:
 
 **CI fails or warns** if generator would write non-empty prose not present in source (keep generator dumb).
 
-## GitHub Pages deploy
+## Deploy (glados)
 
-New workflow `.github/workflows/docs-pages.yml`:
+Image `ghcr.io/r2pen2/wl-universe-docs` built from `deploy/docker/docs-static.Dockerfile`, compose `deploy/compose/docs.yml`, included in publish/deploy matrix.
 
-- `on.push.branches: [main]` + `paths:` for `packages/docs/**`, `packages/web-legos/**`, `packages/server-legos/**`, `packages/*/client/src/components/**`, `scripts/docs/**`
-- Job: install → generate docs cache → `next build` → upload artifact → `actions/deploy-pages`
-- Permissions: `pages: write`, `id-token: write`
-- One-time repo setting: enable Pages source = **GitHub Actions** (agent notes this in PR; owner clicks)
-
-`next.config`: `output: 'export'`, `basePath`/`assetPrefix` matching Pages URL (`https://r2pen2.github.io/WL-Universe`).
+**Owner one-time Cloudflare:** public hostname `wl-universe.joed.dev` → `http://traefik:80` (tunnel), same as other `*.joed.dev` apps.
 
 ## Out of scope
 

@@ -1,0 +1,17 @@
+services:
+  docs:
+    image: ghcr.io/r2pen2/wl-universe-docs:${DOCS_IMAGE_TAG:-latest}
+    container_name: wl-universe-docs
+    restart: unless-stopped
+    networks:
+      - proxy
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+      traefik.enable: "true"
+      traefik.http.routers.wl-universe-docs.rule: Host(`wl-universe.joed.dev`)
+      traefik.http.routers.wl-universe-docs.entrypoints: web
+      traefik.http.services.wl-universe-docs.loadbalancer.server.port: "8080"
+
+networks:
+  proxy:
+    external: true
