@@ -51,9 +51,6 @@ function buildBody(deployments, { empty, teardown }) {
       "_No apps changed — no ephemeral QA hosts for this update._",
       "",
     );
-    lines.push(
-      "Hostname scheme: `pr-<PR>.<app-slug>.qa.joed.dev`. Registry: `/opt/services/data/app-assets/qa/active.json` (wl-status retired; not on Dozzle/`status.joed.dev`).",
-    );
     return `${lines.join("\n")}\n`;
   }
   lines.push("| App | URL | Liveness |");
