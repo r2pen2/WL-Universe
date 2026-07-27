@@ -213,7 +213,7 @@ function assertNoInventedProse(payload, label) {
   }
 }
 
-function main() {
+async function main() {
   ensureDir(CACHE);
   ensureDir(DOCS_DATA);
   ensureDir(path.join(CACHE, "sites"));
@@ -244,6 +244,10 @@ function main() {
     apps: sites.apps,
   });
   writeJson(path.join(DOCS_DATA, "sites.json"), sites);
+
+  console.log("Emitting Starlight markdown…");
+  const { emitStarlight } = await import("./emit-starlight.mjs");
+  emitStarlight();
 
   const documented = webLegos.exports.filter((e) => !e.undocumented).length;
   const undocumented = webLegos.exports.filter((e) => e.undocumented).length;

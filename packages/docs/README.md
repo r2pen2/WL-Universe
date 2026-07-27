@@ -1,21 +1,21 @@
 # @wl-universe/docs
 
-Static component reference for WL-Universe.
+Astro **Starlight** reference for WL-Universe.
 
 **Hard rule:** only indexes existing JSDoc/TSDoc/file headers. Missing docs → “No docstring in source”.
 
 ## Hosting
 
-Served on glados at **https://wl-universe.joed.dev** (nginx static export → Traefik → Cloudflare tunnel).
-
-Owner one-time Cloudflare: public hostname `wl-universe.joed.dev` → `http://traefik:80` (same pattern as `site-mail.joed.dev`).
+https://wl-universe.joed.dev — nginx static → Traefik → Cloudflare.
 
 ## Scripts
 
-| Script | What it does |
-|--------|----------------|
-| `npm run generate` | Run `scripts/docs/generate-all.mjs` → `.docs-cache/` + `data/*.json` |
-| `npm run build` | Generate then `next build` (`output: 'export'`) |
-| `npm run dev` | Generate then local Next dev server |
+| Script | What |
+|--------|------|
+| `npm run generate` | Extract JSDoc → JSON + Starlight MDX |
+| `npm run build` | Generate + `astro build` → `dist/` |
+| `npm run dev` | Local Starlight |
 
-Root shortcuts: `npm run docs:generate`, `npm run docs:build`.
+## Sites
+
+**Site assets** pages list each export under that app’s `client/src/components` (file + docstring). There is no separate empty “sites inventory” index.
