@@ -10,7 +10,8 @@
     "sync:nicole": "node scripts/sync-local-packages.mjs nicole-levin",
     "build:nicole": "npm run sync:nicole && npm run build -w @wl-universe/nicole-levin-client",
     "test:nicole": "npm run sync:nicole && npm run test -w @wl-universe/nicole-levin-client -- --watchAll=false",
-    "docker:build:nicole": "docker build -f deploy/docker/node-react-express.Dockerfile --build-arg APP_DIR=packages/nicole-levin --build-arg APP_NAME=nicole-levin --build-arg PORT=3005 -t wl-universe/nicole-levin:local ."
+    "docker:build:nicole": "docker build -f deploy/docker/node-react-express.Dockerfile --build-arg APP_DIR=packages/nicole-levin --build-arg APP_NAME=nicole-levin --build-arg PORT=3005 -t wl-universe/nicole-levin:local .",
+    "dns:godaddy": "node scripts/dns/set-godaddy-nameservers.mjs"
   },
   "devDependencies": {
     "ajv": "^8.20.0"
