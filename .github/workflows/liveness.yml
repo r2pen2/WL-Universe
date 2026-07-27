@@ -1,36 +1,119 @@
-name: Liveness probes
+name: liveness check
+
+# Per-site matrix probes against live (and optional PR feature) /liveness URLs.
+# - After successful Publish app images (post-deploy on main)
+# - Hourly (email-friendly failure notifications)
+# - workflow_call / workflow_dispatch for PR feature + live checks after a PR deploy
 
 on:
-  pull_request:
-  push:
-    branches:
-      - main
-      - master
+  workflow_run:
+    workflows:
+      - Publish app images
+    types:
+      - completed
   schedule:
-    # Backup to glados cron (UTC)
     - cron: "0 * * * *"
   workflow_dispatch:
+    inputs:
+      pr_number:
+        description: "PR number — also probe pr-<n>.<app>.qa.joed.dev when set"
+        required: false
+        type: string
+      skip_feature:
+        description: "Skip feature-branch URLs even if pr_number is set"
+        required: false
+        type: boolean
+        default: false
+  workflow_call:
+    inputs:
+      pr_number:
+        description: "PR number for feature URL checks"
+        required: false
+        type: string
+      skip_feature:
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: read
+  actions: read
 
 concurrency:
-  group: liveness-${{ github.workflow }}-${{ github.ref }}
+  group: liveness-check-${{ github.workflow }}-${{ github.event.workflow_run.head_branch || github.ref }}-${{ inputs.pr_number || 'live' }}
   cancel-in-progress: true
 
 jobs:
+  # Only continue workflow_run when the triggering publish/deploy succeeded
+  gate:
+    name: gate
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name != 'workflow_run' ||
+      github.event.workflow_run.conclusion == 'success'
+    outputs:
+      pr_number: ${{ steps.meta.outputs.pr_number }}
+      skip_feature: ${{ steps.meta.outputs.skip_feature }}
+    steps:
+      - name: Resolve inputs
+        id: meta
+        run: |
+          set -euo pipefail
+          pr="${{ inputs.pr_number }}"
+          skip_in="${{ inputs.skip_feature }}"
+          skip="false"
+          if [[ "${skip_in}" == "true" ]]; then skip="true"; fi
+          # Hourly + post-main-deploy: live production only
+          if [[ "${{ github.event_name }}" == "schedule" || "${{ github.event_name }}" == "workflow_run" ]]; then
+            pr=""
+            skip="true"
+          fi
+          echo "pr_number=${pr}" >> "$GITHUB_OUTPUT"
+          echo "skip_feature=${skip}" >> "$GITHUB_OUTPUT"
+
   liveness:
-    name: HTTPS /liveness
+    name: ${{ matrix.name }}
+    needs: gate
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: nicole-levin
+          - name: a-new-day-coaching
+          - name: a-new-day-coaching-crm
+          - name: beyond-the-bell
+          - name: you-can-do-it-gardening
+          - name: joe-dobbelaar
+          - name: talk-about-dreams
+          - name: boston-mixtape
+          - name: wl-admin-portal
+          - name: site-mail
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          # For workflow_run, check out the commit that was deployed
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "22"
 
-      - name: Probe all sites
-        run: node scripts/liveness/check.mjs --config deploy/liveness/sites.json
+      - name: Probe ${{ matrix.name }}
+        env:
+          PR_NUMBER: ${{ needs.gate.outputs.pr_number }}
+          SKIP_FEATURE: ${{ needs.gate.outputs.skip_feature }}
+        run: |
+          set -euo pipefail
+          args=(--only "${{ matrix.name }}")
+          if [[ "${SKIP_FEATURE}" == "true" ]]; then
+            args+=(--skip-feature)
+          elif [[ -n "${PR_NUMBER}" ]]; then
+            args+=(--pr "${PR_NUMBER}")
+          else
+            args+=(--skip-feature)
+          fi
+          node scripts/liveness/check.mjs "${args[@]}"
