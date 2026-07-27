@@ -120,10 +120,36 @@ jobs:
           sudo docker compose -f "${compose_file}" up -d
           sudo docker compose -f "${compose_file}" ps
 
-      # Idempotent: only apps mapped in deploy/dns/godaddy-domains.json.
-      # Already-correct Cloudflare NS are left alone.
+  # Runs on GitHub-hosted runners (glados has no Node). Idempotent:
+  # apps/domains from deploy/dns/godaddy-domains.json; skip if NS already set.
+  dns-godaddy:
+    name: dns godaddy (${{ matrix.app }})
+    needs: deploy
+    runs-on: ubuntu-latest
+    if: |
+      always() &&
+      (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master') &&
+      needs.deploy.result != 'cancelled'
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - app: a-new-day-coaching
+          - app: a-new-day-coaching-crm
+          - app: you-can-do-it-gardening
+          - app: wl-admin-portal
+          - app: talk-about-dreams
+          - app: boston-mixtape
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
       - name: Sync GoDaddy nameservers
-        if: contains(fromJSON('["a-new-day-coaching","a-new-day-coaching-crm","you-can-do-it-gardening","wl-admin-portal","talk-about-dreams","boston-mixtape"]'), matrix.app)
         env:
           GODADDY_PAT: ${{ secrets.GODADDY_PAT }}
           GODADDY_API_KEY: ${{ secrets.GODADDY_API_KEY }}
