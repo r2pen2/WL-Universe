@@ -29,3 +29,7 @@ Runtime data stays outside the repository under `/opt/services/data`:
 - App-uploaded/static assets: `/opt/services/data/app-assets`
 
 Cloudflare Tunnel public hostnames still need to point each external hostname at Traefik on glados.
+
+## Ephemeral QA
+
+PR preview hosts use `pr-<n>.<app>.qa.joed.dev`. See [`deploy/qa/README.md`](./qa/README.md) and [`docs/ephemeral-qa-environments.md`](../docs/ephemeral-qa-environments.md).

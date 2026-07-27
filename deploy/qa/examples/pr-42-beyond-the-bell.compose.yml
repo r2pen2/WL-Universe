@@ -1,0 +1,25 @@
+services:
+  beyond-the-bell:
+    image: ghcr.io/r2pen2/wl-universe-beyond-the-bell:pr-42
+    container_name: qa-pr-42-beyond-the-bell
+    restart: "no"
+    env_file:
+      - /opt/services/data/app-env/qa/beyond-the-bell.env
+    environment:
+      PORT: "3000"
+    volumes:
+      - /opt/services/data/app-assets/qa/pr-42/beyond-the-bell/static:/repo/packages/beyond-the-bell/static
+      - /opt/services/data/app-assets/qa/pr-42/beyond-the-bell/images:/repo/packages/beyond-the-bell/images
+      - /opt/services/data/app-assets/qa/pr-42/beyond-the-bell/serviceAccountKey.json:/repo/packages/beyond-the-bell/config/serviceAccountKey.json:ro
+    networks:
+      - proxy
+    labels:
+      com.centurylinklabs.watchtower.enable: "false"
+      traefik.enable: "true"
+      traefik.http.routers.qa-pr-42-beyond-the-bell.rule: Host(`pr-42.beyond-the-bell.qa.joed.dev`)
+      traefik.http.routers.qa-pr-42-beyond-the-bell.entrypoints: web
+      traefik.http.services.qa-pr-42-beyond-the-bell.loadbalancer.server.port: "3000"
+
+networks:
+  proxy:
+    external: true

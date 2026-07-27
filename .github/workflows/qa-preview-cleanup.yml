@@ -1,0 +1,49 @@
+name: QA preview cleanup
+
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: qa-cleanup-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  cleanup:
+    name: teardown QA on glados
+    runs-on:
+      - self-hosted
+      - glados
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Compose down + registry remove
+        env:
+          PR: ${{ github.event.pull_request.number }}
+          OWNER: ${{ github.repository_owner }}
+        run: |
+          set -euo pipefail
+          node scripts/qa/cleanup-pr.mjs --pr "$PR" --owner "$OWNER" --prune-images
+
+  comment:
+    name: clear QA comment
+    needs: cleanup
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Mark deployments removed
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          node scripts/qa/comment-pr.mjs --pr "$PR" --teardown || true
