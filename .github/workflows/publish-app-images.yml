@@ -9,7 +9,6 @@ on:
       - "packages/**"
       - "deploy/docker/**"
       - "deploy/compose/**"
-      - "deploy/dns/**"
       - "scripts/**"
       - ".github/workflows/publish-app-images.yml"
       - "package.json"
@@ -119,41 +118,3 @@ jobs:
           sudo docker compose -f "${compose_file}" pull
           sudo docker compose -f "${compose_file}" up -d
           sudo docker compose -f "${compose_file}" ps
-
-  # Runs on GitHub-hosted runners (glados has no Node). Idempotent:
-  # apps/domains from deploy/dns/godaddy-domains.json; skip if NS already set.
-  dns-godaddy:
-    name: dns godaddy (${{ matrix.app }})
-    needs: deploy
-    runs-on: ubuntu-latest
-    if: |
-      always() &&
-      (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master') &&
-      needs.deploy.result != 'cancelled'
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - app: a-new-day-coaching
-          - app: a-new-day-coaching-crm
-          - app: you-can-do-it-gardening
-          - app: wl-admin-portal
-          - app: talk-about-dreams
-          - app: boston-mixtape
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-
-      - name: Sync GoDaddy nameservers
-        env:
-          GODADDY_PAT: ${{ secrets.GODADDY_PAT }}
-          GODADDY_API_KEY: ${{ secrets.GODADDY_API_KEY }}
-          GODADDY_API_SECRET: ${{ secrets.GODADDY_API_SECRET }}
-          GODADDY_SHOPPER_ID: ${{ secrets.GODADDY_SHOPPER_ID }}
-        run: |
-          node scripts/dns/set-godaddy-nameservers.mjs --app "${{ matrix.app }}"
