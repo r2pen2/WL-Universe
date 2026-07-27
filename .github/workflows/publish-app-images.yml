@@ -49,9 +49,6 @@ jobs:
             port: 3004
           - app: boston-mixtape
             port: 3010
-          - app: site-mail
-            port: 3020
-            dockerfile: deploy/docker/node-express.Dockerfile
     env:
       IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/wl-universe-${{ matrix.app }}
     steps:
@@ -72,7 +69,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: ${{ matrix.dockerfile || 'deploy/docker/node-react-express.Dockerfile' }}
+          file: deploy/docker/node-react-express.Dockerfile
           build-args: |
             APP_DIR=packages/${{ matrix.app }}
             APP_NAME=${{ matrix.app }}
@@ -104,7 +101,6 @@ jobs:
           - app: joe-dobbelaar
           - app: talk-about-dreams
           - app: boston-mixtape
-          - app: site-mail
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
