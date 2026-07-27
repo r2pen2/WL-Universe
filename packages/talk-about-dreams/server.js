@@ -55,8 +55,7 @@ app.use("/site-models", siteModelRouter);
 
 // Server site rules
 app.use("/site-rules", siteRules);
-// Server site mail
-// app.use("/site-mail", siteMail);
+// Mail is handled by the site-mail microservice (see packages/site-mail)
 
 // ALlow getting of images
 app.get("/images/*", (req, res) => {
