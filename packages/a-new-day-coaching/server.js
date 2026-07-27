@@ -10,8 +10,8 @@ const siteRules = require('./libraries/Server-Legos/siteRules');
 const SiteAuthenticationManager = require('./libraries/Server-Legos/siteAuthV2');
 const fileUpload = require('express-fileupload');
 
-const SiteMailManager = require('./libraries/Server-Legos/siteMail.js');
 const SiteFormManager = require('./libraries/Server-Legos/siteForms.js');
+const { siteMailConfigHandler } = require('./libraries/Server-Legos/siteMailConfig.js');
 
 const serverKey = "ANDC"
 
@@ -47,10 +47,8 @@ const siteImageManager = new SiteImageManager(serverKey);
 const siteImageRouter = siteImageManager.getRouter();
 app.use("/site-images", siteImageRouter);
 
-// Server site mail
-const siteMailManager = new SiteMailManager("joedobbelaar@gmail.com", process.env.ANDCEMAILPASSWORD);
-const siteMailRouter = siteMailManager.getRouter();
-app.use("/site-mail", siteMailRouter);
+// Mail is handled by the site-mail microservice (see packages/site-mail)
+app.get("/wl-mail-config", siteMailConfigHandler);
 
 // Server site forms
 const siteFormManager = new SiteFormManager(process.env.ANDCFORMKEY);
@@ -61,8 +59,6 @@ app.use("/site-forms", siteFormRouter);
 app.use("/site-models", siteModels);
 // Server site rules
 app.use("/site-rules", siteRules);
-// Server site mail
-// app.use("/site-mail", siteMail);
 
 // Server site authentication
 const siteAuthenticationManager = new SiteAuthenticationManager(process.env.ANDCUSERKEY, serverKey);

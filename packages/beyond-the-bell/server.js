@@ -13,8 +13,8 @@ const siteText = require("./libraries/Server-Legos/siteText.js");
 const siteImages = require("./libraries/Server-Legos/siteImages.js");
 const siteRules = require("./libraries/Server-Legos/siteRules.js")
 const SiteFormManager = require("./libraries/Server-Legos/siteForms.js")
-const SiteMailManager = require("./libraries/Server-Legos/siteMail.js")
 const SiteAuthenticationManager = require("./libraries/Server-Legos/siteAuth.js")
+const { siteMailConfigHandler } = require("./libraries/Server-Legos/siteMailConfig.js")
 
 // Init express application
 const app = express();
@@ -85,10 +85,8 @@ app.use("/site-images", siteImages);
 app.use("/site-models", siteModels);
 // Server site rules
 app.use("/site-rules", siteRules);
-// Server site mail
-const siteMailManager = new SiteMailManager("joedobbelaar@gmail.com", process.env.BTBEMAILPASSWORD);
-const siteMailRouter = siteMailManager.getRouter();
-app.use("/site-mail", siteMailRouter);
+// Mail is handled by the site-mail microservice (see packages/site-mail)
+app.get("/wl-mail-config", siteMailConfigHandler);
 // Server site forms
 const siteFormManager = new SiteFormManager(process.env.BTBFORMKEY);
 const siteFormRouter = siteFormManager.getRouter();

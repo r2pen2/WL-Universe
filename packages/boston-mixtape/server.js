@@ -9,9 +9,8 @@ const SiteModelManager = require('./libraries/Server-Legos/siteModelsV2');
 const siteRules = require('./libraries/Server-Legos/siteRules');
 const SiteAuthenticationManager = require('./libraries/Server-Legos/siteAuthV2');
 const SiteFormManager = require('./libraries/Server-Legos/siteForms');
+const { siteMailConfigHandler } = require('./libraries/Server-Legos/siteMailConfig');
 const fileUpload = require('express-fileupload');
-
-const SiteMailManager = require('./libraries/Server-Legos/siteMail.js');
 
 /** Key for this server in DB */
 const serverKey = "BBM";
@@ -54,11 +53,8 @@ const siteModelRouter = siteModelManager.getRouter();
 app.use("/site-models", siteModelRouter);
 // Server site rules
 app.use("/site-rules", siteRules);
-// Server site mail
-const siteMailManager = new SiteMailManager("joedobbelaar@gmail.com", process.env.BBMEMAILPASSWORD);
-const siteMailRouter = siteMailManager.getRouter();
-app.use("/site-mail", siteMailRouter);
-
+// Mail is handled by the site-mail microservice (see packages/site-mail)
+app.get("/wl-mail-config", siteMailConfigHandler);
 
 const siteFormManager = new SiteFormManager(process.env.BBMFORMKEY);
 const siteFormRouter = siteFormManager.getRouter();

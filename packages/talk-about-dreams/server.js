@@ -8,6 +8,7 @@ const SiteTextManager = require('./libraries/Server-Legos/siteTextV2');
 const SiteAuthenticationManager = require('./libraries/Server-Legos/siteAuthV2');
 const SiteModelManager = require('./libraries/Server-Legos/siteModelsV2');
 const siteRules = require('./libraries/Server-Legos/siteRules');
+const { siteMailConfigHandler } = require('./libraries/Server-Legos/siteMailConfig');
 const fileUpload = require('express-fileupload');
 
 // Init express application
@@ -55,8 +56,8 @@ app.use("/site-models", siteModelRouter);
 
 // Server site rules
 app.use("/site-rules", siteRules);
-// Server site mail
-// app.use("/site-mail", siteMail);
+// Mail is handled by the site-mail microservice (see packages/site-mail)
+app.get("/wl-mail-config", siteMailConfigHandler);
 
 // ALlow getting of images
 app.get("/images/*", (req, res) => {

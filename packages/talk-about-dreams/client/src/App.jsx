@@ -41,7 +41,7 @@ export const platformGradient = `linear-gradient(239.59deg, ${backgroundColor1} 
 const wlTheme = createWLTheme();
 const mantineTheme = createMantineTheme({});
 
-export const TAGMailManager = new MailManager();
+export const TAGMailManager = new MailManager({ site: "talk-about-dreams" });
 TAGMailManager.addRecipientEmail("joedobbelaar@gmail.com");
 
 export function App(props) {

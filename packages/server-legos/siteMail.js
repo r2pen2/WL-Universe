@@ -1,44 +1,22 @@
-const express = require('express');
-
-const nodemailer = require('nodemailer');
-
-
+/**
+ * @deprecated Site mail has moved to the standalone `packages/site-mail` microservice
+ * (public host: https://site-mail.joed.dev). Do not mount this router.
+ *
+ * Clients should use web-legos `MailManager` (or server-side fetch to `/v1/send`).
+ */
 class SiteMailManager {
-
-  constructor(fromAddress, fromPassword) {
-    this.password = fromPassword;
-    this.email = fromAddress;
+  constructor() {
+    throw new Error(
+      "SiteMailManager is deprecated. Use the site-mail microservice at SITE_MAIL_URL (https://site-mail.joed.dev)."
+    );
   }
 
   initialize() {
-    this.router = express.Router();
-    this.router.post("/", (req, res) => {
-      var transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-          user: this.email,
-          pass: this.password
-        }
-      });
-      var mailOptions = {
-        from: `joed.dev Forms <forms@joed.dev>`,
-        to: req.body.toAddress,
-        subject: req.body.subject,
-        text: req.body.text
-      };
-      transporter.sendMail(mailOptions, function(error, info){
-        if (error) {
-          console.log(error);
-        } else {
-          console.log('Email sent: ' + info.response);
-        }
-      });
-    })
+    throw new Error("SiteMailManager is deprecated.");
   }
 
   getRouter() {
-    this.initialize();
-    return this.router;
+    throw new Error("SiteMailManager is deprecated.");
   }
 }
 

@@ -3,15 +3,8 @@ const router = express.Router();
 const bodyParser = require('body-parser');
 const db = require('../firebase');
 const { getUser, getAllUsers, setUser } = require('./users');
-const nodemailer = require('nodemailer');
 
 router.use(bodyParser.json());
-
-// Email configuration using Server-Legos pattern
-const emailConfig = {
-  email: process.env.EMAIL_USER || 'your-email@gmail.com',
-  password: process.env.EMAIL_PASS || 'your-app-password'
-};
 
 let allInvoices = {};
 
@@ -143,49 +136,45 @@ If you have any questions, please contact us at billing@anewdaycoaching.com
   }
 }
 
-// Helper function to send email using Server-Legos pattern
-function sendEmailWithMailManager(toAddress, subject, text, html) {
-  return new Promise((resolve, reject) => {
-    // Using the same pattern as Server-Legos SiteMailManager
-    const transporterConfig = process.env.EMAIL_SERVICE === 'godaddy' ? {
-      host: 'smtpout.secureserver.net',
-      port: 587,
-      secure: false, // true for 465, false for other ports
-      auth: {
-        user: emailConfig.email,
-        pass: emailConfig.password
-      }
-    } : {
-      service: 'gmail',
-      auth: {
-        user: emailConfig.email,
-        pass: emailConfig.password
-      }
-    };
-    
-    const transporter = nodemailer.createTransport(transporterConfig);
-    
-    // Use domain email as "from" address, but Gmail credentials for sending
-    const fromAddress = process.env.DOMAIN_EMAIL || `A New Day Coaching <${emailConfig.email}>`;
-    
-    const mailOptions = {
-      from: fromAddress,
-      to: toAddress,
-      subject: subject,
-      text: text,
-      html: html
-    };
-    
-    transporter.sendMail(mailOptions, function(error, info) {
-      if (error) {
-        console.log('Email error:', error);
-        resolve(false);
-      } else {
-        console.log('Email sent: ' + info.response);
-        resolve(true);
-      }
+// Send invoice email via the site-mail microservice
+async function sendEmailWithMailManager(toAddress, subject, text, html) {
+  const apiUrl = (process.env.SITE_MAIL_URL || 'https://site-mail.joed.dev').replace(/\/$/, '');
+  const apiKey = process.env.SITE_MAIL_API_KEY;
+  const site = process.env.SITE_MAIL_SITE_SLUG || 'crm';
+
+  if (!apiKey) {
+    console.error('Email error: SITE_MAIL_API_KEY is not configured');
+    return false;
+  }
+
+  try {
+    const response = await fetch(`${apiUrl}/v1/send`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        site,
+        to: toAddress,
+        subject,
+        text,
+        html,
+      }),
     });
-  });
+
+    const body = await response.json().catch(() => ({}));
+    if (!response.ok || body.ok === false) {
+      console.error('Email error:', body.error || `HTTP ${response.status}`);
+      return false;
+    }
+
+    console.log('Email sent via site-mail:', body.messageId || 'ok');
+    return true;
+  } catch (error) {
+    console.error('Email error:', error.message || error);
+    return false;
+  }
 }
 
 router.post("/create", (req, res) => {

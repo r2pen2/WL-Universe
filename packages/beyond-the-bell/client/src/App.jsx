@@ -20,7 +20,7 @@ export const serverURL = '/';
 
 export const CurrentSignInContext = createContext(null);
 
-export const BTBMailManager = new MailManager();
+export const BTBMailManager = new MailManager({ site: "beyond-the-bell" });
 BTBMailManager.addRecipientEmail("joedobbelaar@gmail.com");
 BTBMailManager.addRecipientEmail("nancy@beyondthebelleducation.com");
 
