@@ -1,0 +1,51 @@
+{
+  "umamiUrl": "https://analytics.joed.dev",
+  "updatedAt": "2026-07-27T17:57:12.485Z",
+  "websites": {
+    "beyond-the-bell": {
+      "websiteId": "6d15f31d-142e-416f-a9bb-1d96fbc60ceb",
+      "domain": "beyondthebelleducation.com",
+      "name": "Beyond the Bell"
+    },
+    "joe-dobbelaar": {
+      "websiteId": "4e6bd385-9c4f-425c-9c50-73e0d194283a",
+      "domain": "joed.dev",
+      "name": "Joe Dobbelaar"
+    },
+    "nicole-levin": {
+      "websiteId": "e4a4aae9-9886-4db8-abdb-9928804ca08c",
+      "domain": "nicolelevin.org",
+      "name": "Nicole Levin"
+    },
+    "you-can-do-it-gardening": {
+      "websiteId": "f633aff1-ea5a-4674-bcc7-bf3271b75225",
+      "domain": "youcandoitgardening.com",
+      "name": "You Can Do It Gardening"
+    },
+    "talk-about-dreams": {
+      "websiteId": "cbe92506-070b-495d-87e0-9039175ee8c0",
+      "domain": "talkaboutdreams.com",
+      "name": "Talk About Dreams"
+    },
+    "boston-mixtape": {
+      "websiteId": "652b4bd3-6758-40c6-ae15-d84bb1ca09a4",
+      "domain": "bostonmixtape.com",
+      "name": "Boston Mixtape"
+    },
+    "a-new-day-coaching": {
+      "websiteId": "e31bd13b-36b9-4f66-a5dd-e2a6e04a49a9",
+      "domain": "anewdaycoaching.com",
+      "name": "A New Day Coaching"
+    },
+    "a-new-day-coaching-crm": {
+      "websiteId": "6071de6d-09e6-4fb7-8ce6-1bae3be4ce15",
+      "domain": "bluprint.anewdaycoaching.com",
+      "name": "A New Day Coaching CRM"
+    },
+    "wl-admin-portal": {
+      "websiteId": "a3dc2049-e08e-4e63-a390-ac89c17e44e7",
+      "domain": "admin.joed.dev",
+      "name": "WL Admin Portal"
+    }
+  }
+}

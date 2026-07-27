@@ -11,6 +11,7 @@
     { "name": "talk-about-dreams", "url": "https://talkaboutdreams.com/liveness" },
     { "name": "boston-mixtape", "url": "https://bostonmixtape.com/liveness" },
     { "name": "wl-admin-portal", "url": "https://admin.joed.dev/liveness" },
-    { "name": "site-mail", "url": "https://site-mail.joed.dev/liveness" }
+    { "name": "site-mail", "url": "https://site-mail.joed.dev/liveness" },
+    { "name": "umami-analytics", "url": "https://analytics.joed.dev/api/heartbeat" }
   ]
 }

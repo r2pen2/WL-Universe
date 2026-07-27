@@ -22,10 +22,15 @@ import InvoiceManagement from './tabs/InvoiceManagement.jsx';
 import UserManagement from './tabs/UserManagement.jsx';
 import RoleModal from './components/RoleModal.jsx';
 import ThanksModal from './components/ThanksModal.jsx';
+import { AnalyticsManager } from './libraries/Web-Legos/api/analytics.ts';
+import { umamiConfigFor } from './libraries/Web-Legos/api/umamiRegistry.ts';
 
 
 export const CurrentUserContext = createContext();
 export const SettingsContext = createContext();
+
+const analyticsManager = new AnalyticsManager(umamiConfigFor("a-new-day-coaching-crm"));
+analyticsManager.initialize();
 
 function App() {
   
@@ -36,12 +41,18 @@ function App() {
 
   /** Get the current user on load */
   useEffect(() => { getCurrentUser(setCurrentUser, setColorScheme); }, []);
+
+  useEffect(() => {
+    analyticsManager.logPageView(currentUserId ? "app" : "login");
+  }, [currentUserId]);
   
   return (
+    <AnalyticsManager.Context.Provider value={{analyticsManager}}>
     <CurrentUserContext.Provider value={{currentUser, setCurrentUser}}>
       {/* This context needs to go on the outside of the AppContent! */}
       <AppContent currentUserId={currentUserId} />
     </CurrentUserContext.Provider>
+    </AnalyticsManager.Context.Provider>
   )
 }
     

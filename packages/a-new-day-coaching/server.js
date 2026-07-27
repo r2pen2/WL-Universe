@@ -13,6 +13,8 @@ const fileUpload = require('express-fileupload');
 const SiteFormManager = require('./libraries/Server-Legos/siteForms.js');
 const { siteMailConfigHandler } = require('./libraries/Server-Legos/siteMailConfig.js');
 const { mountLiveness } = require('./libraries/Server-Legos/siteHealth.js');
+const { umamiShellHit } = require('./libraries/Server-Legos/siteUmami.js');
+
 
 const serverKey = "ANDC"
 
@@ -103,6 +105,6 @@ app.post("/delete-img", (req, res) => {
 app.use(express.static(__dirname + "/client/build"));
 
 // Serve react app
-app.get("*", (req, res) => {
+app.get("*", umamiShellHit, (req, res) => {
     res.sendFile(__dirname + "/client/build/index.html");
 });

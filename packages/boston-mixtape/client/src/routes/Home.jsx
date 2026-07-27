@@ -16,6 +16,7 @@ import {TypeAnimation} from "react-type-animation"
 import { IconBrain, IconCalendar, IconExchange, IconMicrophone2 } from '@tabler/icons-react'
 import { CurrentSignInContext } from '../App.jsx'
 import { AuthenticationManager } from '../libraries/Web-Legos/api/auth.ts'
+import { AnalyticsManager } from '../libraries/Web-Legos/api/analytics.ts'
 
 
 import {AddModelButton, ModelEditButton, ModelEditModal} from "../libraries/Web-Legos/components/Modals.jsx"
@@ -32,6 +33,8 @@ export default function Home() {
 
   const {currentSignIn} = useContext(CurrentSignInContext);
   const {authenticationManager} = useContext(AuthenticationManager.Context)
+  const {analyticsManager} = useContext(AnalyticsManager.Context)
+  analyticsManager?.logPageView("home");
 
   const [currentModel, setCurrentModel] = useState(new SiteModel());
   const [editModalOpen, setEditModalOpen] = useState(false);

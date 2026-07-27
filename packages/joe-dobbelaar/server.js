@@ -6,6 +6,8 @@ const fs = require('fs');
 const payments = require('./routes/payments');
 const fileUpload = require('express-fileupload');
 const { mountLiveness } = require('./libraries/Server-Legos/siteHealth');
+const { umamiShellHit } = require('./libraries/Server-Legos/siteUmami');
+
 
 // Init express application
 const app = express();
@@ -81,6 +83,6 @@ app.post("/ping", (req, res) => {
 app.use(express.static(__dirname + "/client/build"));
 
 // Serve react app
-app.get("*", (req, res) => {
+app.get("*", umamiShellHit, (req, res) => {
     res.sendFile(__dirname + "/client/build/index.html");
 });

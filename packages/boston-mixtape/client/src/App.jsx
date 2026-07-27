@@ -13,6 +13,7 @@ import logo from "./assets/images/homepage/casette.png"
 import { firebaseConfig } from './api/firebase.ts'
 import { AuthenticationManager, WLPermissionsConfig } from './libraries/Web-Legos/api/auth.ts'
 import { AnalyticsManager } from './libraries/Web-Legos/api/analytics.ts'
+import { umamiConfigFor } from './libraries/Web-Legos/api/umamiRegistry.ts'
 import { WLThemeProvider, createWLTheme } from './libraries/Web-Legos/Layouts/WLThemes';
 import Home from './routes/Home.jsx';
 import '@mantine/core/styles.css';
@@ -39,7 +40,7 @@ const authenticationManager = new AuthenticationManager(firebaseConfig, permissi
 authenticationManager.initialize();
 
 /** Site AnalyticsManager */
-const analyticsManager = new AnalyticsManager(firebaseConfig)
+const analyticsManager = new AnalyticsManager(umamiConfigFor("boston-mixtape"));
 analyticsManager.initialize();
 
 const theme = createWLTheme();
