@@ -2,4 +2,4 @@
 SHELL=/bin/bash
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 MAILTO=""
-*/5 * * * * joe /opt/services/bin/wl-liveness-check >> /opt/services/data/app-assets/liveness/check.log 2>&1
+0 * * * * joe /opt/services/bin/wl-liveness-check >> /opt/services/data/app-assets/liveness/check.log 2>&1
