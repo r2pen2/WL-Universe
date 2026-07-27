@@ -5,9 +5,11 @@ const cors = require('cors');
 const fs = require('fs');
 const payments = require('./routes/payments');
 const fileUpload = require('express-fileupload');
+const { mountLiveness } = require('./libraries/Server-Legos/siteHealth');
 
 // Init express application
 const app = express();
+mountLiveness(app, "joe-dobbelaar");
 
 // Allow for CORS and file upload
 app.use(cors());

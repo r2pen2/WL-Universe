@@ -15,9 +15,11 @@ const siteRules = require("./libraries/Server-Legos/siteRules.js")
 const SiteFormManager = require("./libraries/Server-Legos/siteForms.js")
 const SiteAuthenticationManager = require("./libraries/Server-Legos/siteAuth.js")
 const { siteMailConfigHandler } = require("./libraries/Server-Legos/siteMailConfig.js")
+const { mountLiveness } = require("./libraries/Server-Legos/siteHealth.js")
 
 // Init express application
 const app = express();
+mountLiveness(app, "beyond-the-bell");
 
 // Allow for CORS and file upload
 app.use(cors());

@@ -9,10 +9,12 @@ const SiteAuthenticationManager = require('./libraries/Server-Legos/siteAuthV2')
 const SiteModelManager = require('./libraries/Server-Legos/siteModelsV2');
 const siteRules = require('./libraries/Server-Legos/siteRules');
 const { siteMailConfigHandler } = require('./libraries/Server-Legos/siteMailConfig');
+const { mountLiveness } = require('./libraries/Server-Legos/siteHealth');
 const fileUpload = require('express-fileupload');
 
 // Init express application
 const app = express();
+mountLiveness(app, "talk-about-dreams");
 
 // Allow for CORS and file upload
 app.use(cors());

@@ -7,10 +7,12 @@ const siteImages = require('./libraries/Server-Legos/siteImages');
 const siteText = require('./libraries/Server-Legos/siteText');
 const siteModels = require('./libraries/Server-Legos/siteModels');
 const SiteAuthenticationManager = require('./libraries/Server-Legos/siteAuth');
+const { mountLiveness } = require('./libraries/Server-Legos/siteHealth');
 const fileUpload = require('express-fileupload');
 
 // Init express application
 const app = express();
+mountLiveness(app, "you-can-do-it-gardening");
 
 // Allow for CORS and file upload
 app.use(cors());

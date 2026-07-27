@@ -8,10 +8,12 @@ const SiteTextManager = require('./libraries/Server-Legos/siteTextV2');
 const SiteAuthenticationManager = require('./libraries/Server-Legos/siteAuthV2');
 const SiteModelManager = require('./libraries/Server-Legos/siteModelsV2');
 const siteRules = require('./libraries/Server-Legos/siteRules');
+const { mountLiveness } = require('./libraries/Server-Legos/siteHealth');
 const fileUpload = require('express-fileupload');
 
 // Init express application
 const app = express();
+mountLiveness(app, "nicole-levin");
 
 // Allow for CORS and file upload
 app.use(cors());
