@@ -1,3 +1,5 @@
+# Prod compose for beyond-the-bell.
+# Ephemeral QA uses generated compose (see deploy/qa/) at pr-<n>.beyond-the-bell.qa.joed.dev
 services:
   beyond-the-bell:
     image: ghcr.io/r2pen2/wl-universe-beyond-the-bell:${BEYOND_THE_BELL_IMAGE_TAG:-latest}

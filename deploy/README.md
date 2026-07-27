@@ -30,6 +30,9 @@ Runtime data stays outside the repository under `/opt/services/data`:
 
 Cloudflare Tunnel public hostnames still need to point each external hostname at Traefik on glados.
 
+## Ephemeral QA
+
+PR preview hosts use `pr-<n>.<app>.qa.joed.dev`. See [`deploy/qa/README.md`](./qa/README.md) and [`docs/ephemeral-qa-environments.md`](../docs/ephemeral-qa-environments.md).
 ## Site analytics (Umami)
 
 Self-hosted Umami runs as infra (like Dozzle), not as a GHCR app image:

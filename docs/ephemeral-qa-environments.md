@@ -21,7 +21,7 @@
 | `status.joed.dev` | **Dozzle** (container logs) |
 | `REMOVED(wl-status)` | Site DNS/liveness dashboard (`/opt/services/apps/wl-status`) |
 
-**Status page note:** Feature-deployment listing belongs on **`REMOVED(wl-status)`** (or a new path there). Do not overload Dozzle at `status.joed.dev` unless the owner explicitly wants a rename/move later.
+**Status page note:** Feature-deployment listing is **`active.json` + sticky PR comments**. Do **not** revive wl-status. Do not overload Dozzle at `status.joed.dev`.
 
 ## Recommended hostname scheme
 
@@ -66,8 +66,8 @@ PR opened / synchronized
 PR closed / merged
   └─ self-hosted: docker compose down for `qa-pr-<n>-*`; prune dangling QA images optional
 
-wl-status
-  └─ read registry of active QA envs (file or API on glados) → UI section “Feature deployments” with links
+active.json + PR comments
+  └─ registry of active QA envs at `/opt/services/data/app-assets/qa/active.json`; sticky PR comment with links (wl-status retired)
 ```
 
 ### Changed-app detection
@@ -98,9 +98,11 @@ Include `/liveness` link optional second column once probes exist on QA hosts.
 
 ## Feature deployment registry (wl-status retired)
 
-Do **not** revive wl-status. Keep a file registry and PR comments:
+Do **not** revive wl-status. Do **not** put feature listings on Dozzle at `status.joed.dev`.
 
-- Data source: e.g. `/opt/services/data/app-assets/qa/active.json` written by deploy/cleanup jobs:
+Keep a file registry plus sticky PR comments:
+
+- Data source: `/opt/services/data/app-assets/qa/active.json` written by deploy/cleanup jobs:
 
 ```json
 {
@@ -117,14 +119,14 @@ Do **not** revive wl-status. Keep a file registry and PR comments:
 }
 ```
 
-- UI: new “Feature deployments” section with PR number + links.
-- Owner said `status.joed.dev`; implement on **`REMOVED(wl-status)`** and note Dozzle collision in the PR. Optional follow-up: redirect or rename.
+- Visibility: sticky PR comment (App → URL table) + `active.json` on glados.
+- Helpers: `scripts/qa/update-active-json.mjs`, documented in `deploy/qa/README.md`.
 
 ## Cloudflare programmatic bootstrap
 
-Requires a **Cloudflare API token** (GitHub Actions secret, e.g. `CLOUDFLARE_API_TOKEN`) with permissions to manage the `joed.dev` zone DNS + Zero Trust tunnel config (or Account tunnel routes).
+Requires a **Cloudflare API token** (GitHub Actions secret `CLOUDFLARE_API_TOKEN`) with permissions to manage the `joed.dev` zone DNS + Zero Trust tunnel config (or Account tunnel routes).
 
-Script (suggested): `scripts/qa/ensure-qa-wildcard.mjs`
+Script: `scripts/qa/ensure-qa-wildcard.mjs` (workflow: `qa-wildcard-bootstrap.yml`)
 
 - Idempotent: ensure DNS record `*.qa.joed.dev` → tunnel
 - Idempotent: ensure tunnel ingress/public hostname for `*.qa.joed.dev` → `http://traefik:80`
@@ -136,8 +138,9 @@ If API surface for tunnel hostname is awkward, acceptable fallback: one document
 
 | Workflow | Trigger | Runner | Action |
 |----------|---------|--------|--------|
-| `qa-preview.yml` | `pull_request` synchronize/open/reopen | ubuntu-latest → then glados | build/push `pr-<n>` tags; deploy compose; comment URLs |
+| `qa-preview.yml` | `pull_request` synchronize/open/reopen | ubuntu-latest → then glados | build/push `pr-<n>` tags; deploy compose; comment URLs; update `active.json` |
 | `qa-preview-cleanup.yml` | `pull_request` closed | glados | compose down; update `active.json` |
+| `qa-wildcard-bootstrap.yml` | `workflow_dispatch` | ubuntu-latest | ensure `*.qa.joed.dev` DNS + tunnel ingress |
 
 Reuse Dockerfile(s) from `deploy/docker/*`. Do **not** run QA deploy on `push` to `main` (prod path stays `publish-app-images.yml`).
 
@@ -147,6 +150,7 @@ Reuse Dockerfile(s) from `deploy/docker/*`. Do **not** run QA deploy on `push` t
 - Full prod data clones  
 - Previewing every marketing apex (`beyondthebelleducation.com`) on Cloudflare — QA lives under `*.qa.joed.dev` only  
 - Changing Dozzle’s `status.joed.dev` hostname in this project (unless owner reopens)  
+- Reviving `wl-status`  
 
 ## Agent operating notes
 
@@ -160,12 +164,12 @@ Reuse Dockerfile(s) from `deploy/docker/*`. Do **not** run QA deploy on `push` t
 
 | # | Title |
 |---|--------|
-| 1 | Cloudflare: programmatic `*.qa.joed.dev` → Traefik wildcard |
-| 2 | QA hostname + Traefik/compose conventions |
-| 3 | PR workflow: build/push GHCR `:pr-<n>` for changed apps |
-| 4 | Glados: spin up ephemeral compose (isolated env/volumes) |
-| 5 | PR comment with deployment URLs |
-| 6 | Cleanup on PR close/merge |
-| 7 | Feature deployments registry (active.json + PR comments; no wl-status) |
-| 8 | Safety docs: no prod SMTP/Firebase; verify end-to-end on a sample PR |
+| [#25](https://github.com/r2pen2/WL-Universe/issues/25) | Cloudflare: programmatic `*.qa.joed.dev` → Traefik wildcard |
+| [#26](https://github.com/r2pen2/WL-Universe/issues/26) | QA hostname + Traefik/compose conventions |
+| [#27](https://github.com/r2pen2/WL-Universe/issues/27) | PR workflow: build/push GHCR `:pr-<n>` for changed apps |
+| [#28](https://github.com/r2pen2/WL-Universe/issues/28) | Glados: spin up ephemeral compose (isolated env/volumes) |
+| [#29](https://github.com/r2pen2/WL-Universe/issues/29) | PR comment with deployment URLs |
+| [#30](https://github.com/r2pen2/WL-Universe/issues/30) | Cleanup on PR close/merge |
+| [#31](https://github.com/r2pen2/WL-Universe/issues/31) | Feature deployments registry (`active.json` + PR comments; no wl-status) |
+| [#32](https://github.com/r2pen2/WL-Universe/issues/32) | Safety docs: no prod SMTP/Firebase; verify end-to-end on a sample PR |
 

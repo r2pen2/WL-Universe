@@ -1,0 +1,12 @@
+{
+  "updatedAt": "2026-07-27T00:00:00.000Z",
+  "deployments": [
+    {
+      "pr": 42,
+      "app": "beyond-the-bell",
+      "url": "https://pr-42.beyond-the-bell.qa.joed.dev",
+      "sha": "abc1234",
+      "updatedAt": "2026-07-27T00:00:00.000Z"
+    }
+  ]
+}

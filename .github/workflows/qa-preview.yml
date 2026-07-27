@@ -1,0 +1,200 @@
+name: QA preview
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  packages: write
+  pull-requests: write
+
+concurrency:
+  group: qa-preview-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  detect:
+    name: detect changed apps
+    runs-on: ubuntu-latest
+    outputs:
+      apps: ${{ steps.detect.outputs.apps }}
+      apps_csv: ${{ steps.detect.outputs.apps_csv }}
+      has_apps: ${{ steps.detect.outputs.has_apps }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect apps
+        id: detect
+        run: |
+          set -euo pipefail
+          base="${{ github.event.pull_request.base.sha }}"
+          head="${{ github.event.pull_request.head.sha }}"
+          json="$(node scripts/qa/detect-changed-apps.mjs --base "$base" --head "$head" --json)"
+          echo "$json"
+          apps="$(node -e 'const d=JSON.parse(process.argv[1]); process.stdout.write(JSON.stringify(d.apps))' "$json")"
+          csv="$(node -e 'const d=JSON.parse(process.argv[1]); process.stdout.write(d.apps.join(","))' "$json")"
+          {
+            echo "apps=$apps"
+            echo "apps_csv=$csv"
+            if [[ "$apps" == "[]" ]]; then
+              echo "has_apps=false"
+            else
+              echo "has_apps=true"
+            fi
+          } >> "$GITHUB_OUTPUT"
+
+  build:
+    name: build pr images
+    needs: detect
+    if: needs.detect.outputs.has_apps == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push changed apps
+        env:
+          OWNER: ${{ github.repository_owner }}
+          SHA: ${{ github.sha }}
+          PR: ${{ github.event.pull_request.number }}
+          APPS_JSON: ${{ needs.detect.outputs.apps }}
+        run: |
+          set -euo pipefail
+          mapfile -t apps < <(node -e 'JSON.parse(process.env.APPS_JSON).forEach(a=>console.log(a))')
+          declare -A ports=(
+            [nicole-levin]=3005
+            [a-new-day-coaching]=3007
+            [a-new-day-coaching-crm]=3008
+            [beyond-the-bell]=3000
+            [wl-admin-portal]=25565
+            [you-can-do-it-gardening]=3003
+            [joe-dobbelaar]=3002
+            [talk-about-dreams]=3004
+            [boston-mixtape]=3010
+            [site-mail]=3020
+          )
+          declare -A dockerfiles=(
+            [site-mail]=deploy/docker/node-express.Dockerfile
+          )
+
+          owner_lc="$(echo "$OWNER" | tr '[:upper:]' '[:lower:]')"
+          for app in "${apps[@]}"; do
+            port="${ports[$app]}"
+            file="${dockerfiles[$app]:-deploy/docker/node-react-express.Dockerfile}"
+            image="ghcr.io/${owner_lc}/wl-universe-${app}"
+            echo "::group::Build ${app} → ${image}:pr-${PR}"
+            docker buildx build \
+              --file "${file}" \
+              --build-arg "APP_DIR=packages/${app}" \
+              --build-arg "APP_NAME=${app}" \
+              --build-arg "PORT=${port}" \
+              --tag "${image}:pr-${PR}" \
+              --tag "${image}:pr-${PR}-${SHA}" \
+              --cache-from "type=gha,scope=qa-${app}" \
+              --cache-to "type=gha,mode=max,scope=qa-${app}" \
+              --push \
+              .
+            echo "::endgroup::"
+          done
+
+  deploy:
+    name: deploy on glados
+    needs: [detect, build]
+    if: needs.detect.outputs.has_apps == 'true'
+    runs-on:
+      - self-hosted
+      - glados
+    outputs:
+      deployments: ${{ steps.deploy.outputs.deployments }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Deploy QA stacks
+        id: deploy
+        env:
+          PR: ${{ github.event.pull_request.number }}
+          APPS_CSV: ${{ needs.detect.outputs.apps_csv }}
+          SHA: ${{ github.sha }}
+          OWNER: ${{ github.repository_owner }}
+        run: |
+          set -euo pipefail
+          node scripts/qa/deploy-pr.mjs \
+            --pr "$PR" \
+            --apps "$APPS_CSV" \
+            --sha "$SHA" \
+            --owner "$OWNER" \
+            --out /tmp/qa-deployments-${PR}.json
+          {
+            echo "deployments<<EOF"
+            cat "/tmp/qa-deployments-${PR}.json"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+  comment:
+    name: PR comment
+    needs: [detect, deploy]
+    if: always() && needs.detect.result == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Upsert sticky QA comment
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+          HAS_APPS: ${{ needs.detect.outputs.has_apps }}
+          DEPLOYMENTS: ${{ needs.deploy.outputs.deployments }}
+          DEPLOY_RESULT: ${{ needs.deploy.result }}
+        run: |
+          set -euo pipefail
+          if [[ "${HAS_APPS}" != "true" ]]; then
+            node scripts/qa/comment-pr.mjs --pr "$PR" --empty
+            exit 0
+          fi
+          if [[ "${DEPLOY_RESULT}" != "success" || -z "${DEPLOYMENTS}" ]]; then
+            echo "Deploy did not succeed; skipping URL comment update"
+            exit 0
+          fi
+          node scripts/qa/comment-pr.mjs --pr "$PR" --deployments "$DEPLOYMENTS"
+
+  liveness:
+    name: feature liveness
+    needs: [detect, deploy]
+    if: needs.detect.outputs.has_apps == 'true' && needs.deploy.result == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Probe deployed QA hosts
+        env:
+          PR: ${{ github.event.pull_request.number }}
+          APPS_JSON: ${{ needs.detect.outputs.apps }}
+        run: |
+          set -euo pipefail
+          sleep 5
+          fail=0
+          mapfile -t apps < <(node -e 'JSON.parse(process.env.APPS_JSON).forEach(a=>console.log(a))')
+          for app in "${apps[@]}"; do
+            if ! node scripts/liveness/check.mjs --only "$app" --pr "$PR" --skip-live; then
+              fail=1
+            fi
+          done
+          exit "$fail"
