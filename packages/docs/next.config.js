@@ -1,12 +1,9 @@
 const path = require("path");
 
 /** @type {import('next').NextConfig} */
-const repoName = "WL-Universe";
-
 const nextConfig = {
   output: "export",
-  basePath: `/${repoName}`,
-  assetPrefix: `/${repoName}/`,
+  // Served at https://wl-universe.joed.dev (apex of subdomain — no basePath)
   images: { unoptimized: true },
   trailingSlash: true,
   reactStrictMode: true,

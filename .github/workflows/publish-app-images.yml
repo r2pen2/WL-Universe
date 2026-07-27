@@ -61,6 +61,7 @@ jobs:
             "talk-about-dreams|3004|"
             "boston-mixtape|3010|"
             "site-mail|3020|deploy/docker/node-express.Dockerfile"
+            "docs|8080|deploy/docker/docs-static.Dockerfile"
           )
 
           build_one() {
@@ -147,6 +148,7 @@ jobs:
           - app: talk-about-dreams
           - app: boston-mixtape
           - app: site-mail
+          - app: docs
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
