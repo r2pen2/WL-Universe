@@ -3,6 +3,7 @@
 node_modules/
 coverage/
 npm-debug.log*
+.docs-cache/
 
 packages/*/node_modules/
 packages/*/build/
