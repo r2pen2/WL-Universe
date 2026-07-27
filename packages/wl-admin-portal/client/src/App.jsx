@@ -13,6 +13,8 @@ import './App.css';
 // API Imports
 import { AvailableSite, SiteModule } from './libraries/Web-Legos/api/admin.ts';
 import { AuthenticationManager, WLPermissionsConfig } from './libraries/Web-Legos/api/auth.ts';
+import { AnalyticsManager } from './libraries/Web-Legos/api/analytics.ts';
+import { umamiConfigFor } from './libraries/Web-Legos/api/umamiRegistry.ts';
 
 // Component Imports
 import Navbar from './components/Navbar';
@@ -37,6 +39,9 @@ export const CurrentTabContext = createContext();
 export const CurrentUserContext = createContext();
 
 export const HOSTNAME = ''
+
+const analyticsManager = new AnalyticsManager(umamiConfigFor("wl-admin-portal"));
+analyticsManager.initialize();
 
 function App() {
 
@@ -193,7 +198,10 @@ function App() {
   }
 
   // Admin portal let's goooooooo
+  analyticsManager.logPageView(currentTab === "HOME" ? "home" : String(currentTab).toLowerCase());
+
   return (
+    <AnalyticsManager.Context.Provider value={{analyticsManager}} >
     <CurrentUserContext.Provider value={{currentUser, setCurrentUser}} >
     <CurrentSiteContext.Provider value={{currentSite, setCurrentSite}} >
     <UserSitesContext.Provider value={{userSites, setUserSites}} >
@@ -212,6 +220,7 @@ function App() {
     </UserSitesContext.Provider>
     </CurrentSiteContext.Provider>
     </CurrentUserContext.Provider>
+    </AnalyticsManager.Context.Provider>
   );
 }
 

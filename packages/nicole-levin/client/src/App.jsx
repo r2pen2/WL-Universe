@@ -19,6 +19,7 @@ import {LineButton} from "./libraries/Web-Legos/components/Buttons"
 import { firebaseConfig } from './api/firebase.ts'
 import { AuthenticationManager, WLPermissionsConfig } from './libraries/Web-Legos/api/auth.ts'
 import { AnalyticsManager } from './libraries/Web-Legos/api/analytics.ts'
+import { umamiConfigFor } from './libraries/Web-Legos/api/umamiRegistry.ts'
 import Navigator, { navigatorWidth } from './components/Navigator';
 import { lavender600, orange200 } from './libraries/Web-Legos/api/colors';
 import LandingPage from './routes/LandingPage';
@@ -43,7 +44,7 @@ const authenticationManager = new AuthenticationManager(firebaseConfig, permissi
 authenticationManager.initialize();
 
 /** Site AnalyticsManager */
-const analyticsManager = new AnalyticsManager(firebaseConfig)
+const analyticsManager = new AnalyticsManager(umamiConfigFor("nicole-levin"));
 analyticsManager.initialize();
 
 export function App(props) {
@@ -56,11 +57,13 @@ export function App(props) {
   /** Provider for all app contexts */
   function AppContextProvider(props) {
     return (
+      <AnalyticsManager.Context.Provider value={{analyticsManager}} >
       <TestingContext.Provider value={{isTestingEnvironment}} >
       <CurrentSignInContext.Provider value={{currentSignIn}} >
         {props.children}
       </CurrentSignInContext.Provider>
       </TestingContext.Provider>
+      </AnalyticsManager.Context.Provider>
     )
   }
 

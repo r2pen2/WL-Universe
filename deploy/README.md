@@ -29,3 +29,13 @@ Runtime data stays outside the repository under `/opt/services/data`:
 - App-uploaded/static assets: `/opt/services/data/app-assets`
 
 Cloudflare Tunnel public hostnames still need to point each external hostname at Traefik on glados.
+
+## Site analytics (Umami)
+
+Self-hosted Umami runs as infra (like Dozzle), not as a GHCR app image:
+
+- Compose template: `deploy/compose/umami.yml`
+- Runtime: `/opt/services/infra/umami/`
+- Secrets: `/opt/services/data/app-env/umami.env`
+- Docs: [`deploy/analytics/README.md`](analytics/README.md) and [`docs/site-analytics-umami.md`](../docs/site-analytics-umami.md)
+- Public host: `analytics.joed.dev`

@@ -7,6 +7,8 @@ const cors = require('cors');
 const fs = require('fs');
 const siteModels = require('./adminSiteModels');
 const { mountLiveness } = require('./libraries/Server-Legos/siteHealth');
+const { umamiShellHit } = require('./libraries/Server-Legos/siteUmami');
+
 const fileUpload = require('express-fileupload');
 
 
@@ -184,6 +186,6 @@ app.use("/site-models", siteModels);
 app.use(express.static(__dirname + "/client/build"));
 
 // Serve react app
-app.get("*", (req, res) => {
+app.get("*", umamiShellHit, (req, res) => {
     res.sendFile(__dirname + "/client/build/index.html");
 });

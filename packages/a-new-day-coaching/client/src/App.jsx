@@ -14,6 +14,8 @@ import logoTransparent from "./assets/images/logoTransparent.png"
 // API Imports
 import { firebaseConfig } from './api/firebase.ts'
 import { AuthenticationManager, WLPermissionsConfig } from './libraries/Web-Legos/api/auth.ts'
+import { AnalyticsManager } from './libraries/Web-Legos/api/analytics.ts'
+import { umamiConfigFor } from './libraries/Web-Legos/api/umamiRegistry.ts'
 import { WLThemeProvider, createWLTheme } from './libraries/Web-Legos/Layouts/WLThemes';
 import Home from './routes/Home.jsx';
 import { MantineProvider } from '@mantine/core';
@@ -43,6 +45,9 @@ const permissions = new WLPermissionsConfig();
 const authenticationManager = new AuthenticationManager(firebaseConfig, permissions);
 authenticationManager.initialize();
 
+const analyticsManager = new AnalyticsManager(umamiConfigFor("a-new-day-coaching"));
+analyticsManager.initialize();
+
 const theme = createWLTheme();
 
 export function App(props) {
@@ -56,11 +61,13 @@ export function App(props) {
   function AppContextProvider(props) {
     return (
       <AuthenticationManager.Context.Provider value={{authenticationManager}} >
+      <AnalyticsManager.Context.Provider value={{analyticsManager}} >
       <TestingContext.Provider value={{isTestingEnvironment}} >
       <CurrentSignInContext.Provider value={{currentSignIn}} >
         {props.children}
       </CurrentSignInContext.Provider>
       </TestingContext.Provider>
+      </AnalyticsManager.Context.Provider>
       </AuthenticationManager.Context.Provider >
     )
   }
@@ -78,6 +85,8 @@ export function App(props) {
   const linkedinLink = "https://www.linkedin.com/in/rachel-dayanim-09aa2443/";
   const facebookLink = "https://www.facebook.com/anewdaycoaching";
   const instagramLink = "https://www.instagram.com/anewdaycoaching/";
+
+  analyticsManager.logPageView("home");
 
   // Return the app
   return (

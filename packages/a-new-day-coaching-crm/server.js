@@ -9,6 +9,8 @@ const { router: tools } = require('./routes/tools');
 const { router: users } = require('./routes/users');
 const { router: invoices } = require('./routes/invoices');
 const { mountLiveness } = require('./libraries/Server-Legos/siteHealth');
+const { umamiShellHit } = require('./libraries/Server-Legos/siteUmami');
+
 // const document = require('./routes/document');
 
 // Init express application
@@ -51,6 +53,6 @@ app.get("/images/*", (req, res) => {
 app.use(express.static(__dirname + "/client/build"));
 
 // Serve react app
-app.get("*", (req, res) => {
+app.get("*", umamiShellHit, (req, res) => {
     res.sendFile(__dirname + "/client/build/index.html");
 });

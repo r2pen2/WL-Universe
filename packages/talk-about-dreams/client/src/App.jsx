@@ -13,6 +13,7 @@ import {FooterAuthButton} from "./libraries/Web-Legos/components/Auth"
 import { firebaseConfig } from './api/firebase.ts'
 import { AuthenticationManager, WLPermissionsConfig } from './libraries/Web-Legos/api/auth.ts'
 import { AnalyticsManager } from './libraries/Web-Legos/api/analytics.ts'
+import { umamiConfigFor } from './libraries/Web-Legos/api/umamiRegistry.ts'
 import Navbar from './components/NavbarV2';
 import Homepage from './routes/Homepage';
 import HomepageV2 from './routes/HomepageV2';
@@ -31,7 +32,7 @@ const authenticationManager = new AuthenticationManager(firebaseConfig, permissi
 authenticationManager.initialize();
 
 /** Site AnalyticsManager */
-const analyticsManager = new AnalyticsManager(firebaseConfig)
+const analyticsManager = new AnalyticsManager(umamiConfigFor("talk-about-dreams"));
 analyticsManager.initialize();
 
 const backgroundColor1 = "rgb(44, 44, 45)";
@@ -64,12 +65,12 @@ export function App(props) {
   /** Provider for all app contexts */
   function AppContextProvider(props) {
     return (
-      <AuthenticationManager.Context.Provider value={{AuthenticationManager}} >
-      <AnalyticsManager.Provider.Context.Provider value={{analyticsManager}} >
+      <AuthenticationManager.Context.Provider value={{authenticationManager}} >
+      <AnalyticsManager.Context.Provider value={{analyticsManager}} >
       <TestingContext.Provider value={{isTestingEnvironment}} >
         {props.children}
       </TestingContext.Provider>
-      </AnalyticsManager.Provider.Context.Provider>
+      </AnalyticsManager.Context.Provider>
       </AuthenticationManager.Context.Provider >
     )
   }
@@ -85,10 +86,13 @@ export function App(props) {
   }
 
 
+  analyticsManager.logPageView("home");
+
   // Return the app
   return (
     <MantineProvider theme={mantineTheme}>
     <WLThemeProvider theme={wlTheme}>
+    <AppContextProvider>
       <div className="App d-flex flex-column align-items-center w-100" data-testid="app">
         { isTestingEnvironment && <meta data-testid="wl-testing-flag" /> }
         <Router>
@@ -120,6 +124,7 @@ export function App(props) {
           </div>
         </Router>
       </div>
+    </AppContextProvider>
     </WLThemeProvider>
     </MantineProvider>
   );
