@@ -1,4 +1,6 @@
-next-env.d.ts
 node_modules/
-.next/
-out/
+dist/
+.astro/
+src/content/docs/web-legos/
+src/content/docs/server-legos/
+src/content/docs/sites/

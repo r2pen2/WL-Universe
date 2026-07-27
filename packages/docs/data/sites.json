@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-27T14:44:10.872Z",
+  "generatedAt": "2026-07-27T18:10:41.171Z",
   "rule": "only-index-existing-jsdoc",
   "apps": [
     "a-new-day-coaching",
@@ -18,7 +18,7 @@
       "slug": "a-new-day-coaching",
       "productSpecific": false,
       "label": "Site-specific components",
-      "generatedAt": "2026-07-27T14:44:10.864Z",
+      "generatedAt": "2026-07-27T18:10:41.157Z",
       "exports": [
         {
           "name": "navigatorWidth",
@@ -59,7 +59,7 @@
       "slug": "a-new-day-coaching-crm",
       "productSpecific": true,
       "label": "Product-specific (CRM) — not shared web-legos",
-      "generatedAt": "2026-07-27T14:44:10.868Z",
+      "generatedAt": "2026-07-27T18:10:41.165Z",
       "exports": [
         {
           "name": "CRMBreadcrumbs",
@@ -1349,7 +1349,7 @@
       "slug": "beyond-the-bell",
       "productSpecific": false,
       "label": "Site-specific components",
-      "generatedAt": "2026-07-27T14:44:10.869Z",
+      "generatedAt": "2026-07-27T18:10:41.167Z",
       "exports": [
         {
           "name": "OrangeBar",
@@ -1662,7 +1662,7 @@
       "slug": "boston-mixtape",
       "productSpecific": false,
       "label": "Site-specific components",
-      "generatedAt": "2026-07-27T14:44:10.870Z",
+      "generatedAt": "2026-07-27T18:10:41.168Z",
       "exports": [
         {
           "name": "Nav",
@@ -1751,7 +1751,7 @@
       "slug": "joe-dobbelaar",
       "productSpecific": false,
       "label": "Site-specific components",
-      "generatedAt": "2026-07-27T14:44:10.870Z",
+      "generatedAt": "2026-07-27T18:10:41.169Z",
       "exports": []
     },
     "nicole-levin": {
@@ -1759,7 +1759,7 @@
       "slug": "nicole-levin",
       "productSpecific": false,
       "label": "Site-specific components",
-      "generatedAt": "2026-07-27T14:44:10.870Z",
+      "generatedAt": "2026-07-27T18:10:41.169Z",
       "exports": [
         {
           "name": "navigatorWidth",
@@ -1800,7 +1800,7 @@
       "slug": "talk-about-dreams",
       "productSpecific": false,
       "label": "Site-specific components",
-      "generatedAt": "2026-07-27T14:44:10.870Z",
+      "generatedAt": "2026-07-27T18:10:41.169Z",
       "exports": [
         {
           "name": "Navbar",
@@ -1857,7 +1857,7 @@
       "slug": "wl-admin-portal",
       "productSpecific": false,
       "label": "Site-specific components",
-      "generatedAt": "2026-07-27T14:44:10.871Z",
+      "generatedAt": "2026-07-27T18:10:41.170Z",
       "exports": [
         {
           "name": "Navbar",
@@ -1914,7 +1914,7 @@
       "slug": "you-can-do-it-gardening",
       "productSpecific": false,
       "label": "Site-specific components",
-      "generatedAt": "2026-07-27T14:44:10.872Z",
+      "generatedAt": "2026-07-27T18:10:41.170Z",
       "exports": [
         {
           "name": "BTBLoader",

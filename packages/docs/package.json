@@ -1,24 +1,18 @@
 {
   "name": "@wl-universe/docs",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "prebuild": "node ../../scripts/docs/generate-all.mjs",
-    "dev": "node ../../scripts/docs/generate-all.mjs && next dev",
-    "build": "next build",
-    "start": "next start",
-    "generate": "node ../../scripts/docs/generate-all.mjs",
-    "lint": "next lint"
+    "dev": "node ../../scripts/docs/generate-all.mjs && astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "generate": "node ../../scripts/docs/generate-all.mjs"
   },
   "dependencies": {
-    "next": "^14.2.5",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
-  },
-  "devDependencies": {
-    "@types/node": "^20.14.0",
-    "@types/react": "^18.2.0",
-    "@types/react-dom": "^18.2.0",
-    "typescript": "^5.5.0"
+    "@astrojs/starlight": "^0.32.0",
+    "astro": "^5.4.0",
+    "sharp": "^0.33.5"
   }
 }

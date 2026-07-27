@@ -1,6 +1,6 @@
 {
   "package": "server-legos",
-  "generatedAt": "2026-07-27T14:44:10.853Z",
+  "generatedAt": "2026-07-27T18:10:41.132Z",
   "rule": "only-index-existing-jsdoc",
   "modules": [
     {
@@ -374,6 +374,103 @@
         }
       ],
       "undocumented": true
+    },
+    {
+      "name": "siteUmami",
+      "slug": "siteumami",
+      "file": "packages/server-legos/siteUmami.js",
+      "headerText": "/**\n * Optional fire-and-forget Umami pageview for SPA document/shell hits.\n *\n * Opt-in via UMAMI_SERVER_TRACKING=1 plus:\n *   UMAMI_URL (default https://analytics.joed.dev)\n *   UMAMI_WEBSITE_ID (required when enabled)\n *\n * Default off. Does not block responses; no PII / secrets in payload.\n * Complement to client AnalyticsManager — not a substitute for SPA routes.\n *\n *   const { mountUmamiShellTracking } = require(\"./libraries/Server-Legos/siteUmami\");\n *   mountUmamiShellTracking(app);\n *\n * Prefer wrapping the SPA catch-all instead:\n *   app.get(\"*\", umamiShellHit, (req, res) => res.sendFile(...));\n */",
+      "header": {
+        "description": "Optional fire-and-forget Umami pageview for SPA document/shell hits.\n\nOpt-in via UMAMI_SERVER_TRACKING=1 plus:\n  UMAMI_URL (default https://analytics.joed.dev)\n  UMAMI_WEBSITE_ID (required when enabled)\n\nDefault off. Does not block responses; no PII / secrets in payload.\nComplement to client AnalyticsManager — not a substitute for SPA routes.\n\n  const { mountUmamiShellTracking } = require(\"./libraries/Server-Legos/siteUmami\");\n  mountUmamiShellTracking(app);\n\nPrefer wrapping the SPA catch-all instead:\n  app.get(\"*\", umamiShellHit, (req, res) => res.sendFile(...));",
+        "deprecated": null,
+        "params": [],
+        "defaults": null,
+        "links": []
+      },
+      "exports": [
+        {
+          "name": "sendShellHit",
+          "slug": "siteumami--send-shell-hit",
+          "kind": "module-export",
+          "file": "packages/server-legos/siteUmami.js",
+          "line": 37,
+          "description": "Fire-and-forget POST /api/send for a document hit.",
+          "params": [
+            {
+              "name": "req",
+              "type": "import(\"express\").Request",
+              "description": ""
+            },
+            {
+              "name": "}",
+              "type": "{ path?: string",
+              "description": "[opts]"
+            }
+          ],
+          "defaults": null,
+          "deprecated": null,
+          "links": [],
+          "see": null,
+          "returns": null,
+          "undocumented": false,
+          "demoId": null
+        },
+        {
+          "name": "umamiShellHit",
+          "slug": "siteumami--umami-shell-hit",
+          "kind": "module-export",
+          "file": "packages/server-legos/siteUmami.js",
+          "line": 93,
+          "description": "Express middleware: after response starts finishing for HTML shell GETs,\nsend a beacon. Safe to place before sendFile handlers.",
+          "params": [],
+          "defaults": null,
+          "deprecated": null,
+          "links": [],
+          "see": null,
+          "returns": null,
+          "undocumented": false,
+          "demoId": null
+        },
+        {
+          "name": "withUmamiShellHit",
+          "slug": "siteumami--with-umami-shell-hit",
+          "kind": "module-export",
+          "file": "packages/server-legos/siteUmami.js",
+          "line": 111,
+          "description": "Convenience: wrap an existing SPA catch-all handler.",
+          "params": [
+            {
+              "name": "handler",
+              "type": "(req: any, res: any, next?: any) => void",
+              "description": ""
+            }
+          ],
+          "defaults": null,
+          "deprecated": null,
+          "links": [],
+          "see": null,
+          "returns": null,
+          "undocumented": false,
+          "demoId": null
+        },
+        {
+          "name": "isUmamiServerTrackingEnabled",
+          "slug": "siteumami--is-umami-server-tracking-enabled",
+          "kind": "module-export",
+          "file": "packages/server-legos/siteUmami.js",
+          "line": 117,
+          "description": "Optional fire-and-forget Umami pageview for SPA document/shell hits.\n\nOpt-in via UMAMI_SERVER_TRACKING=1 plus:\n  UMAMI_URL (default https://analytics.joed.dev)\n  UMAMI_WEBSITE_ID (required when enabled)\n\nDefault off. Does not block responses; no PII / secrets in payload.\nComplement to client AnalyticsManager — not a substitute for SPA routes.\n\n  const { mountUmamiShellTracking } = require(\"./libraries/Server-Legos/siteUmami\");\n  mountUmamiShellTracking(app);\n\nPrefer wrapping the SPA catch-all instead:\n  app.get(\"*\", umamiShellHit, (req, res) => res.sendFile(...));",
+          "params": [],
+          "defaults": null,
+          "deprecated": null,
+          "links": [],
+          "see": null,
+          "returns": null,
+          "undocumented": false,
+          "demoId": null
+        }
+      ],
+      "undocumented": false
     }
   ]
 }
