@@ -26,7 +26,7 @@ import  {FooterAuthButton} from "./libraries/Web-Legos/components/Auth.jsx"
 
 import {MailManager} from "./libraries/Web-Legos/api/mail.ts"
 
-export const ANDCMailManager = new MailManager();
+export const ANDCMailManager = new MailManager({ site: "andc" });
 ANDCMailManager.addRecipientEmail("joedobbelaar@gmail.com");
 ANDCMailManager.addRecipientEmail("rachel.newday@gmail.com");
 

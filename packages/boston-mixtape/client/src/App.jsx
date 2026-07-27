@@ -44,7 +44,7 @@ analyticsManager.initialize();
 
 const theme = createWLTheme();
 
-export const BBOMailManager = new MailManager();
+export const BBOMailManager = new MailManager({ site: "boston-mixtape" });
 BBOMailManager.addRecipientEmail("joedobbelaar@gmail.com");
 BBOMailManager.addRecipientEmail("BostonMixtapeInfo@gmail.com");
 BBOMailManager.addRecipientEmail("BBMbostonsbestmusic@gmail.com");
