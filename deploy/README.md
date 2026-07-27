@@ -11,6 +11,10 @@ Future apps should reuse the shared Dockerfile when they follow the same shape a
 
 GitHub Actions publishes images to GHCR, then deploys explicitly from a self-hosted runner on glados.
 
+On push to `main`, `publish-app-images.yml` **detects which apps changed** (via `scripts/qa/detect-changed-apps.mjs --scope publish`) and only builds/deploys those. Shared `web-legos` / `server-legos` changes fan out to all SPA apps; a single site package change rebuilds only that site.
+
+Manual full rebuild: Actions → Publish app images → Run workflow → `apps=all`.
+
 The self-hosted runner must have the labels:
 
 - `self-hosted`

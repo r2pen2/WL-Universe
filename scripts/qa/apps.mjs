@@ -32,9 +32,24 @@ export const EXPRESS_APPS = [
   },
 ];
 
+export const DOCS_APPS = [
+  {
+    app: "docs",
+    port: 8080,
+    kind: "docs",
+    dockerfile: "deploy/docker/docs-static.Dockerfile",
+  },
+];
+
+/** QA preview apps (no docs host). */
 export const ALL_APPS = [...SPA_APPS, ...EXPRESS_APPS];
 
-export const APP_BY_NAME = Object.fromEntries(ALL_APPS.map((a) => [a.app, a]));
+/** Prod publish / deploy matrix. */
+export const PUBLISH_APPS = [...SPA_APPS, ...EXPRESS_APPS, ...DOCS_APPS];
+
+export const APP_BY_NAME = Object.fromEntries(
+  PUBLISH_APPS.map((a) => [a.app, a]),
+);
 
 export function qaHostname(pr, app) {
   return `pr-${pr}.${app}.${QA_DOMAIN}`;
