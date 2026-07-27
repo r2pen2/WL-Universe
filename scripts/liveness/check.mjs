@@ -1,4 +1,11 @@
 #!/usr/bin/env node
+/**
+ * Probe one or more /liveness URLs.
+ *
+ *   node scripts/liveness/check.mjs
+ *   node scripts/liveness/check.mjs --only beyond-the-bell
+ *   node scripts/liveness/check.mjs --only beyond-the-bell --pr 42
+ */
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -7,9 +14,24 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(__dirname, "../..");
 
 function parseArgs(argv) {
-  const args = { config: path.join(repoRoot, "deploy/liveness/sites.json") };
+  const args = {
+    config: path.join(repoRoot, "deploy/liveness/sites.json"),
+    only: null,
+    pr: null,
+    url: null,
+    name: null,
+    skipFeature: false,
+    skipLive: false,
+  };
   for (let i = 0; i < argv.length; i++) {
-    if (argv[i] === "--config" && argv[i + 1]) args.config = argv[++i];
+    const a = argv[i];
+    if (a === "--config" && argv[i + 1]) args.config = argv[++i];
+    else if (a === "--only" && argv[i + 1]) args.only = argv[++i];
+    else if (a === "--pr" && argv[i + 1]) args.pr = String(argv[++i]);
+    else if (a === "--url" && argv[i + 1]) args.url = argv[++i];
+    else if (a === "--name" && argv[i + 1]) args.name = argv[++i];
+    else if (a === "--skip-feature") args.skipFeature = true;
+    else if (a === "--skip-live") args.skipLive = true;
   }
   return args;
 }
@@ -22,12 +44,21 @@ function loadConfig(configPath) {
   return config;
 }
 
-async function probe(target, timeoutMs) {
+function featureUrlFor(target, pr, template) {
+  if (!pr) return null;
+  if (target.featureUrl) {
+    return target.featureUrl.replaceAll("{pr}", pr).replaceAll("{name}", target.name);
+  }
+  const tpl = template || "https://pr-{pr}.{name}.qa.joed.dev/liveness";
+  return tpl.replaceAll("{pr}", pr).replaceAll("{name}", target.name);
+}
+
+async function probe(label, url, timeoutMs) {
   const started = Date.now();
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    const response = await fetch(target.url, {
+    const response = await fetch(url, {
       method: "GET",
       redirect: "manual",
       signal: controller.signal,
@@ -50,8 +81,8 @@ async function probe(target, timeoutMs) {
       !looksLikeSpaHtml &&
       (okJson || contentType.includes("application/json"));
     return {
-      name: target.name,
-      url: target.url,
+      label,
+      url,
       ok: healthy,
       status: response.status,
       elapsedMs,
@@ -64,8 +95,8 @@ async function probe(target, timeoutMs) {
     };
   } catch (error) {
     return {
-      name: target.name,
-      url: target.url,
+      label,
+      url,
       ok: false,
       elapsedMs: Date.now() - started,
       error: error.name === "AbortError" ? `timeout after ${timeoutMs}ms` : error.message,
@@ -77,20 +108,44 @@ async function probe(target, timeoutMs) {
 
 async function main() {
   const args = parseArgs(process.argv.slice(2));
-  const config = loadConfig(args.config);
-  const timeoutMs = Number(config.timeoutMs) || 15000;
+  const jobs = [];
+  let timeoutMs = 15000;
+
+  if (args.url) {
+    jobs.push({ label: args.name || "custom", url: args.url });
+  } else {
+    const config = loadConfig(args.config);
+    timeoutMs = Number(config.timeoutMs) || 15000;
+    const targets = args.only
+      ? config.targets.filter((t) => t.name === args.only)
+      : config.targets;
+    if (!targets.length) {
+      throw new Error(args.only ? `No target named '${args.only}'` : "No targets");
+    }
+    for (const target of targets) {
+      if (!args.skipLive) {
+        jobs.push({ label: `${target.name}/live`, url: target.url });
+      }
+      if (!args.skipFeature && args.pr) {
+        const fUrl = featureUrlFor(target, args.pr, config.featureUrlTemplate);
+        if (fUrl) jobs.push({ label: `${target.name}/feature`, url: fUrl });
+      }
+    }
+  }
+
   const results = [];
-  for (const target of config.targets) results.push(await probe(target, timeoutMs));
+  for (const job of jobs) results.push(await probe(job.label, job.url, timeoutMs));
   const failed = results.filter((r) => !r.ok);
   console.log(JSON.stringify({
     ts: new Date().toISOString(),
     ok: failed.length === 0,
     checked: results.length,
     failed: failed.length,
+    pr: args.pr || null,
     results,
   }));
   if (failed.length) {
-    for (const f of failed) console.error(`FAIL ${f.name} ${f.url}: ${f.error || f.status}`);
+    for (const f of failed) console.error(`FAIL ${f.label} ${f.url}: ${f.error || f.status}`);
     process.exit(1);
   }
 }
