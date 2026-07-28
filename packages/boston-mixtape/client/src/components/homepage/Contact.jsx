@@ -56,7 +56,7 @@ export const Contact = () => {
     const email = document.getElementById("email")?.value;
     const message = document.getElementById("message")?.value;
   
-    function sendForm() {
+    async function sendForm() {
       function getEmailBody() {
         const body = `Name: ${name}\n` +
           `Email: ${email}\n` +
@@ -64,7 +64,7 @@ export const Contact = () => {
         return body;
       }
   
-      BBOMailManager.sendMail(
+      await BBOMailManager.sendMail(
         `New BostonMixtape Contact Form Submission from ${name}`,
         getEmailBody()
       );
@@ -75,17 +75,23 @@ export const Contact = () => {
       res.content["Message"] = message;
       res.shortStrings.formId = "contact";
       res.shortStrings.formTitle = "Contact";
-      res.sendFormData();
+      await res.sendFormData();
     }
   
-  function handleCaptchaComplete(v) {
+  async function handleCaptchaComplete(v) {
     if (v.length < 1) {
       setRecaptchaModalOpen(false);
       return;
     }
-    sendForm();
-    setFormSubmitted(true);
-    setRecaptchaModalOpen(false);
+    try {
+      await sendForm();
+      setFormSubmitted(true);
+      setRecaptchaModalOpen(false);
+    } catch (error) {
+      console.error("Contact form send failed", error);
+      setRecaptchaModalOpen(false);
+      window.alert("Sorry — we couldn't send your message. Please try again.");
+    }
   }
   
     return (

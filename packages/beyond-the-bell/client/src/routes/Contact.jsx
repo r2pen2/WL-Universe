@@ -19,7 +19,7 @@ export default function Contact() {
 
   const [recaptchaModalOpen, setRecaptchaModalOpen] = useState(false);
 
-  function sendForm() {
+  async function sendForm() {
     function getEmailBody() {
       const body = `Name: ${document.getElementById("name").value}\n` + 
       `Phone: ${document.getElementById("phone").value}\n` +
@@ -30,7 +30,7 @@ export default function Contact() {
       return body;
     }
 
-    BTBMailManager.sendMail(
+    await BTBMailManager.sendMail(
       `New BTB Form Submission from ${document.getElementById("name").value}`,
       getEmailBody()
     )
@@ -44,7 +44,7 @@ export default function Contact() {
     res.content["Message"] =  document.getElementById("message").value;
     res.shortStrings.formId = "contact-us";
     res.shortStrings.formTitle = "Contact Us";
-    res.sendFormData();
+    await res.sendFormData();
   }
 
 
@@ -57,13 +57,21 @@ export default function Contact() {
     authenticationManager.getPermission(currentSignIn, "siteText").then(p => setUserCanEditText(p));
   }, [authenticationManager, currentSignIn]);
 
-  function handleCaptchaComplete(v) {
+  async function handleCaptchaComplete(v) {
     if (v.length < 1) {
       setRecaptchaModalOpen(false);
       return;
     }
-    sendForm();
-    window.location = "/thank-you";
+    try {
+      await sendForm();
+      window.location = "/thank-you";
+    } catch (error) {
+      console.error("Contact form send failed", error);
+      setRecaptchaModalOpen(false);
+      window.alert(
+        "Sorry — we couldn't send your message. Please try again or email questions@beyondthebelleducation.com."
+      );
+    }
   }
 
   function getCaptchaMessage() {

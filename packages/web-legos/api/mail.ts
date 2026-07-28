@@ -115,38 +115,39 @@ export class MailManager {
       throw new Error("MailManager: SITE_MAIL_API_KEY is not configured");
     }
 
-    const results: Array<{ to: string; ok: boolean; error?: string }> = [];
+    // Send in parallel so a slow second recipient is not lost if the page
+    // navigates away mid-loop (contact forms historically fire-and-forget).
+    const results = await Promise.all(
+      this.recipientEmails.map(async (to) => {
+        const response = await fetch(`${this.apiUrl}/v1/send`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${this.apiKey}`,
+          },
+          body: JSON.stringify({
+            site: this.site,
+            to,
+            subject,
+            text,
+          }),
+        });
 
-    for (const to of this.recipientEmails) {
-      const response = await fetch(`${this.apiUrl}/v1/send`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${this.apiKey}`,
-        },
-        body: JSON.stringify({
-          site: this.site,
-          to,
-          subject,
-          text,
-        }),
-      });
+        let body: { ok?: boolean; error?: string; messageId?: string } = {};
+        try {
+          body = await response.json();
+        } catch {
+          body = {};
+        }
 
-      let body: { ok?: boolean; error?: string; messageId?: string } = {};
-      try {
-        body = await response.json();
-      } catch {
-        body = {};
-      }
-
-      if (!response.ok || body.ok === false) {
-        const error = body.error || `HTTP ${response.status}`;
-        console.error("MailManager send failed", { to, subject, error });
-        results.push({ to, ok: false, error });
-      } else {
-        results.push({ to, ok: true });
-      }
-    }
+        if (!response.ok || body.ok === false) {
+          const error = body.error || `HTTP ${response.status}`;
+          console.error("MailManager send failed", { to, subject, error });
+          return { to, ok: false as const, error };
+        }
+        return { to, ok: true as const };
+      }),
+    );
 
     const failed = results.filter((r) => !r.ok);
     if (failed.length) {

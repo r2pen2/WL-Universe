@@ -363,7 +363,7 @@ export default function Homepage() {
   
     const [recaptchaModalOpen, setRecaptchaModalOpen] = useState(false);
   
-    function sendForm() {
+    async function sendForm() {
       function getEmailBody() {
         const body = `Name: ${document.getElementById("name").value}\n` + 
         `Phone: ${document.getElementById("phone").value}\n` +
@@ -373,7 +373,7 @@ export default function Homepage() {
         return body;
       }
   
-      TAGMailManager.sendMail(
+      await TAGMailManager.sendMail(
         `New contact form submission from ${document.getElementById("name").value}`,
         getEmailBody()
       )
@@ -386,7 +386,7 @@ export default function Homepage() {
       res.content["City, State"] =  document.getElementById("location").value;
       res.shortStrings.formId = "footer-contact";
       res.shortStrings.formTitle = "Footer Contact Form";
-      res.sendFormData();
+      await res.sendFormData();
     }
   
   
@@ -399,13 +399,19 @@ export default function Homepage() {
     //   authenticationManager.getPermission(currentSignIn, "siteText").then(p => setUserCanEditText(p));
     // }, [authenticationManager, currentSignIn]);
   
-    function handleCaptchaComplete(v) {
+    async function handleCaptchaComplete(v) {
       if (v.length < 1) {
         setRecaptchaModalOpen(false);
         return;
       }
-      sendForm();
-      window.location = "/thank-you";
+      try {
+        await sendForm();
+        window.location = "/thank-you";
+      } catch (error) {
+        console.error("Contact form send failed", error);
+        setRecaptchaModalOpen(false);
+        window.alert("Sorry — we couldn't send your message. Please try again.");
+      }
     }
     
     function handleButtonClick() {

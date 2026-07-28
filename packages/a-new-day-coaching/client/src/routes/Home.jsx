@@ -287,7 +287,7 @@ export default function Home() {
     const email = document.getElementById("email")?.value;
     const message = document.getElementById("message")?.value;
 
-    function sendForm() {
+    async function sendForm() {
       function getEmailBody() {
         const body = `Name: ${name}\n` +
           `Email: ${email}\n` +
@@ -297,7 +297,7 @@ export default function Home() {
 
       console.log(getEmailBody());
 
-      ANDCMailManager.sendMail(
+      await ANDCMailManager.sendMail(
         `New ANewDayCoaching Contact Form Submission from ${name}`,
         getEmailBody()
       );
@@ -308,17 +308,23 @@ export default function Home() {
       res.content["Message"] = message;
       res.shortStrings.formId = "contact";
       res.shortStrings.formTitle = "Contact";
-      res.sendFormData();
+      await res.sendFormData();
     }
 
-  function handleCaptchaComplete(v) {
+  async function handleCaptchaComplete(v) {
     if (v.length < 1) {
       setRecaptchaModalOpen(false);
       return;
     }
-    sendForm();
-    setFormSubmitted(true);
-    setRecaptchaModalOpen(false);
+    try {
+      await sendForm();
+      setFormSubmitted(true);
+      setRecaptchaModalOpen(false);
+    } catch (error) {
+      console.error("Contact form send failed", error);
+      setRecaptchaModalOpen(false);
+      window.alert("Sorry — we couldn't send your message. Please try again.");
+    }
   }
 
     return (
