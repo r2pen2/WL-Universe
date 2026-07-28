@@ -1,0 +1,35 @@
+name: Ensure mail DNS (MX + SPF)
+
+# Idempotent: restore registrar mail MX/SPF on Cloudflare-hosted marketing zones.
+# Requires repository secret CLOUDFLARE_API_TOKEN (Zone DNS Edit; never commit the token).
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run (no Cloudflare writes)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  ensure:
+    name: ensure mail DNS
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Ensure MX + SPF
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          DRY_RUN: ${{ inputs.dry_run && '1' || '' }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${CLOUDFLARE_API_TOKEN}" ]]; then
+            echo "::error::CLOUDFLARE_API_TOKEN secret is not set"
+            exit 1
+          fi
+          node scripts/dns/ensure-mail-dns.mjs

@@ -34,9 +34,35 @@ Runtime data stays outside the repository under `/opt/services/data`:
 
 Cloudflare Tunnel public hostnames still need to point each external hostname at Traefik on glados.
 
+## Mail DNS (MX + SPF) after Cloudflare NS cutover
+
+Moving a domain’s nameservers to Cloudflare does **not** copy registrar mail records. Without MX, addresses like `nancy@beyondthebelleducation.com` stop receiving mail even when site-mail sends successfully.
+
+Canonical config: [`deploy/dns/mail-zones.json`](./dns/mail-zones.json)  
+Idempotent apply: [`scripts/dns/ensure-mail-dns.mjs`](../scripts/dns/ensure-mail-dns.mjs)  
+CI: Actions → **Ensure mail DNS (MX + SPF)** (`ensure-mail-dns.yml`, uses `CLOUDFLARE_API_TOKEN`)
+
+```sh
+# Dry-run
+DRY_RUN=1 CLOUDFLARE_API_TOKEN=... node scripts/dns/ensure-mail-dns.mjs
+
+# Apply
+CLOUDFLARE_API_TOKEN=... node scripts/dns/ensure-mail-dns.mjs
+```
+
+Rules:
+
+- MX records must stay **DNS-only** (grey cloud), never proxied.
+- Pick the profile that matches the mailbox product (NetSol Cloud Mail vs Professional; GoDaddy Professional Email).
+- When onboarding a new marketing apex onto Cloudflare NS, add it to `mail-zones.json` and re-run the ensure script **before** cutting over nameservers (or immediately after).
+- `joed.dev` only needs Gmail SPF today (`forms@joed.dev` outbound via site-mail); it has no registrar hosted inbox MX in this config.
+
+Verify: `dig +short MX <domain>` and `dig +short TXT <domain>`.
+
 ## Ephemeral QA
 
 PR preview hosts use `pr-<n>.<app>.qa.joed.dev`. See [`deploy/qa/README.md`](./qa/README.md) and [`docs/ephemeral-qa-environments.md`](../docs/ephemeral-qa-environments.md).
+
 ## Site analytics (Umami)
 
 Self-hosted Umami runs as infra (like Dozzle), not as a GHCR app image:
