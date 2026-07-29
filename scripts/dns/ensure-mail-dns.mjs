@@ -201,6 +201,45 @@ async function ensureSpf(zoneId, zoneName, spf) {
   return actions;
 }
 
+async function ensureCname(zoneId, zoneName, name, content) {
+  const fqdn = name === "@" ? zoneName : `${name}.${zoneName}`;
+  const existing = await cf(
+    "GET",
+    `/zones/${zoneId}/dns_records?type=CNAME&name=${encodeURIComponent(fqdn)}`,
+  );
+  const match = (existing || []).find((r) => r.type === "CNAME");
+  const desired = content.replace(/\.$/, "");
+  if (match) {
+    const current = String(match.content).replace(/\.$/, "").toLowerCase();
+    if (current === desired.toLowerCase() && match.proxied === false) {
+      console.log(`  CNAME ok: ${fqdn} → ${desired}`);
+      return { action: "unchanged", type: "CNAME", name: fqdn };
+    }
+    console.log(`  CNAME update: ${fqdn} → ${desired}`);
+    if (!DRY_RUN) {
+      await cf("PUT", `/zones/${zoneId}/dns_records/${match.id}`, {
+        type: "CNAME",
+        name: fqdn,
+        content: desired,
+        proxied: false,
+        ttl: 1,
+      });
+    }
+    return { action: DRY_RUN ? "would-update" : "updated", type: "CNAME", name: fqdn };
+  }
+  console.log(`  CNAME create: ${fqdn} → ${desired}`);
+  if (!DRY_RUN) {
+    await cf("POST", `/zones/${zoneId}/dns_records`, {
+      type: "CNAME",
+      name: fqdn,
+      content: desired,
+      proxied: false,
+      ttl: 1,
+    });
+  }
+  return { action: DRY_RUN ? "would-create" : "created", type: "CNAME", name: fqdn };
+}
+
 async function main() {
   if (!TOKEN) {
     console.error(
@@ -229,17 +268,29 @@ async function main() {
     const desiredMx = resolveMx(profile, entry.zone);
     const mxActions = await ensureMx(zoneId, entry.zone, desiredMx);
     const spfActions = await ensureSpf(zoneId, entry.zone, profile.spf);
+    const extra = [];
+    if (profile.mxMode === "outlook-protection") {
+      extra.push(
+        await ensureCname(
+          zoneId,
+          entry.zone,
+          "autodiscover",
+          "autodiscover.outlook.com",
+        ),
+      );
+    }
     summary.push({
       zone: entry.zone,
       profile: entry.profile,
       mx: mxActions,
       spf: spfActions,
+      extra,
     });
     console.log("");
   }
 
   const changed = summary.flatMap((s) =>
-    [...s.mx, ...s.spf].filter((a) => a.action !== "unchanged"),
+    [...s.mx, ...s.spf, ...(s.extra || [])].filter((a) => a.action !== "unchanged"),
   );
   console.log(
     DRY_RUN

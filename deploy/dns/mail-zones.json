@@ -4,23 +4,46 @@
     "netsol-cloud-mail": {
       "label": "Network Solutions Cloud Mail",
       "mx": [
-        { "priority": 10, "content": "mx001.netsol.xion.oxcs.net" },
-        { "priority": 10, "content": "mx002.netsol.xion.oxcs.net" },
-        { "priority": 10, "content": "mx003.netsol.xion.oxcs.net" },
-        { "priority": 10, "content": "mx004.netsol.xion.oxcs.net" }
+        {
+          "priority": 10,
+          "content": "mx001.netsol.xion.oxcs.net"
+        },
+        {
+          "priority": 10,
+          "content": "mx002.netsol.xion.oxcs.net"
+        },
+        {
+          "priority": 10,
+          "content": "mx003.netsol.xion.oxcs.net"
+        },
+        {
+          "priority": 10,
+          "content": "mx004.netsol.xion.oxcs.net"
+        }
       ],
       "spf": "v=spf1 include:spf.cloud.xion.oxcs.net ~all"
     },
     "netsol-professional": {
       "label": "Network Solutions Professional Email",
-      "mx": [{ "priority": 10, "content": "mx1.netsolmail.net" }],
+      "mx": [
+        {
+          "priority": 10,
+          "content": "mx1.netsolmail.net"
+        }
+      ],
       "spf": "v=spf1 a mx include:netsolmail.net ~all"
     },
     "godaddy-professional": {
       "label": "GoDaddy Professional Email / Workspace",
       "mx": [
-        { "priority": 0, "content": "smtp.secureserver.net" },
-        { "priority": 10, "content": "mailstore1.secureserver.net" }
+        {
+          "priority": 0,
+          "content": "smtp.secureserver.net"
+        },
+        {
+          "priority": 10,
+          "content": "mailstore1.secureserver.net"
+        }
       ],
       "spf": "v=spf1 include:secureserver.net ~all"
     },
@@ -30,7 +53,7 @@
       "spf": "v=spf1 include:spf.protection.outlook.com -all"
     },
     "gmail-outbound-spf": {
-      "label": "Gmail SMTP outbound (site-mail From: forms@joed.dev) — SPF only, no hosted inbox MX",
+      "label": "Gmail SMTP outbound (site-mail From: forms@joed.dev) \u2014 SPF only, no hosted inbox MX",
       "mx": [],
       "spf": "v=spf1 include:_spf.google.com ~all"
     }
@@ -38,8 +61,8 @@
   "zones": [
     {
       "zone": "beyondthebelleducation.com",
-      "profile": "netsol-professional",
-      "notes": "Nancy NetSol Professional Email — MX mx1.netsolmail.net (not Cloud Mail oxcs)."
+      "profile": "microsoft-365",
+      "notes": "GoDaddy Microsoft 365 / Outlook (GoDaddy zone MX + autodiscover.outlook.com). Not NetSol."
     },
     {
       "zone": "anewdaycoaching.com",
@@ -49,7 +72,7 @@
     {
       "zone": "youcandoitgardening.com",
       "profile": "microsoft-365",
-      "notes": "GoDaddy Outlook / Microsoft 365 — not Professional Email (secureserver.net)."
+      "notes": "GoDaddy Outlook / Microsoft 365 \u2014 not Professional Email (secureserver.net)."
     },
     {
       "zone": "bostonmixtape.com",
