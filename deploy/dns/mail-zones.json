@@ -1,103 +1,35 @@
 {
-  "description": "Inbound mail DNS for Cloudflare-hosted marketing zones. MX must stay DNS-only (never proxied). Re-run scripts/dns/ensure-mail-dns.mjs after adding a zone or changing mail host.",
-  "profiles": {
-    "netsol-cloud-mail": {
-      "label": "Network Solutions Cloud Mail",
-      "mx": [
-        {
-          "priority": 10,
-          "content": "mx001.netsol.xion.oxcs.net"
-        },
-        {
-          "priority": 10,
-          "content": "mx002.netsol.xion.oxcs.net"
-        },
-        {
-          "priority": 10,
-          "content": "mx003.netsol.xion.oxcs.net"
-        },
-        {
-          "priority": 10,
-          "content": "mx004.netsol.xion.oxcs.net"
-        }
-      ],
-      "spf": "v=spf1 include:spf.cloud.xion.oxcs.net ~all"
-    },
-    "netsol-professional": {
-      "label": "Network Solutions Professional Email",
-      "mx": [
-        {
-          "priority": 10,
-          "content": "mx1.netsolmail.net"
-        }
-      ],
-      "spf": "v=spf1 a mx include:netsolmail.net ~all"
-    },
-    "godaddy-professional": {
-      "label": "GoDaddy Professional Email / Workspace",
-      "mx": [
-        {
-          "priority": 0,
-          "content": "smtp.secureserver.net"
-        },
-        {
-          "priority": 10,
-          "content": "mailstore1.secureserver.net"
-        }
-      ],
-      "spf": "v=spf1 include:secureserver.net ~all"
-    },
-    "microsoft-365": {
-      "label": "Microsoft 365 / Outlook (GoDaddy or direct)",
-      "mxMode": "outlook-protection",
-      "spf": "v=spf1 include:spf.protection.outlook.com -all"
-    },
-    "gmail-outbound-spf": {
-      "label": "Gmail SMTP outbound (site-mail From: forms@joed.dev) \u2014 SPF only, no hosted inbox MX",
-      "mx": [],
-      "spf": "v=spf1 include:_spf.google.com ~all"
-    }
-  },
-  "zones": [
-    {
-      "zone": "beyondthebelleducation.com",
-      "profile": "microsoft-365",
-      "notes": "GoDaddy Microsoft 365 / Outlook (GoDaddy zone MX + autodiscover.outlook.com). Not NetSol."
-    },
+  "description": "Zones without a packages/* app (or not yet migrated to deploy/dns/sites/). App-owned inbound mail lives in deploy/dns/sites/<app>.json. Profiles: deploy/dns/profiles.json.",
+  "extras": [
     {
       "zone": "anewdaycoaching.com",
       "profile": "godaddy-professional",
-      "notes": "CRM billing@ uses GoDaddy SMTP; restore inbound MX after CF NS cutover."
-    },
-    {
-      "zone": "youcandoitgardening.com",
-      "profile": "microsoft-365",
-      "notes": "GoDaddy Outlook / Microsoft 365 \u2014 not Professional Email (secureserver.net)."
+      "notes": "CRM billing@ uses GoDaddy SMTP; confirm Outlook vs Professional before switching to microsoft-365."
     },
     {
       "zone": "bostonmixtape.com",
       "profile": "godaddy-professional",
-      "notes": "GoDaddy registrar; restore Professional Email MX after CF NS cutover."
+      "notes": "GoDaddy registrar; Professional Email MX until confirmed otherwise."
     },
     {
       "zone": "talkaboutdreams.com",
       "profile": "godaddy-professional",
-      "notes": "GoDaddy registrar; restore Professional Email MX after CF NS cutover."
+      "notes": "GoDaddy registrar; Professional Email MX until confirmed otherwise."
     },
     {
       "zone": "nicolelevin.org",
       "profile": "godaddy-professional",
-      "notes": "GoDaddy registrar; restore Professional Email MX after CF NS cutover."
+      "notes": "GoDaddy registrar; Professional Email MX until confirmed otherwise."
     },
     {
       "zone": "berachorchestra.com",
       "profile": "godaddy-professional",
-      "notes": "GoDaddy registrar; restore Professional Email MX after CF NS cutover."
+      "notes": "GoDaddy registrar; no SPA app slug yet."
     },
     {
       "zone": "joed.dev",
       "profile": "gmail-outbound-spf",
-      "notes": "site-mail From uses forms@joed.dev via Gmail SMTP. No registrar hosted inbox assumed."
+      "notes": "site-mail From uses forms@joed.dev via Gmail SMTP. No registrar hosted inbox."
     }
   ]
 }

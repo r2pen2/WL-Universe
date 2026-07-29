@@ -1,0 +1,38 @@
+{
+  "description": "Shared inbound-mail DNS profiles for Cloudflare. Referenced by deploy/dns/sites/<app>.json and deploy/dns/mail-zones.json extras.",
+  "profiles": {
+    "netsol-cloud-mail": {
+      "label": "Network Solutions Cloud Mail",
+      "mx": [
+        { "priority": 10, "content": "mx001.netsol.xion.oxcs.net" },
+        { "priority": 10, "content": "mx002.netsol.xion.oxcs.net" },
+        { "priority": 10, "content": "mx003.netsol.xion.oxcs.net" },
+        { "priority": 10, "content": "mx004.netsol.xion.oxcs.net" }
+      ],
+      "spf": "v=spf1 include:spf.cloud.xion.oxcs.net ~all"
+    },
+    "netsol-professional": {
+      "label": "Network Solutions Professional Email",
+      "mx": [{ "priority": 10, "content": "mx1.netsolmail.net" }],
+      "spf": "v=spf1 a mx include:netsolmail.net ~all"
+    },
+    "godaddy-professional": {
+      "label": "GoDaddy Professional Email / Workspace",
+      "mx": [
+        { "priority": 0, "content": "smtp.secureserver.net" },
+        { "priority": 10, "content": "mailstore1.secureserver.net" }
+      ],
+      "spf": "v=spf1 include:secureserver.net ~all"
+    },
+    "microsoft-365": {
+      "label": "Microsoft 365 / Outlook (GoDaddy or direct)",
+      "mxMode": "outlook-protection",
+      "spf": "v=spf1 include:spf.protection.outlook.com -all"
+    },
+    "gmail-outbound-spf": {
+      "label": "Gmail SMTP outbound (site-mail From) — SPF only, no hosted inbox MX",
+      "mx": [],
+      "spf": "v=spf1 include:_spf.google.com ~all"
+    }
+  }
+}

@@ -36,28 +36,45 @@ Cloudflare Tunnel public hostnames still need to point each external hostname at
 
 ## Mail DNS (MX + SPF) after Cloudflare NS cutover
 
-Moving a domain’s nameservers to Cloudflare does **not** copy registrar mail records. Without MX, addresses like `nancy@beyondthebelleducation.com` stop receiving mail even when site-mail sends successfully.
+Moving a domain’s nameservers to Cloudflare does **not** copy registrar mail records. Declare inbound mail per app, and publish will re-apply Cloudflare MX/SPF for changed email-enabled sites.
 
-Canonical config: [`deploy/dns/mail-zones.json`](./dns/mail-zones.json)  
-Idempotent apply: [`scripts/dns/ensure-mail-dns.mjs`](../scripts/dns/ensure-mail-dns.mjs)  
-CI: Actions → **Ensure mail DNS (MX + SPF)** (`ensure-mail-dns.yml`, uses `CLOUDFLARE_API_TOKEN`)
+### Per-app email support
+
+Email-enabled marketing sites have a config at [`deploy/dns/sites/<app>.json`](./dns/sites/):
+
+| App | Config | Provider |
+|-----|--------|----------|
+| `beyond-the-bell` | [`sites/beyond-the-bell.json`](./dns/sites/beyond-the-bell.json) | Microsoft 365 (GoDaddy Outlook) |
+| `you-can-do-it-gardening` | [`sites/you-can-do-it-gardening.json`](./dns/sites/you-can-do-it-gardening.json) | Microsoft 365 (GoDaddy Outlook) |
+
+Shared MX profiles: [`deploy/dns/profiles.json`](./dns/profiles.json)  
+Zones without an app site file (extras): [`deploy/dns/mail-zones.json`](./dns/mail-zones.json)
+
+To add email support for another app: create `deploy/dns/sites/<app>.json` with `email.enabled: true` and a `profile` from `profiles.json` (e.g. `microsoft-365`, `godaddy-professional`).
+
+### Automatic on publish
+
+`publish-app-images.yml` intersects changed apps with email-enabled site configs and runs:
 
 ```sh
-# Dry-run
-DRY_RUN=1 CLOUDFLARE_API_TOKEN=... node scripts/dns/ensure-mail-dns.mjs
+node scripts/dns/ensure-mail-dns.mjs --apps <changed-email-apps>
+```
 
-# Apply
+(uses `CLOUDFLARE_API_TOKEN`). Image build/deploy is unchanged.
+
+### Manual full ensure
+
+```sh
+DRY_RUN=1 CLOUDFLARE_API_TOKEN=... node scripts/dns/ensure-mail-dns.mjs
 CLOUDFLARE_API_TOKEN=... node scripts/dns/ensure-mail-dns.mjs
+# or Actions → Ensure mail DNS (MX + SPF)
 ```
 
 Rules:
 
 - MX records must stay **DNS-only** (grey cloud), never proxied.
-- Pick the profile that matches the mailbox product (NetSol Cloud Mail vs Professional; GoDaddy Professional Email).
-- When onboarding a new marketing apex onto Cloudflare NS, add it to `mail-zones.json` and re-run the ensure script **before** cutting over nameservers (or immediately after).
-- `joed.dev` only needs Gmail SPF today (`forms@joed.dev` outbound via site-mail); it has no registrar hosted inbox MX in this config.
-
-Verify: `dig +short MX <domain>` and `dig +short TXT <domain>`.
+- Match the mailbox **product** (Microsoft 365 vs GoDaddy Professional Email vs NetSol) — wrong MX causes bounces or silent loss.
+- Verify: `dig +short MX <domain>` and `dig +short TXT <domain>`.
 
 ## Ephemeral QA
 
