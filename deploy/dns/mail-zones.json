@@ -24,6 +24,11 @@
       ],
       "spf": "v=spf1 include:secureserver.net ~all"
     },
+    "microsoft-365": {
+      "label": "Microsoft 365 / Outlook (GoDaddy or direct)",
+      "mxMode": "outlook-protection",
+      "spf": "v=spf1 include:spf.protection.outlook.com -all"
+    },
     "gmail-outbound-spf": {
       "label": "Gmail SMTP outbound (site-mail From: forms@joed.dev) — SPF only, no hosted inbox MX",
       "mx": [],
@@ -43,8 +48,8 @@
     },
     {
       "zone": "youcandoitgardening.com",
-      "profile": "godaddy-professional",
-      "notes": "GoDaddy registrar; restore Professional Email MX after CF NS cutover."
+      "profile": "microsoft-365",
+      "notes": "GoDaddy Outlook / Microsoft 365 — not Professional Email (secureserver.net)."
     },
     {
       "zone": "bostonmixtape.com",
