@@ -1,31 +1,49 @@
 #!/usr/bin/env node
 /**
- * Idempotent Cloudflare DNS for inbound mail (MX + SPF TXT).
+ * Idempotent Cloudflare DNS for inbound mail (MX + SPF TXT + Outlook autodiscover).
  *
- * Reads deploy/dns/mail-zones.json and ensures each zone has the profile's
- * MX records (DNS-only / not proxied) and a single SPF TXT at the apex.
+ * Loads:
+ *   deploy/dns/profiles.json
+ *   deploy/dns/sites/<app>.json   (email.enabled apps)
+ *   deploy/dns/mail-zones.json    (extras without an app site file)
  *
  * Env:
- *   CLOUDFLARE_API_TOKEN  (required) — Zone DNS Edit on all listed zones
+ *   CLOUDFLARE_API_TOKEN  (required) — Zone DNS Edit
  *   DRY_RUN=1             print intended changes only
- *   MAIL_ZONES_PATH       optional override of config JSON path
+ *   MAIL_APPS             optional comma-separated app slugs (same as --apps)
  *
  * Usage:
  *   CLOUDFLARE_API_TOKEN=... node scripts/dns/ensure-mail-dns.mjs
- *   DRY_RUN=1 CLOUDFLARE_API_TOKEN=... node scripts/dns/ensure-mail-dns.mjs
+ *   CLOUDFLARE_API_TOKEN=... node scripts/dns/ensure-mail-dns.mjs --apps beyond-the-bell,you-can-do-it-gardening
  */
-import fs from "node:fs";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { loadMailZones } from "./load-mail-config.mjs";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const ROOT = path.resolve(__dirname, "../..");
-const CONFIG_PATH =
-  process.env.MAIL_ZONES_PATH ||
-  path.join(ROOT, "deploy/dns/mail-zones.json");
 const DRY_RUN = process.env.DRY_RUN === "1" || process.env.DRY_RUN === "true";
 const TOKEN = process.env.CLOUDFLARE_API_TOKEN;
 const API = "https://api.cloudflare.com/client/v4";
+
+function parseArgs(argv) {
+  const apps = [];
+  for (let i = 0; i < argv.length; i++) {
+    if (argv[i] === "--apps" && argv[i + 1]) {
+      apps.push(
+        ...String(argv[++i])
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean),
+      );
+    }
+  }
+  if (process.env.MAIL_APPS) {
+    apps.push(
+      ...String(process.env.MAIL_APPS)
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean),
+    );
+  }
+  return { apps: [...new Set(apps)] };
+}
 
 async function cf(method, apiPath, body) {
   const res = await fetch(`${API}${apiPath}`, {
@@ -76,7 +94,6 @@ async function ensureZoneId(zoneName) {
 
 function resolveMx(profile, zoneName) {
   if (profile.mxMode === "outlook-protection") {
-    // Microsoft 365: example.com → example-com.mail.protection.outlook.com
     const host = `${zoneName.replace(/\./g, "-")}.mail.protection.outlook.com`;
     return [{ priority: 0, content: host }];
   }
@@ -245,25 +262,31 @@ async function main() {
     console.error(
       "CLOUDFLARE_API_TOKEN is required.\n" +
         "Use GitHub secret CLOUDFLARE_API_TOKEN or:\n" +
-        "  export CLOUDFLARE_API_TOKEN=...\n" +
-        "  # optional local (never commit): /opt/services/data/app-env/cloudflare-api.env",
+        "  export CLOUDFLARE_API_TOKEN=...\n",
     );
     process.exit(1);
   }
 
-  const config = JSON.parse(fs.readFileSync(CONFIG_PATH, "utf8"));
-  const profiles = config.profiles || {};
-  const zones = config.zones || [];
+  const { apps } = parseArgs(process.argv.slice(2));
+  const { profiles, zones } = loadMailZones(apps.length ? { apps } : {});
+
+  if (!zones.length) {
+    console.log(
+      apps.length
+        ? `No email-enabled site configs for apps: ${apps.join(", ")}`
+        : "No mail zones configured.",
+    );
+    return;
+  }
 
   if (DRY_RUN) console.log("DRY_RUN=1 — no Cloudflare writes\n");
+  if (apps.length) console.log(`Scoped to apps: ${apps.join(", ")}\n`);
 
   const summary = [];
   for (const entry of zones) {
     const profile = profiles[entry.profile];
-    if (!profile) {
-      throw new Error(`Unknown profile '${entry.profile}' for zone ${entry.zone}`);
-    }
-    console.log(`== ${entry.zone} (${profile.label || entry.profile}) ==`);
+    const label = entry.app ? `${entry.zone} [${entry.app}]` : entry.zone;
+    console.log(`== ${label} (${profile.label || entry.profile}) ==`);
     const zoneId = await ensureZoneId(entry.zone);
     const desiredMx = resolveMx(profile, entry.zone);
     const mxActions = await ensureMx(zoneId, entry.zone, desiredMx);

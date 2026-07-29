@@ -1,0 +1,14 @@
+{
+  "app": "beyond-the-bell",
+  "zone": "beyondthebelleducation.com",
+  "email": {
+    "enabled": true,
+    "profile": "microsoft-365",
+    "provider": "godaddy-microsoft-365",
+    "mailboxes": [
+      "nancy@beyondthebelleducation.com",
+      "questions@beyondthebelleducation.com"
+    ],
+    "notes": "GoDaddy Microsoft 365 / Outlook. Confirmed via GoDaddy API zone (MX → *.mail.protection.outlook.com, autodiscover → autodiscover.outlook.com)."
+  }
+}

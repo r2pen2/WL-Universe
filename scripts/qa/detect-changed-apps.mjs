@@ -7,7 +7,8 @@
  *   node scripts/qa/detect-changed-apps.mjs --base SHA1 --head SHA2 --scope publish --json
  *
  * Rules:
- *   - packages/<app>/** or deploy/compose/<app>.yml → that app
+ *   - deploy/compose/<app>.yml → that app
+ *   - deploy/dns/sites/<app>.json → that app (inbound mail DNS)
  *   - packages/web-legos/** or packages/server-legos/** → all SPA apps
  *   - scripts/docs/** or packages/docs/** → docs (publish scope)
  *   - deploy/docker/node-react-express.Dockerfile → all SPA apps
@@ -116,6 +117,13 @@ function detect(files, catalog) {
     );
     if (compose && known.has(compose[1]) && APP_BY_NAME[compose[1]]) {
       selected.add(compose[1]);
+      continue;
+    }
+
+    // Per-app inbound mail DNS config
+    const mailSite = file.match(/^deploy\/dns\/sites\/([^/]+)\.json$/);
+    if (mailSite && known.has(mailSite[1]) && APP_BY_NAME[mailSite[1]]) {
+      selected.add(mailSite[1]);
     }
   }
 

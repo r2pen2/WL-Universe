@@ -1,0 +1,11 @@
+{
+  "app": "you-can-do-it-gardening",
+  "zone": "youcandoitgardening.com",
+  "email": {
+    "enabled": true,
+    "profile": "microsoft-365",
+    "provider": "godaddy-microsoft-365",
+    "mailboxes": [],
+    "notes": "GoDaddy Microsoft 365 / Outlook (not Professional Email secureserver MX)."
+  }
+}
