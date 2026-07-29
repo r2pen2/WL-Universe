@@ -33,8 +33,8 @@
   "zones": [
     {
       "zone": "beyondthebelleducation.com",
-      "profile": "netsol-cloud-mail",
-      "notes": "Nancy NetSol mailbox. Gmail bounce on mx1.netsolmail.net → use Cloud Mail MX (mx00N.netsol.xion.oxcs.net). Switch back to netsol-professional only if NetSol account shows Professional Email."
+      "profile": "netsol-professional",
+      "notes": "Nancy NetSol Professional Email — MX mx1.netsolmail.net (not Cloud Mail oxcs)."
     },
     {
       "zone": "anewdaycoaching.com",
