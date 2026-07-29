@@ -1,0 +1,28 @@
+name: GoDaddy probe (ephemeral)
+
+on:
+  workflow_dispatch:
+    inputs:
+      domain:
+        description: Domain to probe
+        default: anewdaycoaching.com
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Probe GoDaddy
+        env:
+          GODADDY_PAT: ${{ secrets.GODADDY_PAT }}
+          GODADDY_DOMAIN: ${{ github.event.inputs.domain }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${GODADDY_PAT}" ]]; then
+            echo "::error::GODADDY_PAT secret is not set"
+            exit 1
+          fi
+          node scripts/dns/godaddy-probe.mjs

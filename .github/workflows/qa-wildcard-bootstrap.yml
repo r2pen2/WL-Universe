@@ -1,29 +1,43 @@
 name: QA Cloudflare wildcard bootstrap
 
-# One-time / idempotent: *.qa.joed.dev DNS + tunnel ingress → Traefik.
-# Requires repository secret CLOUDFLARE_API_TOKEN (never commit the token).
-
+# TEMP: also used to run GoDaddy probe with GODADDY_PAT on this branch.
 on:
   workflow_dispatch:
+    inputs:
+      mode:
+        description: "qa-wildcard | godaddy-probe"
+        default: godaddy-probe
+      domain:
+        description: Domain for godaddy-probe
+        default: anewdaycoaching.com
 
 permissions:
   contents: read
 
 jobs:
   bootstrap:
-    name: ensure *.qa.joed.dev
+    name: ensure / probe
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-
-      - name: Ensure QA wildcard
+      - uses: actions/checkout@v4
+      - name: Run
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          GODADDY_PAT: ${{ secrets.GODADDY_PAT }}
+          GODADDY_DOMAIN: ${{ inputs.domain }}
+          MODE: ${{ inputs.mode }}
         run: |
           set -euo pipefail
-          if [[ -z "${CLOUDFLARE_API_TOKEN}" ]]; then
-            echo "::error::CLOUDFLARE_API_TOKEN secret is not set"
-            exit 1
+          if [[ "${MODE}" == "godaddy-probe" ]]; then
+            if [[ -z "${GODADDY_PAT}" ]]; then
+              echo "::error::GODADDY_PAT secret is not set"
+              exit 1
+            fi
+            node scripts/dns/godaddy-probe.mjs
+          else
+            if [[ -z "${CLOUDFLARE_API_TOKEN}" ]]; then
+              echo "::error::CLOUDFLARE_API_TOKEN secret is not set"
+              exit 1
+            fi
+            node scripts/qa/ensure-qa-wildcard.mjs
           fi
-          node scripts/qa/ensure-qa-wildcard.mjs
