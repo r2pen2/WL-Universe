@@ -74,6 +74,15 @@ async function ensureZoneId(zoneName) {
   return zones[0].id;
 }
 
+function resolveMx(profile, zoneName) {
+  if (profile.mxMode === "outlook-protection") {
+    // Microsoft 365: example.com → example-com.mail.protection.outlook.com
+    const host = `${zoneName.replace(/\./g, "-")}.mail.protection.outlook.com`;
+    return [{ priority: 0, content: host }];
+  }
+  return profile.mx || [];
+}
+
 async function ensureMx(zoneId, zoneName, desiredMx) {
   const existing = await listAllDns(zoneId, "MX");
   const desiredKeys = new Set(
@@ -217,7 +226,8 @@ async function main() {
     }
     console.log(`== ${entry.zone} (${profile.label || entry.profile}) ==`);
     const zoneId = await ensureZoneId(entry.zone);
-    const mxActions = await ensureMx(zoneId, entry.zone, profile.mx || []);
+    const desiredMx = resolveMx(profile, entry.zone);
+    const mxActions = await ensureMx(zoneId, entry.zone, desiredMx);
     const spfActions = await ensureSpf(zoneId, entry.zone, profile.spf);
     summary.push({
       zone: entry.zone,
