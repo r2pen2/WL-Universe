@@ -1,6 +1,6 @@
 name: QA Cloudflare wildcard bootstrap
 
-# One-time / idempotent: *.qa.joed.dev DNS + tunnel ingress → Traefik.
+# One-time / idempotent: *.joed.dev (+ legacy *.qa.joed.dev) DNS + tunnel ingress → Traefik.
 # Requires repository secret CLOUDFLARE_API_TOKEN (never commit the token).
 
 on:
@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   bootstrap:
-    name: ensure *.qa.joed.dev
+    name: ensure QA wildcards
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository

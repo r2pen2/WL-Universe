@@ -5,14 +5,14 @@ Short-lived preview hosts for pull requests. Authoritative plan: [`docs/ephemera
 ## Hostname scheme
 
 ```text
-pr-<PR_NUMBER>-<app-slug>.qa.joed.dev
+pr-<PR_NUMBER>-<app-slug>.joed.dev
 ```
 
 - `app-slug` = compose / CI matrix name (`beyond-the-bell`, `site-mail`, …), **not** the marketing domain.
-- Example: `https://pr-42-beyond-the-bell.qa.joed.dev`
-- Single DNS label under `qa.joed.dev` so the `*.qa.joed.dev` wildcard (DNS / tunnel / SSL) matches.
+- Example: `https://pr-42-beyond-the-bell.joed.dev`
+- First-level `joed.dev` label so Cloudflare Universal SSL (`*.joed.dev`) and the `*.joed.dev` DNS/tunnel wildcard match.
 
-After one-time Cloudflare wildcard bootstrap (`*.qa.joed.dev` → Traefik), **per-PR routing is Traefik labels only** — no new Cloudflare hostnames.
+After one-time Cloudflare wildcard bootstrap (`*.joed.dev` → Traefik), **per-PR routing is Traefik labels only** — no new Cloudflare hostnames.
 
 ## Compose conventions
 
@@ -21,7 +21,7 @@ After one-time Cloudflare wildcard bootstrap (`*.qa.joed.dev` → Traefik), **pe
 | Compose project | `/opt/services/apps/<app>` | `qa-pr-<n>-<app>` under `/opt/services/data/app-assets/qa/compose/` |
 | `container_name` | `<app>` | `qa-pr-<n>-<app>` |
 | Traefik router | `<app>` | `qa-pr-<n>-<app>` |
-| Host rule | marketing / `*.joed.dev` | `Host(\`pr-<n>-<app>.qa.joed.dev\`)` |
+| Host rule | marketing / `*.joed.dev` | `Host(\`pr-<n>-<app>.joed.dev\`)` |
 | Image tag | `latest` / sha | `pr-<n>` |
 | Watchtower | enabled | `watchtower.enable=false` |
 | Env | `/opt/services/data/app-env/<app>.env` | `/opt/services/data/app-env/qa/<app>.env` |
