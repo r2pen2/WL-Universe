@@ -189,7 +189,7 @@ export default function Home() {
           <img src={logo} alt="boston-mixtape-logo" className="homepage-logo"/>
         </hgroup>
         <RecordTray userCanEditText={userCanEditText} />
-        <div className="d-flex flex-column align-items-center justify-content-center w-100 px-2 px-sm-3 hero-container" style={{position: "absolute", top: "80vh"}}>
+        <div className="d-flex flex-column align-items-center justify-content-center w-100 px-2 px-sm-3 hero-container">
           <WLTextV2 headerLevel={2} firestoreId="hero-text-1" editable={userCanEditText} className="richard-regular hero h2-container" />
           <WLTextV2 headerLevel={2} firestoreId="hero-text-2" editable={userCanEditText} className="richard-regular hero h2-container" />
         </div>
