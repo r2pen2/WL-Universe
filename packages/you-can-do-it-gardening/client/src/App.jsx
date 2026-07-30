@@ -72,7 +72,7 @@ function App() {
                 <Route path="*" element={<HomePage />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/services" element={<Services />} />
-                {/* <Route path="/resources" element={<Resources />} /> */}
+                <Route path="/resources" element={<Resources />} />
                 <Route path="/gallery" element={<Gallery />} />
                 <Route path="/find-me" element={<FindMe />} />
                 <Route path="/faq" element={<FAQ />} />

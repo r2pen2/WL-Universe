@@ -10,11 +10,26 @@
 }
 
 .background-image {
+  position: relative;
   width: 100%;
+  overflow: hidden;
+}
+
+.background-image::before {
+  content: "";
+  position: absolute;
+  inset: 0;
   background-image: url("../images/home-flower-min2.webp");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  filter: blur(8px);
+  transform: scale(1.08);
+}
+
+.background-image > * {
+  position: relative;
+  z-index: 1;
 }
 
 .testimonial-img {
@@ -33,6 +48,51 @@
   transform: scale(1.1);
   padding-left: 1rem;
   padding-right: 1rem;
+}
+
+.mailing-list-wobble {
+  animation: mailing-list-figure-eight 5.5s linear infinite;
+  transform-origin: center;
+  will-change: transform;
+}
+
+.mailing-list-alert {
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  transform-origin: center;
+}
+
+.mailing-list-alert:hover,
+.mailing-list-alert:focus-within {
+  box-shadow: 0 0.35rem 1rem rgba(0, 0, 0, 0.2);
+  transform: scale(1.06);
+}
+
+@keyframes mailing-list-figure-eight {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  12.5% {
+    transform: translate(3px, -2px) rotate(0.7deg);
+  }
+  25% {
+    transform: translate(5px, 0) rotate(0deg);
+  }
+  37.5% {
+    transform: translate(3px, 2px) rotate(-0.7deg);
+  }
+  50% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  62.5% {
+    transform: translate(-3px, -2px) rotate(-0.7deg);
+  }
+  75% {
+    transform: translate(-5px, 0) rotate(0deg);
+  }
+  87.5% {
+    transform: translate(-3px, 2px) rotate(0.7deg);
+  }
 }
 
 .transparent-card {  
