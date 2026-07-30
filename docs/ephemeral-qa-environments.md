@@ -78,9 +78,9 @@ active.json + PR comments
 
 ### Safety (non-negotiable)
 
-- **Do not** mount writable production Firebase service accounts, Stripe keys, or SMTP into QA unless using dedicated QA secrets.
-- Prefer: `/opt/services/data/app-env/qa/<app>.env` stubs + read-only or empty asset dirs under `/opt/services/data/app-assets/qa/pr-<n>/<app>/`.
-- **No real mail:** QA `SITE_MAIL_*` must point at a sink, disabled send, or a dedicated QA profile — never prod Gmail/GoDaddy.
+- **No real mail / Stripe:** QA `SITE_MAIL_*` must point at a sink (`SITE_MAIL_DISABLE_SEND=1`) — never prod Gmail/GoDaddy.
+- **CMS QA:** seed `qa-pr-<n>-*` Firestore collections from prod; set `CMS_COLLECTION_PREFIX`; mount prod images/static **:ro** and prod Firebase SA **:ro**. Cleanup deletes the prefixed collections on PR close.
+- Non-CMS SPAs: placeholder SA + empty per-PR asset dirs under `/opt/services/data/app-assets/qa/pr-<n>/<app>/`.
 - QA containers must not collide with prod `container_name`s (`beyond-the-bell`, etc.).
 
 ### PR comment format (required)
