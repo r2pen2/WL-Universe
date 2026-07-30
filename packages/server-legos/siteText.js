@@ -2,12 +2,14 @@ const express = require('express');
 const router = express.Router();
 
 const db = require('../../firebase.js');
+const { cmsCollection } = require('./cmsCollections');
 
 /** Site text by ID, initialized to an empty dictionary */
 let siteTextData = {}
 
-// On launch, fetch testimonial, offering, and staff data from Firebase
-const siteTextCollectionRef = db.collection("siteText");
+const siteTextCollectionName = cmsCollection("siteText");
+console.log(`siteText listening on collection: ${siteTextCollectionName}`);
+const siteTextCollectionRef = db.collection(siteTextCollectionName);
 siteTextCollectionRef.onSnapshot((data) => {
   console.log("Found updated siteText data");
   siteTextData = {}; // Clear data
@@ -29,7 +31,7 @@ router.get('/' , (req, res) => {
 router.post("/", (req, res) => {
   const firestoreId = req.body.id;
   const newText = req.body.newText;
-  const siteTextDocumentRef = db.doc(`siteText/${firestoreId}`);
+  const siteTextDocumentRef = db.doc(`${siteTextCollectionName}/${firestoreId}`);
   siteTextDocumentRef.set({text: newText});
 })
 

@@ -12,6 +12,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   APP_BY_NAME,
+  cmsQaApps,
   qaContainerName,
   qaProjectName,
   qaUrl,
@@ -87,19 +88,23 @@ function ensureAssets(pr, app) {
   const entry = APP_BY_NAME[app];
   sh(`sudo mkdir -p ${JSON.stringify(root)}`);
   if (entry.kind === "spa") {
-    sh(`sudo mkdir -p ${JSON.stringify(path.join(root, "static"))}`);
-    sh(`sudo mkdir -p ${JSON.stringify(path.join(root, "images"))}`);
-    const sa = path.join(root, "serviceAccountKey.json");
-    const placeholderSrc = path.join(
-      repoRoot,
-      "deploy/qa/firebase-placeholder.json",
-    );
-    if (!fs.existsSync(placeholderSrc)) {
-      throw new Error(`Missing ${placeholderSrc}`);
+    // CMS apps mount prod images/static + SA read-only (see generate-compose).
+    // Non-CMS SPAs still use per-PR stub assets + placeholder SA.
+    if (!entry.cms) {
+      sh(`sudo mkdir -p ${JSON.stringify(path.join(root, "static"))}`);
+      sh(`sudo mkdir -p ${JSON.stringify(path.join(root, "images"))}`);
+      const sa = path.join(root, "serviceAccountKey.json");
+      const placeholderSrc = path.join(
+        repoRoot,
+        "deploy/qa/firebase-placeholder.json",
+      );
+      if (!fs.existsSync(placeholderSrc)) {
+        throw new Error(`Missing ${placeholderSrc}`);
+      }
+      sh(
+        `if [ ! -f ${JSON.stringify(sa)} ]; then sudo cp ${JSON.stringify(placeholderSrc)} ${JSON.stringify(sa)}; fi`,
+      );
     }
-    sh(
-      `if [ ! -f ${JSON.stringify(sa)} ]; then sudo cp ${JSON.stringify(placeholderSrc)} ${JSON.stringify(sa)}; fi`,
-    );
     if (entry.extraVolumes?.includes("cal")) {
       const cal = path.join(root, "cal.json");
       const calTmp = path.join("/tmp", `qa-cal-${pr}-${app}.json`);
@@ -111,6 +116,30 @@ function ensureAssets(pr, app) {
     }
   }
   return root;
+}
+
+function seedFirestore(pr, app, owner) {
+  if (!cmsQaApps().has(app)) return;
+  const image = `ghcr.io/${String(owner).toLowerCase()}/wl-universe-${app}:pr-${pr}`;
+  // App image provides firebase-admin; mount checkout scripts + prod SA dir.
+  run("sudo", [
+    "docker",
+    "run",
+    "--rm",
+    "-v",
+    "/opt/services/data/app-env:/opt/services/data/app-env:ro",
+    "-v",
+    `${repoRoot}/scripts:/repo/scripts:ro`,
+    "--entrypoint",
+    "node",
+    image,
+    "/repo/scripts/qa/firestore-qa.mjs",
+    "seed",
+    "--pr",
+    String(pr),
+    "--app",
+    app,
+  ]);
 }
 
 function deployOne({ pr, app, owner, sha }) {
@@ -157,6 +186,9 @@ function deployOne({ pr, app, owner, sha }) {
       throw err;
     }
   }
+
+  seedFirestore(pr, app, owner);
+
   run("sudo", [
     "docker",
     "compose",

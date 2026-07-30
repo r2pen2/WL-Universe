@@ -3,12 +3,15 @@ const router = express.Router();
 const fs = require('fs');
 
 const db = require('../../firebase.js');
+const { cmsCollection } = require('./cmsCollections');
 
 /** Site images by ID, initialized to an empty dictionary */
 let siteImagesData = {}
 
-const siteTextCollectionRef = db.collection("siteImages");
-siteTextCollectionRef.onSnapshot((data) => {
+const siteImagesCollectionName = cmsCollection("siteImages");
+console.log(`siteImages listening on collection: ${siteImagesCollectionName}`);
+const siteImagesCollectionRef = db.collection(siteImagesCollectionName);
+siteImagesCollectionRef.onSnapshot((data) => {
   console.log("Found updated siteImages data");
   siteImagesData = {}; // Clear data
   for (const doc of data.docs) {
@@ -36,7 +39,7 @@ router.post("/", (req, res) => {
       res.sendStatus(500)
     } else {
       const firestoreId = req.body.firestoreId;
-      const siteImageDocumentRef = db.doc(`siteImages/${firestoreId}`);
+      const siteImageDocumentRef = db.doc(`${siteImagesCollectionName}/${firestoreId}`);
       siteImageDocumentRef.set({source: newSource, fileName: req.body.fileName}).then(() => {
         res.sendStatus(200);
         const deletePath = __dirname + "/../../images/" + req.body.oldFileName;

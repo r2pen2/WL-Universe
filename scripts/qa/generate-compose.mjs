@@ -10,6 +10,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   APP_BY_NAME,
+  cmsCollectionPrefix,
   imageName,
   qaContainerName,
   qaHostname,
@@ -44,15 +45,26 @@ export function generateCompose({ pr, app, owner, tag }) {
   const image = `${imageName(owner, app)}:${tag}`;
   const envFile = `/opt/services/data/app-env/qa/${app}.env`;
   const assetsRoot = `/opt/services/data/app-assets/qa/pr-${pr}/${app}`;
+  const prodAssets = `/opt/services/data/app-assets/${app}`;
+  const prodSa = `/opt/services/data/app-env/${app}-serviceAccountKey.json`;
   const port = String(entry.port);
 
   const volumes = [];
   if (entry.kind === "spa") {
-    volumes.push(
-      `      - ${assetsRoot}/static:/repo/packages/${app}/static`,
-      `      - ${assetsRoot}/images:/repo/packages/${app}/images`,
-      `      - ${assetsRoot}/serviceAccountKey.json:/repo/packages/${app}/config/serviceAccountKey.json:ro`,
-    );
+    if (entry.cms) {
+      // Prod images/static read-only + real Firebase SA; CMS writes go to qa-pr-* collections.
+      volumes.push(
+        `      - ${prodAssets}/static:/repo/packages/${app}/static:ro`,
+        `      - ${prodAssets}/images:/repo/packages/${app}/images:ro`,
+        `      - ${prodSa}:/repo/packages/${app}/config/serviceAccountKey.json:ro`,
+      );
+    } else {
+      volumes.push(
+        `      - ${assetsRoot}/static:/repo/packages/${app}/static`,
+        `      - ${assetsRoot}/images:/repo/packages/${app}/images`,
+        `      - ${assetsRoot}/serviceAccountKey.json:/repo/packages/${app}/config/serviceAccountKey.json:ro`,
+      );
+    }
     if (entry.extraVolumes?.includes("cal")) {
       volumes.push(
         `      - ${assetsRoot}/cal.json:/repo/packages/${app}/config/cal.json:ro`,
@@ -64,14 +76,20 @@ export function generateCompose({ pr, app, owner, tag }) {
     );
   }
 
-  const environment =
-    entry.kind === "express"
-      ? [
-          `      PORT: ${yamlQuote(port)}`,
-          `      SITE_MAIL_LOG_DIR: /opt/services/data/app-assets/site-mail`,
-          `      SITE_MAIL_DISABLE_SEND: ${yamlQuote("1")}`,
-        ]
-      : [`      PORT: ${yamlQuote(port)}`];
+  const environment = [
+    `      PORT: ${yamlQuote(port)}`,
+  ];
+  if (entry.kind === "express") {
+    environment.push(
+      `      SITE_MAIL_LOG_DIR: /opt/services/data/app-assets/site-mail`,
+      `      SITE_MAIL_DISABLE_SEND: ${yamlQuote("1")}`,
+    );
+  }
+  if (entry.cms) {
+    environment.push(
+      `      CMS_COLLECTION_PREFIX: ${yamlQuote(cmsCollectionPrefix(pr))}`,
+    );
+  }
 
   return `services:
   ${app}:

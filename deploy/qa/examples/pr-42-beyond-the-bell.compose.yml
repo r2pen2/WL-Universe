@@ -7,10 +7,11 @@ services:
       - /opt/services/data/app-env/qa/beyond-the-bell.env
     environment:
       PORT: "3000"
+      CMS_COLLECTION_PREFIX: "qa-pr-42-"
     volumes:
-      - /opt/services/data/app-assets/qa/pr-42/beyond-the-bell/static:/repo/packages/beyond-the-bell/static
-      - /opt/services/data/app-assets/qa/pr-42/beyond-the-bell/images:/repo/packages/beyond-the-bell/images
-      - /opt/services/data/app-assets/qa/pr-42/beyond-the-bell/serviceAccountKey.json:/repo/packages/beyond-the-bell/config/serviceAccountKey.json:ro
+      - /opt/services/data/app-assets/beyond-the-bell/static:/repo/packages/beyond-the-bell/static:ro
+      - /opt/services/data/app-assets/beyond-the-bell/images:/repo/packages/beyond-the-bell/images:ro
+      - /opt/services/data/app-env/beyond-the-bell-serviceAccountKey.json:/repo/packages/beyond-the-bell/config/serviceAccountKey.json:ro
     networks:
       - proxy
     labels:

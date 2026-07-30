@@ -24,8 +24,9 @@ After one-time Cloudflare wildcard bootstrap (`*.joed.dev` → Traefik), **per-P
 | Host rule | marketing / `*.joed.dev` | `Host(\`pr-<n>-<app>.joed.dev\`)` |
 | Image tag | `latest` / sha | `pr-<n>` |
 | Watchtower | enabled | `watchtower.enable=false` |
-| Env | `/opt/services/data/app-env/<app>.env` | `/opt/services/data/app-env/qa/<app>.env` |
-| Assets | `/opt/services/data/app-assets/<app>/` | `/opt/services/data/app-assets/qa/pr-<n>/<app>/` |
+| Env | `/opt/services/data/app-env/<app>.env` | `/opt/services/data/app-env/qa/<app>.env` + `CMS_COLLECTION_PREFIX=qa-pr-<n>-` for CMS apps |
+| Assets | `/opt/services/data/app-assets/<app>/` | CMS apps: prod `images`/`static` **:ro**; others: `/opt/services/data/app-assets/qa/pr-<n>/<app>/` |
+| Firestore CMS | `siteText` / `siteImages` / … | Seeded copy at `qa-pr-<n>-siteText` etc.; deleted on PR close |
 
 Generator:
 
@@ -46,12 +47,23 @@ Active deployments are:
 
 Schema example: [`active.json.example`](./active.json.example).
 
+## CMS content (Firestore)
+
+Marketing SPAs with `cms: true` in [`scripts/qa/apps.mjs`](../../scripts/qa/apps.mjs):
+
+1. **Deploy** copies prod root collections (except `users` / `siteForms`) into `qa-pr-<n>-*` via [`scripts/qa/firestore-qa.mjs`](../../scripts/qa/firestore-qa.mjs).
+2. App gets `CMS_COLLECTION_PREFIX=qa-pr-<n>-` so Server-Legos reads/writes only those collections.
+3. Prod `images` / `static` mount **read-only**; prod service account mounts **read-only** (needed to read/write the QA-prefixed collections in the same Firebase project).
+4. **Cleanup** (PR close) deletes `qa-pr-<n>-*` collections.
+
+Auth/permissions stay on the shared `users` collection. SMTP/Stripe stay QA-stubbed.
+
 ## Safety (non-negotiable)
 
-- Never mount writable **prod** Firebase service accounts, Stripe keys, or SMTP into QA.
+- Never point QA SMTP/Stripe at prod. `site-mail` QA sets `SITE_MAIL_DISABLE_SEND=1`.
 - QA env stubs: `deploy/qa/env/*.env.example` → seeded once to `/opt/services/data/app-env/qa/<app>.env`.
-- QA Firebase mounts are **placeholders** under the PR asset dir, not prod keys (`deploy/qa/firebase-placeholder.json` is an inert throwaway key so containers can boot).
-- `site-mail` QA sets `SITE_MAIL_DISABLE_SEND=1` and empty SMTP passwords — never prod Gmail/GoDaddy.
+- Non-CMS SPAs still use placeholder Firebase SA under the PR asset dir (`deploy/qa/firebase-placeholder.json`).
+- CMS QA may use the prod Firebase **service account read-only**, but only talks to `qa-pr-*` collections when prefix is set.
 - To add real QA-only secrets: edit the host file under `/opt/services/data/app-env/qa/` (outside git).
 
 ## Cloudflare bootstrap (one-time)

@@ -2,8 +2,13 @@ const express = require('express');
 const router = express.Router();
 
 const db = require('../../firebase.js');
+const { cmsCollection } = require('./cmsCollections');
 
 const siteModelData = {};
+
+function remoteCollection(logicalName) {
+  return cmsCollection(logicalName);
+}
 
 router.get('/' , async (req, res) => {
   if (req.query.collection === "users") {
@@ -13,19 +18,18 @@ router.get('/' , async (req, res) => {
   if (resModels) {
     res.json(resModels);
   } else {
-    // Get once...
+    const collectionName = remoteCollection(req.query.collection);
     let sendList = [];
-    const snapshot = await db.collection(req.query.collection).get();
+    const snapshot = await db.collection(collectionName).get();
     snapshot.forEach((doc) => {
       const dataWithId = doc.data();
       dataWithId.id = doc.id;
       sendList.push(dataWithId);
     });
     res.json(sendList);
-    // Start listening to this collection
-    console.log("Beginning to listen to collection: " + req.query.collection);
-    db.collection(req.query.collection).onSnapshot((snap) => {
-      console.log("Found updated data for collection: " + req.query.collection);
+    console.log("Beginning to listen to collection: " + collectionName);
+    db.collection(collectionName).onSnapshot((snap) => {
+      console.log("Found updated data for collection: " + collectionName);
       let newList = [];
       for (const doc of snap.docs) {
         const dataWithId = doc.data();
@@ -38,20 +42,21 @@ router.get('/' , async (req, res) => {
 });
 
 router.post("/", (req, res) => {
+  const collectionName = remoteCollection(req.body.collection);
   if (req.body.action) {
     if (req.body.action === "delete") {
-      const docRef = db.doc(`${req.body.collection}/${req.body.documentId}`);
+      const docRef = db.doc(`${collectionName}/${req.body.documentId}`);
       docRef.delete().then(() => {
         res.sendStatus(200);
       })
     }
     if (req.body.action === "create") {
-      db.collection(req.body.collection).add(req.body.documentData).then(() => {
+      db.collection(collectionName).add(req.body.documentData).then(() => {
         res.sendStatus(200);
       })
     }
   } else {
-    const docRef = db.doc(`${req.body.collection}/${req.body.documentId}`);
+    const docRef = db.doc(`${collectionName}/${req.body.documentId}`);
     docRef.set(req.body.documentData).then(() => {
       res.sendStatus(200);
     });
