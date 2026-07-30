@@ -1,6 +1,6 @@
 {
   "timeoutMs": 15000,
-  "featureUrlTemplate": "https://pr-{pr}.{name}.qa.joed.dev/liveness",
+  "featureUrlTemplate": "https://pr-{pr}-{name}.qa.joed.dev/liveness",
   "targets": [
     { "name": "nicole-levin", "url": "https://nicolelevin.org/liveness" },
     { "name": "a-new-day-coaching", "url": "https://anewdaycoaching.com/liveness" },

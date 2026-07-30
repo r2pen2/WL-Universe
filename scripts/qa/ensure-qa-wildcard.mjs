@@ -94,6 +94,74 @@ function normalizeIngress(ingress) {
   return Array.isArray(ingress) ? ingress.slice() : [];
 }
 
+async function ensureSsl(zoneId) {
+  // Universal SSL only covers *.joed.dev — not *.qa.joed.dev. Order an advanced
+  // pack when missing so flattened hosts like pr-N-app.qa.joed.dev can terminate TLS.
+  const packs = await cf(
+    "GET",
+    `/zones/${zoneId}/ssl/certificate_packs?status=all`,
+  );
+  const wantHost = QA_HOSTNAME;
+  const match = (packs || []).find(
+    (p) =>
+      Array.isArray(p.hosts) &&
+      p.hosts.includes(wantHost) &&
+      !String(p.status || "").toLowerCase().includes("delete"),
+  );
+  if (match) {
+    console.log(
+      `SSL ok: pack ${match.id} status=${match.status} hosts=${JSON.stringify(match.hosts)}`,
+    );
+    return { action: "unchanged", id: match.id, status: match.status };
+  }
+
+  const order = {
+    type: "advanced",
+    hosts: [ZONE_NAME, wantHost],
+    validation_method: "txt",
+    validity_days: 90,
+    certificate_authority: "google",
+    cloudflare_branding: true,
+  };
+  console.log(`SSL order: ${JSON.stringify(order.hosts)}`);
+  if (DRY_RUN) return { action: "would-order", order };
+
+  try {
+    const created = await cf(
+      "POST",
+      `/zones/${zoneId}/ssl/certificate_packs/order`,
+      order,
+    );
+    console.log(
+      `SSL ordered: id=${created.id} status=${created.status || "pending"}`,
+    );
+    return { action: "ordered", id: created.id, status: created.status };
+  } catch (err) {
+    const msg = String(err.message || err);
+    // Fallback: Total TLS auto-issues per proxied hostname (also needs ACM).
+    console.warn(`SSL advanced order failed: ${msg}`);
+    try {
+      const total = await cf("GET", `/zones/${zoneId}/acm/total_tls`);
+      if (total?.enabled) {
+        console.log("Total TLS already enabled");
+        return { action: "total_tls_unchanged", enabled: true };
+      }
+      console.log("Enabling Total TLS as SSL fallback");
+      if (DRY_RUN) return { action: "would-enable-total-tls" };
+      const updated = await cf("POST", `/zones/${zoneId}/acm/total_tls`, {
+        enabled: true,
+        certificate_authority: "google",
+      });
+      return { action: "total_tls_enabled", result: updated };
+    } catch (err2) {
+      throw new Error(
+        `Could not provision SSL for ${wantHost}. Advanced cert order failed (${msg}); Total TLS failed (${err2.message || err2}). ` +
+          "Enable Advanced Certificate Manager on joed.dev or upload a custom cert for *.qa.joed.dev.",
+      );
+    }
+  }
+}
+
 async function ensureTunnelIngress() {
   const current = await cf(
     "GET",
@@ -167,8 +235,9 @@ async function main() {
   const zoneId = await ensureZoneId();
   const dns = await ensureDns(zoneId);
   const tunnel = await ensureTunnelIngress();
+  const ssl = await ensureSsl(zoneId);
 
-  console.log(JSON.stringify({ ok: true, dns, tunnel }, null, 2));
+  console.log(JSON.stringify({ ok: true, dns, tunnel, ssl }, null, 2));
 }
 
 main().catch((err) => {

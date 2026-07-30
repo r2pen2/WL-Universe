@@ -49,7 +49,7 @@ function featureUrlFor(target, pr, template) {
   if (target.featureUrl) {
     return target.featureUrl.replaceAll("{pr}", pr).replaceAll("{name}", target.name);
   }
-  const tpl = template || "https://pr-{pr}.{name}.qa.joed.dev/liveness";
+  const tpl = template || "https://pr-{pr}-{name}.qa.joed.dev/liveness";
   return tpl.replaceAll("{pr}", pr).replaceAll("{name}", target.name);
 }
 

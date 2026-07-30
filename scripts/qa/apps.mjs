@@ -52,7 +52,9 @@ export const APP_BY_NAME = Object.fromEntries(
 );
 
 export function qaHostname(pr, app) {
-  return `pr-${pr}.${app}.${QA_DOMAIN}`;
+  // One DNS label under qa.joed.dev so `*.qa.joed.dev` wildcard DNS/tunnel/SSL match.
+  // (Cloudflare wildcards only cover a single label — pr-N.app.qa.joed.dev cannot resolve.)
+  return `pr-${pr}-${app}.${QA_DOMAIN}`;
 }
 
 export function qaUrl(pr, app) {
