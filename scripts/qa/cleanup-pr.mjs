@@ -9,7 +9,9 @@ import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { ALL_APPS, qaProjectName } from "./apps.mjs";
+import { ALL_APPS, cmsQaApps, qaProjectName } from "./apps.mjs";
+
+// execFileSync used for optional image inspect before firestore cleanup
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(__dirname, "../..");
@@ -94,11 +96,61 @@ function pruneImages(pr, owner) {
   }
 }
 
+function cleanupFirestore(pr, owner) {
+  const apps = [...cmsQaApps()];
+  if (!apps.length) return;
+  for (const app of apps) {
+    // Prefer :pr-<n> image; fall back to latest for closed PRs whose tags were pruned.
+    const tags = [`pr-${pr}`, "latest"];
+    let ok = false;
+    for (const tag of tags) {
+      const image = `ghcr.io/${String(owner).toLowerCase()}/wl-universe-${app}:${tag}`;
+      try {
+        execFileSync("sudo", ["docker", "image", "inspect", image], {
+          stdio: "ignore",
+        });
+        run(
+          "sudo",
+          [
+            "docker",
+            "run",
+            "--rm",
+            "-v",
+            "/opt/services/data/app-env:/opt/services/data/app-env:ro",
+            "-v",
+            `${repoRoot}/scripts:/repo/scripts:ro`,
+            "--entrypoint",
+            "node",
+            image,
+            "/repo/scripts/qa/firestore-qa.mjs",
+            "cleanup",
+            "--pr",
+            String(pr),
+            "--app",
+            app,
+          ],
+          { allowFail: true },
+        );
+        ok = true;
+        break;
+      } catch {
+        // try next tag
+      }
+    }
+    if (!ok) {
+      console.warn(
+        `firestore cleanup skipped for ${app}: no local image with firestore-qa.mjs`,
+      );
+    }
+  }
+}
+
 function main() {
   const args = parseArgs(process.argv.slice(2));
   for (const entry of ALL_APPS) {
     cleanupOne(args.pr, entry.app);
   }
+  cleanupFirestore(args.pr, args.owner);
   sh(
     `sudo rm -rf ${JSON.stringify(path.join(QA_COMPOSE_ROOT, `pr-${args.pr}`))}`,
     true,

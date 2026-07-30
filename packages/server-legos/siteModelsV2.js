@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const db = require('../../firebase.js');
+const { cmsCollection } = require('./cmsCollections');
 
 const siteModelData = {};
 
@@ -17,7 +18,7 @@ class SiteModelManager {
 
     this.router.get('/' , async (req, res) => {
 
-      const remoteCollection = req.query.collection + "-" + this.siteKey;
+      const remoteCollection = cmsCollection(req.query.collection + "-" + this.siteKey);
 
       if (req.query.collection === "users") {
         res.sendStatus(403);
@@ -26,7 +27,6 @@ class SiteModelManager {
       if (resModels) {
         res.json(resModels);
       } else {
-        // Get once...
         let sendList = [];
         const snapshot = await db.collection(remoteCollection).get();
         snapshot.forEach((doc) => {
@@ -35,7 +35,6 @@ class SiteModelManager {
           sendList.push(dataWithId);
         });
         res.json(sendList);
-        // Start listening to this collection
         console.log("Beginning to listen to collection: " + remoteCollection);
         db.collection(remoteCollection).onSnapshot((snap) => {
           console.log("Found updated data for collection: " + remoteCollection);
@@ -53,7 +52,7 @@ class SiteModelManager {
     this.router.post("/", (req, res) => {
 
 
-      const remoteCollection = req.body.collection + "-" + this.siteKey;
+      const remoteCollection = cmsCollection(req.body.collection + "-" + this.siteKey);
 
       if (req.body.action) {
         if (req.body.action === "delete") {

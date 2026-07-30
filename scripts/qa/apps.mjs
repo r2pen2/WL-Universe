@@ -11,21 +11,70 @@ export const QA_HOST_DOMAIN = "joed.dev";
 
 /** SPA apps that sync web-legos / server-legos into the image. */
 export const SPA_APPS = [
-  { app: "nicole-levin", port: 3005, kind: "spa", extraVolumes: [] },
-  { app: "a-new-day-coaching", port: 3007, kind: "spa", extraVolumes: [] },
+  {
+    app: "nicole-levin",
+    port: 3005,
+    kind: "spa",
+    extraVolumes: [],
+    cms: true,
+    siteKey: "NL",
+  },
+  {
+    app: "a-new-day-coaching",
+    port: 3007,
+    kind: "spa",
+    extraVolumes: [],
+    cms: true,
+    siteKey: "ANDC",
+  },
   {
     app: "a-new-day-coaching-crm",
     port: 3008,
     kind: "spa",
     extraVolumes: ["cal"],
   },
-  { app: "beyond-the-bell", port: 3000, kind: "spa", extraVolumes: [] },
+  {
+    app: "beyond-the-bell",
+    port: 3000,
+    kind: "spa",
+    extraVolumes: [],
+    cms: true,
+  },
   { app: "wl-admin-portal", port: 25565, kind: "spa", extraVolumes: [] },
-  { app: "you-can-do-it-gardening", port: 3003, kind: "spa", extraVolumes: [] },
+  {
+    app: "you-can-do-it-gardening",
+    port: 3003,
+    kind: "spa",
+    extraVolumes: [],
+    cms: true,
+  },
   { app: "joe-dobbelaar", port: 3002, kind: "spa", extraVolumes: [] },
-  { app: "talk-about-dreams", port: 3004, kind: "spa", extraVolumes: [] },
-  { app: "boston-mixtape", port: 3010, kind: "spa", extraVolumes: [] },
+  {
+    app: "talk-about-dreams",
+    port: 3004,
+    kind: "spa",
+    extraVolumes: [],
+    cms: true,
+    siteKey: "TAG",
+  },
+  {
+    app: "boston-mixtape",
+    port: 3010,
+    kind: "spa",
+    extraVolumes: [],
+    cms: true,
+    siteKey: "BBM",
+  },
 ];
+
+/** Apps that seed/cleanup prefixed Firestore CMS collections for QA. */
+export function cmsQaApps() {
+  return new Set(SPA_APPS.filter((a) => a.cms).map((a) => a.app));
+}
+
+export function cmsCollectionPrefix(pr) {
+  return `qa-pr-${pr}-`;
+}
 
 export const EXPRESS_APPS = [
   {

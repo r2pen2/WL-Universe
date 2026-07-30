@@ -1,12 +1,13 @@
 const express = require('express');
 const db = require('../../firebase.js');
 const fs = require('fs');
+const { cmsCollection } = require('./cmsCollections');
 
-/** Site text by ID, initialized to an empty dictionary */
+/** Site images by ID, initialized to an empty dictionary */
 let siteImagesData = {}
 
-// On launch, fetch testimonial, offering, and staff data from Firebase
 let siteImagesCollectionRef = null;
+let siteImagesCollectionName = null;
 function listen() {
   siteImagesCollectionRef.onSnapshot((data) => {
     console.log("Found updated siteImages data");
@@ -25,7 +26,8 @@ class SiteImageManager {
   }
 
   initialize() {
-    console.log("Creating new SiteImageManager with site key: " + this.siteKey)
+    siteImagesCollectionName = cmsCollection(`siteImages-${this.siteKey}`);
+    console.log("Creating new SiteImageManager with site key: " + this.siteKey + " collection: " + siteImagesCollectionName)
     this.router = express.Router();
 
     this.router.get('/' , (req, res) => {
@@ -46,7 +48,7 @@ class SiteImageManager {
           res.sendStatus(500)
         } else {
           const firestoreId = req.body.firestoreId;
-          const siteImageDocumentRef = db.doc(`siteImages-${this.siteKey}/${firestoreId}`);
+          const siteImageDocumentRef = db.doc(`${siteImagesCollectionName}/${firestoreId}`);
           siteImageDocumentRef.set({source: newSource, fileName: req.body.fileName}).then(() => {
             res.sendStatus(200);
             const deletePath = __dirname + "/../../static/images/" + req.body.oldFileName;
@@ -60,7 +62,7 @@ class SiteImageManager {
       });
     })
 
-    siteImagesCollectionRef = db.collection(`siteImages-${this.siteKey}`);
+    siteImagesCollectionRef = db.collection(siteImagesCollectionName);
     listen()
   }
 
