@@ -9,7 +9,10 @@
  * Rules:
  *   - deploy/compose/<app>.yml → that app
  *   - deploy/dns/sites/<app>.json → that app (inbound mail DNS)
- *   - packages/web-legos/** or packages/server-legos/** → all SPA apps
+ *   - packages/web-legos/** → all SPA apps
+ *   - packages/server-legos/ CMS modules (siteText/Images/Models, cmsCollections)
+ *     → SPA apps with cms: true only
+ *   - other packages/server-legos/** → all SPA apps
  *   - scripts/docs/** or packages/docs/** → docs (publish scope)
  *   - deploy/docker/node-react-express.Dockerfile → all SPA apps
  *   - deploy/docker/node-express.Dockerfile → site-mail
@@ -26,7 +29,20 @@ import {
   APP_BY_NAME,
   PUBLISH_APPS,
   SPA_APPS,
+  cmsQaApps,
 } from "./apps.mjs";
+
+/** Server-Legos files that only affect marketing CMS SPAs. */
+function isServerLegosCmsOnly(file) {
+  if (!file.startsWith("packages/server-legos/")) return false;
+  const base = file.slice("packages/server-legos/".length);
+  return (
+    base === "cmsCollections.js" ||
+    /^siteText(V2)?\.js$/.test(base) ||
+    /^siteImages(V2)?\.js$/.test(base) ||
+    /^siteModels(V2)?\.js$/.test(base)
+  );
+}
 
 function parseArgs(argv) {
   const args = { base: null, head: "HEAD", json: false, scope: "qa" };
@@ -63,16 +79,23 @@ function changedFiles(base, head) {
 function detect(files, catalog) {
   const selected = new Set();
   let sharedLibs = false;
+  let cmsLibsOnly = false;
   let allSpaDocker = false;
   let allCatalogDocker = false;
   const known = new Set(catalog.map((a) => a.app));
 
   for (const file of files) {
-    if (
-      file.startsWith("packages/web-legos/") ||
-      file.startsWith("packages/server-legos/")
-    ) {
+    if (file.startsWith("packages/web-legos/")) {
       sharedLibs = true;
+      continue;
+    }
+    if (file.startsWith("packages/server-legos/")) {
+      if (isServerLegosCmsOnly(file)) {
+        cmsLibsOnly = true;
+      } else {
+        // Auth, mail, health, etc. — keep rebuilding every SPA.
+        sharedLibs = true;
+      }
       continue;
     }
     if (
@@ -130,6 +153,10 @@ function detect(files, catalog) {
   if (sharedLibs || allSpaDocker) {
     for (const a of SPA_APPS) {
       if (known.has(a.app)) selected.add(a.app);
+    }
+  } else if (cmsLibsOnly) {
+    for (const app of cmsQaApps()) {
+      if (known.has(app)) selected.add(app);
     }
   }
   if (allCatalogDocker) {
