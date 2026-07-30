@@ -30,7 +30,6 @@ import MustangSally from "../../assets/audio/mustangSally.mp3"
 import AllRightNow from "../../assets/audio/allRightNow.mp3"
 import { Text } from "@mantine/core"
 import { WLTextV2 } from "../../libraries/Web-Legos/components/Text"
-import { useZoomDetector } from '../../hooks/useZoomDetector';
 
 export const RecordColor = {
   Gold: "gold",
@@ -122,14 +121,6 @@ export const RecordTray = ({userCanEditText}) => {
 
   const [clicked, setClicked] = useState(null);
 
-  const zoom = useZoomDetector();
-
-  const [zoomLevel, setZoomLevel] = useState(1);
-
-  useEffect(() => {
-    setZoomLevel(zoom);
-  }, [zoom]);
-
   useEffect(() => {
     if (!audios[activeRecord]) {
       const audio = new Audio(tracks[activeRecord].audioHref);
@@ -139,6 +130,27 @@ export const RecordTray = ({userCanEditText}) => {
       setAudios(newAudios);
     }
   }, [activeRecord, audios, setAudios]);
+
+  // Keep Embla snap points in sync when vw-based record sizes change on resize.
+  useEffect(() => {
+    if (!embla) return undefined;
+
+    let frame = 0;
+    const handleResize = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const index = embla.selectedScrollSnap();
+        embla.reInit();
+        embla.scrollTo(index, true);
+      });
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [embla]);
 
   const handleMouseMove = (e) => {
     const x = e.clientX - window.innerWidth / 2;
@@ -161,17 +173,14 @@ export const RecordTray = ({userCanEditText}) => {
 
   }, [playing, activeRecord, audios])
 
-  const adjustedSlideSize = `${20 / zoomLevel}%`;
-
   return (
     <div className="record-tray w-100" onMouseMove={handleMouseMove}>
       
       <Carousel
-        key={zoomLevel}
         className="record-carousel w-100"
         getEmblaApi={setEmbla}
         ref={carouselRef}
-        slideSize={adjustedSlideSize}
+        slideSize="20%"
         loop
         onSlideChange={num => setActiveRecord(num)}
       >
