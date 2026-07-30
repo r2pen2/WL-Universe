@@ -1,8 +1,13 @@
 #!/usr/bin/env node
 /**
- * Idempotent Cloudflare bootstrap for ephemeral QA:
- *   DNS:  *.qa.joed.dev  →  <tunnel-id>.cfargotunnel.com (proxied)
- *   Tunnel ingress: *.qa.joed.dev → http://traefik:80
+ * Idempotent Cloudflare bootstrap for ephemeral QA hosts:
+ *   DNS:  *.joed.dev → <tunnel-id>.cfargotunnel.com (proxied)
+ *   Tunnel ingress: *.joed.dev → http://traefik:80
+ *
+ * QA preview URLs are pr-<n>-<app>.joed.dev so they match a single-label
+ * wildcard and Cloudflare Universal SSL (*.joed.dev).
+ *
+ * Also keeps legacy *.qa.joed.dev DNS/ingress (harmless; not used for HTTPS QA).
  *
  * Env:
  *   CLOUDFLARE_API_TOKEN  (required) — Zone DNS Edit + Account Cloudflare Tunnel Edit
@@ -20,7 +25,8 @@ const ACCOUNT_ID =
 const TUNNEL_ID =
   process.env.CLOUDFLARE_TUNNEL_ID || "8288c8be-e08a-4f20-accb-48730959bb41";
 const ZONE_NAME = process.env.CLOUDFLARE_ZONE_NAME || "joed.dev";
-const QA_HOSTNAME = `*.qa.${ZONE_NAME}`;
+const APEX_WILDCARD = `*.${ZONE_NAME}`;
+const LEGACY_QA_WILDCARD = `*.qa.${ZONE_NAME}`;
 const QA_SERVICE = process.env.QA_SERVICE_URL || "http://traefik:80";
 const DRY_RUN = process.env.DRY_RUN === "1" || process.env.DRY_RUN === "true";
 const TOKEN = process.env.CLOUDFLARE_API_TOKEN;
@@ -53,79 +59,89 @@ async function ensureZoneId() {
   return zones[0].id;
 }
 
-async function ensureDns(zoneId) {
+async function ensureDnsRecord(zoneId, fqdn, recordName, comment) {
   const target = `${TUNNEL_ID}.cfargotunnel.com`;
   const existing = await cf(
     "GET",
-    `/zones/${zoneId}/dns_records?type=CNAME&name=${encodeURIComponent(QA_HOSTNAME)}`,
+    `/zones/${zoneId}/dns_records?type=CNAME&name=${encodeURIComponent(fqdn)}`,
   );
   const match = (existing || []).find(
-    (r) => r.type === "CNAME" && r.name === QA_HOSTNAME,
+    (r) => r.type === "CNAME" && r.name === fqdn,
   );
 
   if (match) {
     const contentOk = match.content === target;
     const proxiedOk = match.proxied === true;
     if (contentOk && proxiedOk) {
-      console.log(`DNS ok: ${QA_HOSTNAME} → ${target} (proxied)`);
-      return { action: "unchanged", id: match.id };
+      console.log(`DNS ok: ${fqdn} → ${target} (proxied)`);
+      return { action: "unchanged", id: match.id, hostname: fqdn };
     }
-    const patch = { type: "CNAME", name: QA_HOSTNAME, content: target, proxied: true };
-    console.log(`DNS update: ${QA_HOSTNAME} → ${target} (proxied)`);
+    const patch = {
+      type: "CNAME",
+      name: recordName,
+      content: target,
+      proxied: true,
+      comment,
+    };
+    console.log(`DNS update: ${fqdn} → ${target} (proxied)`);
     if (DRY_RUN) return { action: "would-update", id: match.id, patch };
     await cf("PUT", `/zones/${zoneId}/dns_records/${match.id}`, patch);
-    return { action: "updated", id: match.id };
+    return { action: "updated", id: match.id, hostname: fqdn };
   }
 
   const create = {
     type: "CNAME",
-    name: "*.qa",
+    name: recordName,
     content: target,
     proxied: true,
-    comment: "WL-Universe ephemeral QA wildcard",
+    comment,
   };
-  console.log(`DNS create: ${QA_HOSTNAME} → ${target} (proxied)`);
+  console.log(`DNS create: ${fqdn} → ${target} (proxied)`);
   if (DRY_RUN) return { action: "would-create", create };
   const created = await cf("POST", `/zones/${zoneId}/dns_records`, create);
-  return { action: "created", id: created.id };
+  return { action: "created", id: created.id, hostname: fqdn };
 }
 
 function normalizeIngress(ingress) {
   return Array.isArray(ingress) ? ingress.slice() : [];
 }
 
-async function ensureTunnelIngress() {
+async function ensureTunnelIngressHostnames(hostnames) {
   const current = await cf(
     "GET",
     `/accounts/${ACCOUNT_ID}/cfd_tunnel/${TUNNEL_ID}/configurations`,
   );
   const config = current?.config || {};
   const ingress = normalizeIngress(config.ingress);
-
-  const already = ingress.some(
-    (rule) =>
-      rule.hostname === QA_HOSTNAME &&
-      (rule.service === QA_SERVICE || rule.service === "http://traefik:80"),
-  );
-
-  if (already) {
-    console.log(`Tunnel ingress ok: ${QA_HOSTNAME} → ${QA_SERVICE}`);
-    return { action: "unchanged", ingressCount: ingress.length };
-  }
-
-  // Insert before catch-all (last rule with no hostname).
-  const catchAllIdx = ingress.findIndex((r) => !r.hostname);
-  const rule = { hostname: QA_HOSTNAME, service: QA_SERVICE };
   const next = ingress.slice();
-  if (catchAllIdx === -1) {
-    next.push(rule, { service: "http_status:404" });
-  } else {
-    next.splice(catchAllIdx, 0, rule);
+  let changed = false;
+
+  for (const hostname of hostnames) {
+    const already = next.some(
+      (rule) =>
+        rule.hostname === hostname &&
+        (rule.service === QA_SERVICE || rule.service === "http://traefik:80"),
+    );
+    if (already) {
+      console.log(`Tunnel ingress ok: ${hostname} → ${QA_SERVICE}`);
+      continue;
+    }
+    const catchAllIdx = next.findIndex((r) => !r.hostname);
+    const rule = { hostname, service: QA_SERVICE };
+    if (catchAllIdx === -1) {
+      next.push(rule, { service: "http_status:404" });
+    } else {
+      next.splice(catchAllIdx, 0, rule);
+    }
+    console.log(`Tunnel ingress add: ${hostname} → ${QA_SERVICE}`);
+    changed = true;
   }
 
-  console.log(`Tunnel ingress add: ${QA_HOSTNAME} → ${QA_SERVICE}`);
+  if (!changed) {
+    return { action: "unchanged", ingressCount: next.length };
+  }
   if (DRY_RUN) {
-    return { action: "would-update", ingress: next };
+    return { action: "would-update", ingressCount: next.length };
   }
 
   await cf("PUT", `/accounts/${ACCOUNT_ID}/cfd_tunnel/${TUNNEL_ID}/configurations`, {
@@ -155,7 +171,7 @@ async function main() {
         accountId: ACCOUNT_ID,
         tunnelId: TUNNEL_ID,
         zone: ZONE_NAME,
-        hostname: QA_HOSTNAME,
+        hostnames: [APEX_WILDCARD, LEGACY_QA_WILDCARD],
         service: QA_SERVICE,
         dryRun: DRY_RUN,
       },
@@ -165,10 +181,26 @@ async function main() {
   );
 
   const zoneId = await ensureZoneId();
-  const dns = await ensureDns(zoneId);
-  const tunnel = await ensureTunnelIngress();
+  // Apex wildcard covers pr-<n>-<app>.joed.dev + Universal SSL.
+  const dnsApex = await ensureDnsRecord(
+    zoneId,
+    APEX_WILDCARD,
+    "*",
+    "WL-Universe QA + catch-all first-level subdomains → tunnel",
+  );
+  // Keep legacy nested wildcard for any older Traefik rules still pointing there.
+  const dnsQa = await ensureDnsRecord(
+    zoneId,
+    LEGACY_QA_WILDCARD,
+    "*.qa",
+    "WL-Universe ephemeral QA wildcard (legacy)",
+  );
+  const tunnel = await ensureTunnelIngressHostnames([
+    APEX_WILDCARD,
+    LEGACY_QA_WILDCARD,
+  ]);
 
-  console.log(JSON.stringify({ ok: true, dns, tunnel }, null, 2));
+  console.log(JSON.stringify({ ok: true, dnsApex, dnsQa, tunnel }, null, 2));
 }
 
 main().catch((err) => {

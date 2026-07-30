@@ -16,7 +16,7 @@ services:
     labels:
       com.centurylinklabs.watchtower.enable: "false"
       traefik.enable: "true"
-      traefik.http.routers.qa-pr-42-beyond-the-bell.rule: Host(`pr-42.beyond-the-bell.qa.joed.dev`)
+      traefik.http.routers.qa-pr-42-beyond-the-bell.rule: Host(`pr-42-beyond-the-bell.joed.dev`)
       traefik.http.routers.qa-pr-42-beyond-the-bell.entrypoints: web
       traefik.http.services.qa-pr-42-beyond-the-bell.loadbalancer.server.port: "3000"
 

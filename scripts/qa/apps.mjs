@@ -3,7 +3,11 @@
  * app-slug === compose / matrix name (e.g. beyond-the-bell).
  */
 
+/** Legacy docs label; hosts themselves live under QA_HOST_DOMAIN for Universal SSL. */
 export const QA_DOMAIN = "qa.joed.dev";
+
+/** First-level joed.dev label so Cloudflare Universal SSL (*.joed.dev) covers QA hosts. */
+export const QA_HOST_DOMAIN = "joed.dev";
 
 /** SPA apps that sync web-legos / server-legos into the image. */
 export const SPA_APPS = [
@@ -52,7 +56,12 @@ export const APP_BY_NAME = Object.fromEntries(
 );
 
 export function qaHostname(pr, app) {
-  return `pr-${pr}.${app}.${QA_DOMAIN}`;
+  // pr-N-app.joed.dev — one label under the apex so:
+  // 1) `*.joed.dev` Universal SSL covers HTTPS
+  // 2) a single DNS/tunnel wildcard can route all PR hosts
+  // (pr-N.app.qa.joed.dev cannot work: CF wildcards match only one label, and
+  // Universal SSL does not cover *.qa.joed.dev.)
+  return `pr-${pr}-${app}.${QA_HOST_DOMAIN}`;
 }
 
 export function qaUrl(pr, app) {

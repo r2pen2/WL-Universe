@@ -16,7 +16,7 @@ on:
   workflow_dispatch:
     inputs:
       pr_number:
-        description: "PR number — also probe pr-<n>.<app>.qa.joed.dev when set"
+        description: "PR number — also probe pr-<n>-<app>.joed.dev when set"
         required: false
         type: string
       skip_feature:

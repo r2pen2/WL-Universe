@@ -86,13 +86,13 @@ function NavbarPages() {
       >
         Services & Fees
       </NextUINavbar.Link>
-      {/* <NextUINavbar.Link 
+      <NextUINavbar.Link 
         isActive={checkLinkActive("resources")}
         href="resources"
         itemCss={{fontSize: navbarItemFontSize}}
       >
         Resources
-      </NextUINavbar.Link> */}
+      </NextUINavbar.Link>
       <NextUINavbar.Link 
         isActive={checkLinkActive("gallery")}
         href="gallery"
