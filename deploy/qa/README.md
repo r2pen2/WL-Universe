@@ -66,7 +66,7 @@ Required token permissions:
 - **Zone → DNS → Edit** on `joed.dev`
 - **Account → Cloudflare Tunnel → Edit** (or Cloudflare One Connector: cloudflared Write)
 
-Idempotent: safe to re-run. Creates/updates `*.qa.joed.dev` DNS CNAME to the glados tunnel and adds tunnel ingress `*.qa.joed.dev` → `http://traefik:80`.
+Idempotent: safe to re-run. Creates/updates `*.joed.dev` (and legacy `*.qa.joed.dev`) DNS CNAMEs to the glados tunnel and matching tunnel ingress → `http://traefik:80`.
 
 Workflow: `.github/workflows/qa-wildcard-bootstrap.yml` (`workflow_dispatch`).
 
