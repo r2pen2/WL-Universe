@@ -1,0 +1,276 @@
+{
+  "$schema_note": "Living inventory for WL hosting business. Fill revenue.* and costActuals.*; estimates are Joe's COGS floor.",
+  "auditedAt": "2026-07-30",
+  "host": {
+    "name": "glados",
+    "lanIp": "10.0.0.172",
+    "hardware": "MacBookPro11,1 (Intel i5-4308U), 7.2 GiB RAM",
+    "runtimeRoot": "/opt/services",
+    "ingress": "Cloudflare Tunnel → Traefik → Docker"
+  },
+  "capacitySnapshot": {
+    "containersRunning": 28,
+    "containerRamMiBApprox": 1500,
+    "hostRamGiB": 7.2,
+    "diskRootUsedGiB": 63,
+    "diskRootTotalGiB": 98,
+    "dockerImagesGiB": 46.1,
+    "optServicesMiB": 251
+  },
+  "costEstimatesUsdPerMonth": {
+    "notes": "Expected Joe platform COGS. Client-paid domain/mailbox fees are not Joe's COGS. Fill costActuals when invoices known.",
+    "electricity": { "low": 3, "high": 8, "assumed": 5 },
+    "cloudflare": { "low": 0, "high": 0, "assumed": 0, "plan": "Free + Tunnel" },
+    "firebaseGcp": { "low": 0, "high": 10, "assumed": 2, "note": "Likely free-tier across projects at current traffic" },
+    "githubGhcr": { "low": 0, "high": 4, "assumed": 0, "note": "Free tier unless Actions/storage overage" },
+    "domainsJoeOwned": { "low": 0, "high": 15, "assumed": 12, "note": "joed.dev (+ any Joe-paid zones); client apexes often on GoDaddy paid by client" },
+    "smtp": { "low": 0, "high": 0, "assumed": 0, "note": "Gmail + client GoDaddy SMTP" },
+    "awsVps": { "low": 0, "high": 0, "assumed": 0, "note": "Not used; stay on glados" },
+    "totalJoeCogsAssumed": { "low": 5, "high": 25, "assumed": 19 }
+  },
+  "costActuals": {
+    "electricity": null,
+    "cloudflare": null,
+    "firebaseGcp": null,
+    "github": null,
+    "domains": null,
+    "other": null,
+    "notes": ""
+  },
+  "revenue": {
+    "currency": "USD",
+    "notes": "Fill monthlyRetainerUsd per billable unit. Blank = not billed / unknown.",
+    "suggestedRetainerBandUsd": { "simpleSite": [30, 75], "siteWithForms": [50, 100], "crmProduct": [75, 200] }
+  },
+  "billableUnits": [
+    {
+      "id": "nicole-levin",
+      "label": "Nicole Levin",
+      "kind": "marketing_site",
+      "ownership": "client",
+      "domains": ["nicolelevin.org"],
+      "cms": true,
+      "formsMail": false,
+      "firebaseProject": "wladminportal",
+      "registrarLikely": "GoDaddy (client)",
+      "monthlyRetainerUsd": null,
+      "status": "deployed"
+    },
+    {
+      "id": "beyond-the-bell",
+      "label": "Beyond the Bell",
+      "kind": "marketing_site",
+      "ownership": "client",
+      "domains": ["beyondthebelleducation.com"],
+      "cms": true,
+      "formsMail": true,
+      "firebaseProject": "beyond-the-bell-20097",
+      "registrarLikely": "GoDaddy + M365 mail (client)",
+      "monthlyRetainerUsd": null,
+      "status": "deployed"
+    },
+    {
+      "id": "you-can-do-it-gardening",
+      "label": "You Can Do It Gardening",
+      "kind": "marketing_site",
+      "ownership": "client",
+      "domains": ["youcandoitgardening.com"],
+      "cms": true,
+      "formsMail": false,
+      "firebaseProject": "you-can-do-it-gardening",
+      "registrarLikely": "GoDaddy + M365 mail (client)",
+      "trafficNote": "Highest real traffic (~80–100/day historically via Umami)",
+      "monthlyRetainerUsd": null,
+      "status": "deployed"
+    },
+    {
+      "id": "talk-about-dreams",
+      "label": "Talk About Dreams",
+      "kind": "marketing_site",
+      "ownership": "client",
+      "domains": ["talkaboutdreams.com"],
+      "cms": true,
+      "formsMail": true,
+      "firebaseProject": "wladminportal",
+      "registrarLikely": "GoDaddy (client)",
+      "monthlyRetainerUsd": null,
+      "status": "deployed"
+    },
+    {
+      "id": "boston-mixtape",
+      "label": "Boston Mixtape / Berach",
+      "kind": "marketing_site",
+      "ownership": "client",
+      "domains": [
+        "bostonmixtape.com",
+        "bostonsoundtrack.com",
+        "berachmusic.com",
+        "bostonsbestmusic.com",
+        "berachorchestra.com"
+      ],
+      "cms": true,
+      "formsMail": true,
+      "firebaseProject": "wladminportal",
+      "registrarLikely": "GoDaddy (client)",
+      "monthlyRetainerUsd": null,
+      "status": "deployed"
+    },
+    {
+      "id": "a-new-day-coaching",
+      "label": "A New Day Coaching (marketing)",
+      "kind": "marketing_site",
+      "ownership": "client",
+      "domains": ["anewdaycoaching.com"],
+      "cms": true,
+      "formsMail": true,
+      "firebaseProject": "wladminportal",
+      "registrarLikely": "GoDaddy (client)",
+      "monthlyRetainerUsd": null,
+      "status": "deployed"
+    },
+    {
+      "id": "a-new-day-coaching-crm",
+      "label": "Bluprint CRM",
+      "kind": "saas_product",
+      "ownership": "client_commissioned",
+      "domains": ["bluprint.anewdaycoaching.com"],
+      "cms": false,
+      "formsMail": true,
+      "firebaseProject": "a-new-day-coaching",
+      "extras": ["Stripe", "Google Calendar"],
+      "monthlyRetainerUsd": null,
+      "status": "deployed"
+    }
+  ],
+  "joeOwned": [
+    {
+      "id": "joe-dobbelaar",
+      "label": "Personal site",
+      "domains": ["joed.dev", "bbm.joed.dev"],
+      "kind": "personal"
+    },
+    {
+      "id": "wl-admin-portal",
+      "label": "CMS admin portal",
+      "domains": [
+        "admin.joed.dev",
+        "admin.youcandoitgardening.com",
+        "admin.beyondthebelleducation.com"
+      ],
+      "kind": "platform"
+    },
+    {
+      "id": "site-mail",
+      "label": "Transactional mail hub",
+      "domains": ["site-mail.joed.dev"],
+      "kind": "platform"
+    },
+    {
+      "id": "site-billing",
+      "label": "Stripe hosting billing + entitlement",
+      "domains": ["billing.joed.dev"],
+      "kind": "platform"
+    },
+    {
+      "id": "docs",
+      "label": "Component docs",
+      "domains": ["wl-universe.joed.dev"],
+      "kind": "platform"
+    },
+    {
+      "id": "umami",
+      "label": "Analytics",
+      "domains": ["analytics.joed.dev"],
+      "kind": "ops",
+      "auth": "Google SSO"
+    },
+    {
+      "id": "grafana",
+      "label": "Liveness / metrics",
+      "domains": ["grafana.joed.dev"],
+      "kind": "ops",
+      "auth": "Google SSO"
+    },
+    {
+      "id": "dozzle",
+      "label": "Container logs",
+      "domains": ["status.joed.dev"],
+      "kind": "ops",
+      "auth": "Google SSO"
+    },
+    {
+      "id": "oauth2-proxy",
+      "label": "Shared Google SSO",
+      "domains": ["auth.joed.dev"],
+      "kind": "ops"
+    },
+    {
+      "id": "home-assistant",
+      "label": "Home Assistant",
+      "domains": ["home.joed.dev"],
+      "kind": "personal"
+    },
+    {
+      "id": "nutritrace",
+      "label": "NutriTrace",
+      "domains": ["fit.joed.dev"],
+      "kind": "personal"
+    },
+    {
+      "id": "beaverhabits",
+      "label": "Beaver Habits",
+      "domains": ["beaverhabits.joed.dev"],
+      "kind": "personal",
+      "auth": "Google SSO"
+    }
+  ],
+  "platformShared": {
+    "ingress": ["cloudflared", "cloudflared-autoheal", "traefik"],
+    "firebaseProjects": [
+      "wladminportal",
+      "beyond-the-bell-20097",
+      "you-can-do-it-gardening",
+      "a-new-day-coaching"
+    ],
+    "siteMailProfiles": [
+      "BEYOND_THE_BELL",
+      "ANDC",
+      "BBM",
+      "CRM",
+      "TALK_ABOUT_DREAMS"
+    ],
+    "deploy": "GHCR + self-hosted runner on glados"
+  },
+  "opsIssues": [
+    {
+      "id": "watchtower",
+      "severity": "medium",
+      "detail": "Watchtower restarting — Docker API too old for image (needs API 1.44+)"
+    },
+    {
+      "id": "qa-disk",
+      "severity": "low",
+      "detail": "Exited QA containers / images contribute to ~46 GB Docker image usage; reclaimable ~18 GB"
+    }
+  ],
+  "workflowOwnership": {
+    "joeOwns": [
+      "Host uptime (glados + tunnel)",
+      "Deploy pipeline (GHCR / compose)",
+      "Shared platform (Traefik, site-mail, admin portal, Umami, liveness)",
+      "SSO for ops tools",
+      "Retainer billing & client relationship"
+    ],
+    "clientOwns": [
+      "Domain registrar renewal (typical)",
+      "Mailbox / M365 (where used)",
+      "Content in CMS",
+      "Business email reputation"
+    ],
+    "nextDataToFill": [
+      "monthlyRetainerUsd per billableUnits entry",
+      "costActuals from Cloudflare/GCP/GitHub invoices",
+      "who pays each apex domain renewal"
+    ]
+  }
+}

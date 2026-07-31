@@ -9,6 +9,7 @@ on:
       - "packages/**"
       - "deploy/docker/**"
       - "deploy/compose/**"
+      - "deploy/billing/**"
       - "deploy/dns/**"
       - "scripts/**"
       - ".github/workflows/publish-app-images.yml"
@@ -290,6 +291,21 @@ jobs:
 
           sudo mkdir -p "${app_dir}"
           sudo cp "deploy/compose/${app}.yml" "${compose_file}"
+
+          if [ "${app}" = "site-billing" ]; then
+            sudo mkdir -p "${app_dir}/catalog"
+            sudo mkdir -p /opt/services/data/app-assets/site-billing
+            sudo mkdir -p /opt/services/infra/traefik/dynamic
+            sudo cp deploy/billing/sites.json "${app_dir}/catalog/sites.json"
+            sudo cp scripts/billing/enforce-compose.mjs /opt/services/bin/wl-billing-enforce-compose.mjs
+            sudo chmod +x /opt/services/bin/wl-billing-enforce-compose.mjs
+            sudo cp deploy/cron/wl-billing.cron /etc/cron.d/wl-billing
+            sudo chmod 644 /etc/cron.d/wl-billing
+            if [ ! -f /opt/services/data/app-env/site-billing.env ]; then
+              sudo cp deploy/compose/site-billing.env.example /opt/services/data/app-env/site-billing.env
+              echo "::warning::Created stub site-billing.env — fill STRIPE_* and SITE_BILLING_API_KEY before go-live"
+            fi
+          fi
 
           cd "${app_dir}"
           sudo docker compose -f "${compose_file}" pull

@@ -1,0 +1,125 @@
+{
+  "graceDays": 7,
+  "hardStopAfterDays": 14,
+  "contactEmail": "joe@joed.dev",
+  "notes": "All client sites are listed. Only beyond-the-bell has billingRequired=true for now — paste its Stripe ids when ready. Flip billingRequired on others when retainers move to Stripe.",
+  "sites": [
+    {
+      "id": "nicole-levin",
+      "composeApp": "nicole-levin",
+      "label": "Nicole Levin",
+      "hosts": ["nicolelevin.org", "www.nicolelevin.org"],
+      "billingRequired": false,
+      "exempt": false,
+      "stripeCustomerId": null,
+      "stripeSubscriptionId": null,
+      "stripePriceId": null
+    },
+    {
+      "id": "beyond-the-bell",
+      "composeApp": "beyond-the-bell",
+      "label": "Beyond the Bell",
+      "hosts": ["beyondthebelleducation.com", "www.beyondthebelleducation.com"],
+      "billingRequired": true,
+      "exempt": false,
+      "stripeCustomerId": null,
+      "stripeSubscriptionId": null,
+      "stripePriceId": null
+    },
+    {
+      "id": "you-can-do-it-gardening",
+      "composeApp": "you-can-do-it-gardening",
+      "label": "You Can Do It Gardening",
+      "hosts": ["youcandoitgardening.com", "www.youcandoitgardening.com"],
+      "billingRequired": false,
+      "exempt": false,
+      "stripeCustomerId": null,
+      "stripeSubscriptionId": null,
+      "stripePriceId": null
+    },
+    {
+      "id": "talk-about-dreams",
+      "composeApp": "talk-about-dreams",
+      "label": "Talk About Dreams",
+      "hosts": ["talkaboutdreams.com", "www.talkaboutdreams.com"],
+      "billingRequired": false,
+      "exempt": false,
+      "stripeCustomerId": null,
+      "stripeSubscriptionId": null,
+      "stripePriceId": null
+    },
+    {
+      "id": "boston-mixtape",
+      "composeApp": "boston-mixtape",
+      "label": "Boston Mixtape / Berach",
+      "hosts": [
+        "bostonmixtape.com",
+        "www.bostonmixtape.com",
+        "bostonsoundtrack.com",
+        "www.bostonsoundtrack.com",
+        "berachmusic.com",
+        "www.berachmusic.com",
+        "bostonsbestmusic.com",
+        "www.bostonsbestmusic.com",
+        "berachorchestra.com",
+        "www.berachorchestra.com"
+      ],
+      "billingRequired": false,
+      "exempt": false,
+      "stripeCustomerId": null,
+      "stripeSubscriptionId": null,
+      "stripePriceId": null
+    },
+    {
+      "id": "a-new-day-coaching",
+      "composeApp": "a-new-day-coaching",
+      "label": "A New Day Coaching (marketing)",
+      "hosts": ["anewdaycoaching.com", "www.anewdaycoaching.com"],
+      "billingRequired": false,
+      "exempt": false,
+      "stripeCustomerId": null,
+      "stripeSubscriptionId": null,
+      "stripePriceId": null
+    },
+    {
+      "id": "a-new-day-coaching-crm",
+      "composeApp": "a-new-day-coaching-crm",
+      "label": "Bluprint CRM",
+      "hosts": ["bluprint.anewdaycoaching.com", "www.bluprint.anewdaycoaching.com"],
+      "billingRequired": false,
+      "exempt": false,
+      "stripeCustomerId": null,
+      "stripeSubscriptionId": null,
+      "stripePriceId": null
+    },
+    {
+      "id": "joe-dobbelaar",
+      "composeApp": "joe-dobbelaar",
+      "label": "Personal site",
+      "hosts": ["joed.dev", "www.joed.dev", "bbm.joed.dev", "www.bbm.joed.dev"],
+      "billingRequired": false,
+      "exempt": true,
+      "stripeCustomerId": null,
+      "stripeSubscriptionId": null,
+      "stripePriceId": null
+    },
+    {
+      "id": "wl-admin-portal",
+      "composeApp": "wl-admin-portal",
+      "label": "CMS admin portal",
+      "hosts": [
+        "admin.joed.dev",
+        "www.admin.joed.dev",
+        "admin.youcandoitgardening.com",
+        "www.admin.youcandoitgardening.com",
+        "admin.beyondthebelleducation.com",
+        "www.admin.beyondthebelleducation.com"
+      ],
+      "billingRequired": false,
+      "exempt": true,
+      "stripeCustomerId": null,
+      "stripeSubscriptionId": null,
+      "stripePriceId": null
+    }
+  ]
+}

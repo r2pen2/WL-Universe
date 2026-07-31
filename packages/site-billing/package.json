@@ -1,0 +1,21 @@
+{
+  "name": "@wl-universe/site-billing",
+  "version": "1.0.0",
+  "description": "Stripe-native hosting billing + entitlement enforcement for WL-Universe",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "node --test test/*.test.mjs"
+  },
+  "author": "Joe Dobbelaar",
+  "license": "ISC",
+  "private": true,
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-rate-limit": "^7.5.0",
+    "stripe": "^16.12.0"
+  }
+}
