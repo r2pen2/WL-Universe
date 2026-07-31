@@ -15,13 +15,15 @@
  *   - other packages/server-legos/** → all SPA apps
  *   - scripts/docs/** or packages/docs/** → docs (publish scope)
  *   - deploy/docker/node-react-express.Dockerfile → all SPA apps
- *   - deploy/docker/node-express.Dockerfile → site-mail
+ *   - deploy/docker/node-express.Dockerfile → site-mail + site-billing
  *   - deploy/docker/docs-static.Dockerfile → docs
+ *   - deploy/billing/** → site-billing
+ *   - scripts/billing/** → site-billing
  *   - root package-lock / package.json / sync script → all apps in scope
- *   - site-mail / docs only when their own paths (or shared docker) change
+ *   - site-mail / site-billing / docs only when their own paths (or shared docker) change
  *
- * --scope qa      (default): SPA + site-mail
- * --scope publish: SPA + site-mail + docs
+ * --scope qa      (default): SPA + express apps
+ * --scope publish: SPA + express + docs
  */
 import { execFileSync } from "node:child_process";
 import {
@@ -112,6 +114,7 @@ function detect(files, catalog) {
     }
     if (file === "deploy/docker/node-express.Dockerfile") {
       if (known.has("site-mail")) selected.add("site-mail");
+      if (known.has("site-billing")) selected.add("site-billing");
       continue;
     }
     if (file === "deploy/docker/docs-static.Dockerfile") {
@@ -121,6 +124,14 @@ function detect(files, catalog) {
     if (file.startsWith("deploy/docker/")) {
       // Unknown shared docker path — rebuild everything in scope.
       allCatalogDocker = true;
+      continue;
+    }
+    if (
+      (file.startsWith("deploy/billing/") ||
+        file.startsWith("scripts/billing/")) &&
+      known.has("site-billing")
+    ) {
+      selected.add("site-billing");
       continue;
     }
     if (file.startsWith("scripts/docs/") && known.has("docs")) {

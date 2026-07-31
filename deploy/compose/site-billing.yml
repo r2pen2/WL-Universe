@@ -1,0 +1,29 @@
+services:
+  site-billing:
+    image: ghcr.io/r2pen2/wl-universe-site-billing:${SITE_BILLING_IMAGE_TAG:-latest}
+    container_name: site-billing
+    restart: unless-stopped
+    env_file:
+      - ${SITE_BILLING_ENV_FILE:-/opt/services/data/app-env/site-billing.env}
+    environment:
+      PORT: "3021"
+      SITE_BILLING_STATE_DIR: /opt/services/data/app-assets/site-billing
+      SITE_BILLING_CATALOG_PATH: /repo/deploy/billing/sites.json
+      SITE_BILLING_TRAEFIK_DYNAMIC_PATH: /opt/services/infra/traefik/dynamic/billing-blocks.yml
+      SITE_BILLING_TRAEFIK_SERVICE_URL: http://site-billing:3021
+    volumes:
+      - ${SITE_BILLING_ASSETS_PATH:-/opt/services/data/app-assets/site-billing}:/opt/services/data/app-assets/site-billing
+      - ${SITE_BILLING_TRAEFIK_DYNAMIC_DIR:-/opt/services/infra/traefik/dynamic}:/opt/services/infra/traefik/dynamic
+      - ${SITE_BILLING_CATALOG_HOST_PATH:-/opt/services/apps/site-billing/catalog/sites.json}:/repo/deploy/billing/sites.json:ro
+    networks:
+      - proxy
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+      traefik.enable: "true"
+      traefik.http.routers.site-billing.rule: Host(`billing.joed.dev`)
+      traefik.http.routers.site-billing.entrypoints: web
+      traefik.http.services.site-billing.loadbalancer.server.port: "3021"
+
+networks:
+  proxy:
+    external: true

@@ -83,6 +83,12 @@ export const EXPRESS_APPS = [
     kind: "express",
     dockerfile: "deploy/docker/node-express.Dockerfile",
   },
+  {
+    app: "site-billing",
+    port: 3021,
+    kind: "express",
+    dockerfile: "deploy/docker/node-express.Dockerfile",
+  },
 ];
 
 export const DOCS_APPS = [
