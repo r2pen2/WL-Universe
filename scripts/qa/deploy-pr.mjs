@@ -115,6 +115,7 @@ function ensureAssets(pr, app) {
       fs.unlinkSync(calTmp);
     }
   }
+  // spa-static: no per-site assets
   return root;
 }
 

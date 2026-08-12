@@ -5,9 +5,11 @@ import { Button, Divider, Link, Loading, Text, Textarea } from "@nextui-org/reac
 import "../assets/style/text.css";
 import { useEffect, useRef, useState, useLayoutEffect, Component } from "react";
 import { HTMLToMarkdown, markdownToHTML } from "../api/strings";
-import { getHostname } from "../api/development.ts";
+import { CmsManager } from "../api/cms.ts";
 
-const developmentHostname = getHostname();
+function cms() {
+  return CmsManager.getShared();
+}
 
 /**
  * A simple indented text block
@@ -109,7 +111,7 @@ export function WLText(props) {
       return;
     }
     // Ask DB for the right text
-    fetch(`${developmentHostname}/site-text?id=${props.firestoreId}`).then((res) => {
+    cms().fetch(`/site-text?id=${props.firestoreId}`).then((res) => {
       res.text().then((text) => {
         const gotResponse = !text.includes("<!DOCTYPE html>");
         setFetched(gotResponse);
@@ -145,7 +147,7 @@ export function WLText(props) {
   function sendTextUpdateToServer() {
     if (editableText === originalText) { setEditMode(false); return; }
     setOriginalText(editableText);
-    fetch(`${developmentHostname}/site-text`, {
+    cms().fetch(`/site-text`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -394,7 +396,7 @@ export class QuoteBlock extends Component {
 
 export async function getWLText(firestoreId) {
   return new Promise((resolve, reject) => {
-    fetch(`${developmentHostname}/site-text?id=${firestoreId}`).then((res) => {
+    cms().fetch(`/site-text?id=${firestoreId}`).then((res) => {
       res.text().then((text) => {
         const markdownText = HTMLToMarkdown(text);
         resolve(markdownText);
@@ -490,7 +492,7 @@ export function WLTextV2(props) {
       return;
     }
     // Ask DB for the right text
-    fetch(`${developmentHostname}/site-text?id=${props.firestoreId}`).then((res) => {
+    cms().fetch(`/site-text?id=${props.firestoreId}`).then((res) => {
       res.text().then((text) => {
         const gotResponse = !text.includes("<!DOCTYPE html>");
         setFetched(gotResponse);
@@ -526,7 +528,7 @@ export function WLTextV2(props) {
   function sendTextUpdateToServer() {
     if (editableText === originalText) { setEditMode(false); return; }
     setOriginalText(editableText);
-    fetch(`${developmentHostname}/site-text`, {
+    cms().fetch(`/site-text`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -678,7 +680,7 @@ export function WLLayoutText(props) {
       return;
     }
     // Ask DB for the right text
-    fetch(`${developmentHostname}/site-text?id=${props.firestoreId}`).then((res) => {
+    cms().fetch(`/site-text?id=${props.firestoreId}`).then((res) => {
       res.text().then((text) => {
         const gotResponse = !text.includes("<!DOCTYPE html>");
         setFetched(gotResponse);
@@ -714,7 +716,7 @@ export function WLLayoutText(props) {
   function sendTextUpdateToServer() {
     if (editableText === originalText) { setEditMode(false); return; }
     setOriginalText(editableText);
-    fetch(`${developmentHostname}/site-text`, {
+    cms().fetch(`/site-text`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

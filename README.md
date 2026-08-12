@@ -4,12 +4,26 @@ Monorepo for WL shared packages and applications.
 
 ## Layout
 
-- `packages/web-legos` contains the shared React UI/API source.
-- `packages/server-legos` contains the shared Express/Firebase server helpers.
-- `packages/nicole-levin` contains the NicoleLevin app and server.
-- `deploy/docker` contains shared Dockerfiles for app image builds.
-- `deploy/compose` contains app compose templates.
-- `scripts/sync-local-packages.mjs` materializes shared package source into apps that still expect the old nested `libraries` layout.
+- `packages/web-legos` — shared React UI/API source
+- `packages/server-legos` — shared Express helpers (auth/forms shells, config shims)
+- `packages/wl-cms` — shared CMS microservice (site text, images, models)
+- `packages/site-mail` — shared mail microservice
+- `packages/<site>` — marketing apps (thin Express shell + CRA client)
+- `deploy/` — Docker, compose, local stack
+- `scripts/sync-local-packages.mjs` — copies shared packages into nested `libraries` layouts
+
+# Local development (multi-site)
+
+```powershell
+copy deploy\local\.env.example deploy\local\.env
+npm install --legacy-peer-deps
+
+npm run stack                          # wl-cms + wl-auth (+ forms/mail)
+npm run client -- nicole-levin         # CRA HMR
+npm run client -- beyond-the-bell
+```
+
+Marketing CMS sites are **static** (no `server.js`). See [deploy/local/README.md](deploy/local/README.md).
 
 ## NicoleLevin
 

@@ -6,11 +6,10 @@ services:
     env_file:
       - ${TALK_ABOUT_DREAMS_ENV_FILE:-/opt/services/data/app-env/talk-about-dreams.env}
     environment:
-      PORT: "3004"
-    volumes:
-      - ${TALK_ABOUT_DREAMS_STATIC_PATH:-/opt/services/data/app-assets/talk-about-dreams/static}:/repo/packages/talk-about-dreams/static
-      - ${TALK_ABOUT_DREAMS_IMAGES_PATH:-/opt/services/data/app-assets/talk-about-dreams/images}:/repo/packages/talk-about-dreams/images
-      - ${TALK_ABOUT_DREAMS_FIREBASE_SERVICE_ACCOUNT_PATH:-/opt/services/data/app-env/talk-about-dreams-serviceAccountKey.json}:/repo/packages/talk-about-dreams/config/serviceAccountKey.json:ro
+      PORT: "8080"
+      WL_CMS_SITE: talk-about-dreams
+      WL_AUTH_SITE: talk-about-dreams
+      SITE_MAIL_SITE_SLUG: talk-about-dreams
     networks:
       - proxy
     labels:
@@ -18,7 +17,7 @@ services:
       traefik.enable: "true"
       traefik.http.routers.talk-about-dreams.rule: Host(`talkaboutdreams.com`) || Host(`www.talkaboutdreams.com`)
       traefik.http.routers.talk-about-dreams.entrypoints: web
-      traefik.http.services.talk-about-dreams.loadbalancer.server.port: "3004"
+      traefik.http.services.talk-about-dreams.loadbalancer.server.port: "8080"
 
 networks:
   proxy:

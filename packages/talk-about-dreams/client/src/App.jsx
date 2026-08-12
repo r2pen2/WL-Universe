@@ -18,6 +18,8 @@ import Navbar from './components/NavbarV2';
 import Homepage from './routes/Homepage';
 import HomepageV2 from './routes/HomepageV2';
 import {MailManager} from "./libraries/Web-Legos/api/mail.ts"
+import { CmsManager } from "./libraries/Web-Legos/api/cms.ts"
+import { configureAuthClient } from "./libraries/Web-Legos/api/services.ts"
 import { WLHeaderV2 } from './libraries/Web-Legos/components/Text.jsx';
 import { Link, Spacer, Text } from '@nextui-org/react';
 
@@ -44,6 +46,9 @@ const mantineTheme = createMantineTheme({});
 
 export const TAGMailManager = new MailManager({ site: "talk-about-dreams" });
 TAGMailManager.addRecipientEmail("joedobbelaar@gmail.com");
+
+CmsManager.configure({ site: "talk-about-dreams" });
+configureAuthClient({ site: "talk-about-dreams" });
 
 export function App(props) {
 

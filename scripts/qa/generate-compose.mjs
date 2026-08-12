@@ -70,26 +70,46 @@ export function generateCompose({ pr, app, owner, tag }) {
         `      - ${assetsRoot}/cal.json:/repo/packages/${app}/config/cal.json:ro`,
       );
     }
+  } else if (entry.kind === "spa-static") {
+    // Static nginx SPA — no site volumes; APIs are wl-cms / wl-auth / wl-forms / site-mail.
   } else if (entry.kind === "express") {
     volumes.push(
-      `      - ${assetsRoot}:/opt/services/data/app-assets/site-mail`,
+      `      - ${assetsRoot}:/opt/services/data/app-assets/${app}`,
     );
   }
 
   const environment = [
     `      PORT: ${yamlQuote(port)}`,
   ];
-  if (entry.kind === "express") {
+  if (entry.kind === "express" && app === "site-mail") {
     environment.push(
       `      SITE_MAIL_LOG_DIR: /opt/services/data/app-assets/site-mail`,
       `      SITE_MAIL_DISABLE_SEND: ${yamlQuote("1")}`,
     );
   }
-  if (entry.cms) {
+  if (entry.kind === "express" && entry.cms !== false && app === "wl-cms") {
     environment.push(
       `      CMS_COLLECTION_PREFIX: ${yamlQuote(cmsCollectionPrefix(pr))}`,
     );
   }
+  if (entry.kind === "spa-static") {
+    environment.push(
+      `      WL_CMS_SITE: ${yamlQuote(app)}`,
+      `      WL_AUTH_SITE: ${yamlQuote(app)}`,
+      `      WL_FORMS_SITE: ${yamlQuote(app)}`,
+      `      SITE_MAIL_SITE_SLUG: ${yamlQuote(app)}`,
+    );
+  }
+  if (entry.cms && entry.kind === "spa") {
+    environment.push(
+      `      CMS_COLLECTION_PREFIX: ${yamlQuote(cmsCollectionPrefix(pr))}`,
+    );
+  }
+
+  const volumesBlock =
+    volumes.length > 0
+      ? `    volumes:\n${volumes.join("\n")}\n`
+      : "";
 
   return `services:
   ${app}:
@@ -100,9 +120,7 @@ export function generateCompose({ pr, app, owner, tag }) {
       - ${envFile}
     environment:
 ${environment.join("\n")}
-    volumes:
-${volumes.join("\n")}
-    networks:
+${volumesBlock}    networks:
       - proxy
     labels:
       com.centurylinklabs.watchtower.enable: "false"

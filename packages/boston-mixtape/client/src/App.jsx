@@ -18,12 +18,13 @@ import { WLThemeProvider, createWLTheme } from './libraries/Web-Legos/Layouts/WL
 import Home from './routes/Home.jsx';
 import '@mantine/core/styles.css';
 import {MailManager} from "./libraries/Web-Legos/api/mail.ts"
+import { CmsManager } from './libraries/Web-Legos/api/cms.ts';
+import { configureAuthClient, configureFormsClient } from './libraries/Web-Legos/api/services.ts';
 import { WLTextV2 } from './libraries/Web-Legos/components/Text.jsx';
 
 
 import { WLFooterSocials } from './libraries/Web-Legos/components/Footer.jsx';
 import  {FooterAuthButton} from "./libraries/Web-Legos/components/Auth.jsx"
-import { setHostname } from './libraries/Web-Legos/api/development.ts';
 import { Nav } from './components/Nav.jsx';
 
 /** Context to keep track of current user */
@@ -50,7 +51,9 @@ BBOMailManager.addRecipientEmail("joedobbelaar@gmail.com");
 BBOMailManager.addRecipientEmail("BostonMixtapeInfo@gmail.com");
 BBOMailManager.addRecipientEmail("BBMbostonsbestmusic@gmail.com");
 
-setHostname("bbm.joed.dev")
+CmsManager.configure({ site: "boston-mixtape" });
+configureAuthClient({ site: "boston-mixtape" });
+configureFormsClient({ site: "boston-mixtape" });
 
 export function App(props) {
 
