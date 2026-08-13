@@ -52,6 +52,7 @@ test("catalog loads billable + exempt sites", async () => {
     const btb = catalog.sites.find((s) => s.id === "beyond-the-bell");
     assert.ok(btb);
     assert.equal(btb.billingRequired, true);
+    assert.equal(btb.monthlyRetainerUsd, 20);
     assert.equal(
       catalog.sites.find((s) => s.id === "nicole-levin").billingRequired,
       false,

@@ -14,7 +14,7 @@
  *   STRIPE_SECRET_KEY
  *   SITE_BILLING_BOOTSTRAP_SITE   (default beyond-the-bell)
  *   SITE_BILLING_CUSTOMER_EMAIL   (default joe@joed.dev)
- *   SITE_BILLING_RETAINER_USD     (default 75)
+ *   SITE_BILLING_RETAINER_USD     (default 20 — standard web hosting)
  *   SITE_BILLING_WEBHOOK_URL      (default https://billing.joed.dev/v1/webhooks/stripe)
  *   DRY_RUN=1
  */
@@ -172,12 +172,12 @@ async function ensureProduct(site) {
     console.log(`Stripe product ok: ${existing.id}`);
     return existing;
   }
-  console.log(`Stripe product create: ${site.label} hosting retainer`);
+  console.log(`Stripe product create: ${site.label} — standard web hosting`);
   if (process.env.DRY_RUN === "1") {
     return { id: "prod_dry_run", metadata: { wlSiteId: site.id } };
   }
   return stripe("POST", "/products", {
-    name: `${site.label} hosting retainer`,
+    name: `${site.label} — standard web hosting`,
     "metadata[wlSiteId]": site.id,
     "metadata[wlKind]": "hosting-retainer",
   });
@@ -338,7 +338,12 @@ async function main() {
 
   const email =
     process.env.SITE_BILLING_CUSTOMER_EMAIL || "joe@joed.dev";
-  const amountUsd = Number(process.env.SITE_BILLING_RETAINER_USD || 75);
+  const amountUsd = Number(
+    process.env.SITE_BILLING_RETAINER_USD ||
+      site.monthlyRetainerUsd ||
+      catalog.monthlyRetainerUsd ||
+      20,
+  );
   const webhookUrl =
     process.env.SITE_BILLING_WEBHOOK_URL ||
     "https://billing.joed.dev/v1/webhooks/stripe";

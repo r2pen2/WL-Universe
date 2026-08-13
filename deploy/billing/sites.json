@@ -2,7 +2,8 @@
   "graceDays": 7,
   "hardStopAfterDays": 14,
   "contactEmail": "joe@joed.dev",
-  "notes": "All client sites are listed. Only beyond-the-bell has billingRequired=true. Stripe ids are filled on deploy by scripts/billing/bootstrap-stripe.mjs once STRIPE_SECRET_KEY is real.",
+  "monthlyRetainerUsd": 20,
+  "notes": "Standard web hosting is $20/month. Only beyond-the-bell has billingRequired=true. Stripe ids are filled on deploy by scripts/billing/bootstrap-stripe.mjs once STRIPE_SECRET_KEY is real.",
   "sites": [
     {
       "id": "nicole-levin",
@@ -22,6 +23,7 @@
       "hosts": ["beyondthebelleducation.com", "www.beyondthebelleducation.com"],
       "billingRequired": true,
       "exempt": false,
+      "monthlyRetainerUsd": 20,
       "stripeCustomerId": null,
       "stripeSubscriptionId": null,
       "stripePriceId": null

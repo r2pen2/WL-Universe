@@ -24,6 +24,7 @@ function loadCatalog() {
     graceDays: Number(data.graceDays) || 7,
     hardStopAfterDays: Number(data.hardStopAfterDays) || 14,
     contactEmail: data.contactEmail || "joe@joed.dev",
+    monthlyRetainerUsd: Number(data.monthlyRetainerUsd) || 20,
     sites: data.sites,
   };
 }

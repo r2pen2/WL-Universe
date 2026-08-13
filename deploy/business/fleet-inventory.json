@@ -39,8 +39,8 @@
   },
   "revenue": {
     "currency": "USD",
-    "notes": "Fill monthlyRetainerUsd per billable unit. Blank = not billed / unknown.",
-    "suggestedRetainerBandUsd": { "simpleSite": [30, 75], "siteWithForms": [50, 100], "crmProduct": [75, 200] }
+    "notes": "Standard web hosting is $20/month. Fill monthlyRetainerUsd per billable unit; blank = not billed / unknown.",
+    "suggestedRetainerBandUsd": { "simpleSite": [20, 20], "siteWithForms": [50, 100], "crmProduct": [75, 200] }
   },
   "billableUnits": [
     {
@@ -66,7 +66,7 @@
       "formsMail": true,
       "firebaseProject": "beyond-the-bell-20097",
       "registrarLikely": "GoDaddy + M365 mail (client)",
-      "monthlyRetainerUsd": null,
+      "monthlyRetainerUsd": 20,
       "status": "deployed"
     },
     {

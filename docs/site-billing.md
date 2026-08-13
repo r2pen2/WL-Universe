@@ -30,8 +30,9 @@ stay online until you flip the flag and paste their Stripe ids.
 Go-live is automated on deploy once a real Stripe key is in the env file:
 
 1. Put a real `STRIPE_SECRET_KEY` in `/opt/services/data/app-env/site-billing.env`
-   (replace the `sk_test_...` stub). Optional: `SITE_BILLING_CUSTOMER_EMAIL`,
-   `SITE_BILLING_RETAINER_USD` (default **75**).
+   (replace the `sk_test_...` stub). Optional: `SITE_BILLING_CUSTOMER_EMAIL`.
+   Standard web hosting is **$20/month** (`SITE_BILLING_RETAINER_USD` / catalog
+   `monthlyRetainerUsd`).
 2. Deploy `site-billing`. The publish job:
    - Ensures Cloudflare DNS + tunnel ingress for `billing.joed.dev`
    - Runs [`scripts/billing/bootstrap-stripe.mjs`](../scripts/billing/bootstrap-stripe.mjs)
