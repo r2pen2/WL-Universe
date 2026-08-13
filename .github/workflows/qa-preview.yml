@@ -136,6 +136,12 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
+      - name: Log in to GHCR
+        run: |
+          set -euo pipefail
+          # compose pull runs via sudo; login must be for root's docker config
+          echo "${{ secrets.GITHUB_TOKEN }}" | sudo docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+
       - name: Deploy QA stacks
         id: deploy
         env:

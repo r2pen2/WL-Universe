@@ -67,6 +67,14 @@ function resolveServiceAccountPath(slug) {
   if (fs.existsSync(defaultPath)) {
     return defaultPath;
   }
+  // Glados / QA host layout
+  const hostPath = path.join(
+    "/opt/services/data/app-env",
+    `${slug}-serviceAccountKey.json`,
+  );
+  if (fs.existsSync(hostPath)) {
+    return hostPath;
+  }
   return null;
 }
 

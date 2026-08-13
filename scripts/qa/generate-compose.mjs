@@ -76,6 +76,12 @@ export function generateCompose({ pr, app, owner, tag }) {
     volumes.push(
       `      - ${assetsRoot}:/opt/services/data/app-assets/${app}`,
     );
+    if (app === "wl-cms" || app === "wl-auth" || app === "wl-forms") {
+      // Shared host SA files: <slug>-serviceAccountKey.json
+      volumes.push(
+        `      - /opt/services/data/app-env:/opt/services/data/app-env:ro`,
+      );
+    }
   }
 
   const environment = [
@@ -93,10 +99,22 @@ export function generateCompose({ pr, app, owner, tag }) {
     );
   }
   if (entry.kind === "spa-static") {
+    const cmsHost = qaHostname(pr, "wl-cms");
+    const authHost = qaHostname(pr, "wl-auth");
+    const formsHost = qaHostname(pr, "wl-forms");
+    const mailHost = qaHostname(pr, "site-mail");
     environment.push(
+      `      WL_CMS_URL: ${yamlQuote(`https://${cmsHost}`)}`,
+      `      WL_CMS_API_KEY: ${yamlQuote("qa-not-for-production")}`,
       `      WL_CMS_SITE: ${yamlQuote(app)}`,
+      `      WL_AUTH_URL: ${yamlQuote(`https://${authHost}`)}`,
+      `      WL_AUTH_API_KEY: ${yamlQuote("qa-not-for-production")}`,
       `      WL_AUTH_SITE: ${yamlQuote(app)}`,
+      `      WL_FORMS_URL: ${yamlQuote(`https://${formsHost}`)}`,
+      `      WL_FORMS_API_KEY: ${yamlQuote("qa-not-for-production")}`,
       `      WL_FORMS_SITE: ${yamlQuote(app)}`,
+      `      SITE_MAIL_URL: ${yamlQuote(`https://${mailHost}`)}`,
+      `      SITE_MAIL_API_KEY: ${yamlQuote("qa-not-for-production")}`,
       `      SITE_MAIL_SITE_SLUG: ${yamlQuote(app)}`,
     );
   }

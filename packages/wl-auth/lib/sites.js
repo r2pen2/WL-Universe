@@ -69,6 +69,11 @@ function resolveServiceAccountPath(slug) {
     "serviceAccountKey.json",
   );
   if (fs.existsSync(defaultPath)) return defaultPath;
+  const hostPath = path.join(
+    "/opt/services/data/app-env",
+    `${slug}-serviceAccountKey.json`,
+  );
+  if (fs.existsSync(hostPath)) return hostPath;
   return null;
 }
 
