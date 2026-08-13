@@ -24,7 +24,17 @@ function loadCatalog() {
     graceDays: Number(data.graceDays) || 7,
     hardStopAfterDays: Number(data.hardStopAfterDays) || 14,
     contactEmail: data.contactEmail || "joe@joed.dev",
-    monthlyRetainerUsd: Number(data.monthlyRetainerUsd) || 20,
+    monthlyRetainerUsd:
+      Number(data.product?.monthlyRetainerUsd || data.monthlyRetainerUsd) || 20,
+    product: {
+      name: data.product?.name || "Standard web hosting",
+      monthlyRetainerUsd:
+        Number(data.product?.monthlyRetainerUsd || data.monthlyRetainerUsd) || 20,
+      stripeProductId: data.product?.stripeProductId || null,
+      stripePriceId: data.product?.stripePriceId || data.stripePriceId || null,
+    },
+    stripePriceId: data.product?.stripePriceId || data.stripePriceId || null,
+    stripeProductId: data.product?.stripeProductId || null,
     sites: data.sites,
   };
 }
@@ -53,6 +63,10 @@ function getSiteBySubscriptionId(subscriptionId) {
   );
 }
 
+function sharedPriceId() {
+  return loadCatalog().stripePriceId || null;
+}
+
 function policy() {
   const c = loadCatalog();
   return {
@@ -69,5 +83,6 @@ module.exports = {
   getSite,
   getSiteByCustomerId,
   getSiteBySubscriptionId,
+  sharedPriceId,
   policy,
 };

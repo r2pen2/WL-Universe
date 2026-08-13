@@ -1,4 +1,4 @@
-const { getSite } = require("./catalog");
+const { getSite, sharedPriceId } = require("./catalog");
 const { getStripe } = require("./stripe-client");
 
 async function createPortalSession(siteId, returnUrl) {
@@ -49,9 +49,11 @@ async function createSubscription({
   }
 
   const stripe = getStripe();
-  const price = priceId || site.stripePriceId;
+  const price = priceId || sharedPriceId();
   if (!price) {
-    const err = new Error("priceId is required (body or catalog stripePriceId)");
+    const err = new Error(
+      "priceId is required (body or catalog product.stripePriceId)",
+    );
     err.statusCode = 400;
     throw err;
   }
@@ -86,7 +88,7 @@ async function createSubscription({
     stripeSubscriptionId: subscription.id,
     stripePriceId: price,
     status: subscription.status,
-    note: "Paste stripeCustomerId / stripeSubscriptionId / stripePriceId into deploy/billing/sites.json and redeploy catalog mount.",
+    note: "Paste stripeCustomerId / stripeSubscriptionId into deploy/billing/sites.json; price lives on catalog.product.",
   };
 }
 

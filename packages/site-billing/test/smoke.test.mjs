@@ -47,12 +47,12 @@ test("catalog loads billable + exempt sites", async () => {
   await withTempEnv(() => {
     const { loadCatalog } = require("../lib/catalog.js");
     const catalog = loadCatalog();
-    assert.equal(catalog.graceDays, 7);
-    assert.equal(catalog.hardStopAfterDays, 14);
+    assert.equal(catalog.monthlyRetainerUsd, 20);
+    assert.equal(catalog.product.name, "Standard web hosting");
     const btb = catalog.sites.find((s) => s.id === "beyond-the-bell");
     assert.ok(btb);
     assert.equal(btb.billingRequired, true);
-    assert.equal(btb.monthlyRetainerUsd, 20);
+    assert.equal(btb.stripePriceId, undefined);
     assert.equal(
       catalog.sites.find((s) => s.id === "nicole-levin").billingRequired,
       false,
@@ -154,7 +154,6 @@ test("webhook handleStripeEvent applies past_due and restore", async () => {
             ...s,
             stripeCustomerId: "cus_btb",
             stripeSubscriptionId: "sub_btb",
-            stripePriceId: "price_btb",
           }
         : s,
     );

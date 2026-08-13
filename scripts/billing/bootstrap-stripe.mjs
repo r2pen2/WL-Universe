@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 /**
- * Idempotent Stripe go-live for a catalog site (default: beyond-the-bell).
+ * Idempotent Stripe go-live.
  *
- * Creates/reuses Product + monthly Price + Customer + Subscription, upserts
- * the webhook endpoint at https://billing.joed.dev/v1/webhooks/stripe, and
- * writes cus_/sub_/price_ into the live catalog.
+ * One shared Product ("Standard web hosting") + monthly Price for every
+ * client. Per-site Customer + Subscription point at that price. Changing
+ * catalog.product.monthlyRetainerUsd and re-running migrates all subs.
  *
  *   node scripts/billing/bootstrap-stripe.mjs \
  *     --env-file /opt/services/data/app-env/site-billing.env \
@@ -14,7 +14,7 @@
  *   STRIPE_SECRET_KEY
  *   SITE_BILLING_BOOTSTRAP_SITE   (default beyond-the-bell)
  *   SITE_BILLING_CUSTOMER_EMAIL   (default joe@joed.dev)
- *   SITE_BILLING_RETAINER_USD     (default 20 — standard web hosting)
+ *   SITE_BILLING_RETAINER_USD     (overrides catalog product.monthlyRetainerUsd)
  *   SITE_BILLING_WEBHOOK_URL      (default https://billing.joed.dev/v1/webhooks/stripe)
  *   DRY_RUN=1
  */
@@ -33,6 +33,9 @@ const WEBHOOK_EVENTS = [
   "invoice.paid",
   "invoice.payment_failed",
 ];
+
+const PRODUCT_KIND = "standard-web-hosting";
+const DEFAULT_PRODUCT_NAME = "Standard web hosting";
 
 function parseArgs(argv) {
   const args = {
@@ -103,13 +106,25 @@ function writeCatalog(file, data) {
   fs.writeFileSync(file, `${JSON.stringify(data, null, 2)}\n`);
 }
 
-function patchSite(catalog, siteId, ids) {
-  const site = catalog.sites.find((s) => s.id === siteId);
-  if (!site) throw new Error(`Site '${siteId}' not in catalog`);
-  site.stripeCustomerId = ids.stripeCustomerId;
-  site.stripeSubscriptionId = ids.stripeSubscriptionId;
-  site.stripePriceId = ids.stripePriceId;
-  site.billingRequired = true;
+function patchCatalog(catalog, { productId, priceId, siteId, customerId, subscriptionId }) {
+  catalog.product = {
+    name: catalog.product?.name || DEFAULT_PRODUCT_NAME,
+    monthlyRetainerUsd: Number(catalog.product?.monthlyRetainerUsd || catalog.monthlyRetainerUsd) || 20,
+    stripeProductId: productId,
+    stripePriceId: priceId,
+  };
+  delete catalog.monthlyRetainerUsd;
+  delete catalog.stripePriceId;
+  delete catalog.stripeProductId;
+  if (siteId) {
+    const site = catalog.sites.find((s) => s.id === siteId);
+    if (!site) throw new Error(`Site '${siteId}' not in catalog`);
+    site.stripeCustomerId = customerId;
+    site.stripeSubscriptionId = subscriptionId;
+    delete site.stripePriceId;
+    delete site.monthlyRetainerUsd;
+    site.billingRequired = true;
+  }
   return catalog;
 }
 
@@ -163,23 +178,35 @@ async function listAll(pathname, extra = {}) {
   return out;
 }
 
-async function ensureProduct(site) {
+async function ensureProduct(catalog) {
+  const wantedName = catalog.product?.name || DEFAULT_PRODUCT_NAME;
+  const existingId = catalog.product?.stripeProductId;
+  if (existingId && process.env.DRY_RUN !== "1") {
+    try {
+      const current = await stripe("GET", `/products/${existingId}`);
+      if (current && !current.deleted) {
+        console.log(`Stripe product ok: ${current.id}`);
+        return current;
+      }
+    } catch {
+      console.log(`Stripe product ${existingId} missing — creating shared product`);
+    }
+  }
   const products = await listAll("/products");
   const existing = products.find(
-    (p) => p.metadata?.wlSiteId === site.id && p.metadata?.wlKind === "hosting-retainer",
+    (p) => p.metadata?.wlKind === PRODUCT_KIND && !p.deleted,
   );
   if (existing) {
     console.log(`Stripe product ok: ${existing.id}`);
     return existing;
   }
-  console.log(`Stripe product create: ${site.label} — standard web hosting`);
+  console.log(`Stripe product create: ${wantedName}`);
   if (process.env.DRY_RUN === "1") {
-    return { id: "prod_dry_run", metadata: { wlSiteId: site.id } };
+    return { id: "prod_dry_run", name: wantedName };
   }
   return stripe("POST", "/products", {
-    name: `${site.label} — standard web hosting`,
-    "metadata[wlSiteId]": site.id,
-    "metadata[wlKind]": "hosting-retainer",
+    name: wantedName,
+    "metadata[wlKind]": PRODUCT_KIND,
   });
 }
 
@@ -204,6 +231,34 @@ async function ensurePrice(productId, amountUsd) {
     unit_amount: unitAmount,
     "recurring[interval]": "month",
   });
+}
+
+async function migrateSubscriptionsToPrice(catalog, priceId) {
+  const migrated = [];
+  if (process.env.DRY_RUN === "1") return migrated;
+  for (const site of catalog.sites) {
+    if (!site.stripeSubscriptionId) continue;
+    let sub;
+    try {
+      sub = await stripe("GET", `/subscriptions/${site.stripeSubscriptionId}`);
+    } catch (error) {
+      console.log(`Stripe subscription skip ${site.id}: ${error.message}`);
+      continue;
+    }
+    const item = sub.items?.data?.[0];
+    if (!item) continue;
+    if (item.price?.id === priceId) continue;
+    console.log(
+      `Stripe subscription migrate ${site.id}: ${item.price?.id} → ${priceId}`,
+    );
+    await stripe("POST", `/subscriptions/${sub.id}`, {
+      "items[0][id]": item.id,
+      "items[0][price]": priceId,
+      proration_behavior: "none",
+    });
+    migrated.push(site.id);
+  }
+  return migrated;
 }
 
 async function ensureCustomer(site, email) {
@@ -340,7 +395,7 @@ async function main() {
     process.env.SITE_BILLING_CUSTOMER_EMAIL || "joe@joed.dev";
   const amountUsd = Number(
     process.env.SITE_BILLING_RETAINER_USD ||
-      site.monthlyRetainerUsd ||
+      catalog.product?.monthlyRetainerUsd ||
       catalog.monthlyRetainerUsd ||
       20,
   );
@@ -348,20 +403,28 @@ async function main() {
     process.env.SITE_BILLING_WEBHOOK_URL ||
     "https://billing.joed.dev/v1/webhooks/stripe";
 
-  const product = await ensureProduct(site);
+  const product = await ensureProduct(catalog);
   const price = await ensurePrice(product.id, amountUsd);
+  const migrated = await migrateSubscriptionsToPrice(catalog, price.id);
   const customer = await ensureCustomer(site, email);
   const subscription = await ensureSubscription(site, customer.id, price.id);
   const webhook = await ensureWebhook(webhookUrl);
 
   const ids = {
+    stripeProductId: product.id,
+    stripePriceId: price.id,
     stripeCustomerId: customer.id,
     stripeSubscriptionId: subscription.id,
-    stripePriceId: price.id,
   };
 
   if (!dryRun) {
-    const next = patchSite(catalog, site.id, ids);
+    const next = patchCatalog(catalog, {
+      productId: product.id,
+      priceId: price.id,
+      siteId: site.id,
+      customerId: customer.id,
+      subscriptionId: subscription.id,
+    });
     writeCatalog(catalogPath, next);
     if (args.writeRepo) {
       writeCatalog(repoCatalog, next);
@@ -390,6 +453,9 @@ async function main() {
     JSON.stringify(
       {
         ok: true,
+        product: product.name || DEFAULT_PRODUCT_NAME,
+        amountUsd,
+        migrated,
         site: site.id,
         ...ids,
         subscriptionStatus: subscription.status,

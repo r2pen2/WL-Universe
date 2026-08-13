@@ -155,26 +155,6 @@ jobs:
           fi
           node scripts/dns/ensure-mail-dns.mjs --apps "${MAIL_APPS}"
 
-  ensure-billing-hostname:
-    name: ensure billing.joed.dev
-    needs: detect
-    if: contains(needs.detect.outputs.apps_csv, 'site-billing')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-
-      - name: Ensure billing hostname
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-        run: |
-          set -euo pipefail
-          if [[ -z "${CLOUDFLARE_API_TOKEN}" ]]; then
-            echo "::error::CLOUDFLARE_API_TOKEN secret is not set"
-            exit 1
-          fi
-          node scripts/billing/ensure-billing-hostname.mjs
-
   # Single runner so Buildx boots once (moby/buildkit pull).
   publish:
     name: build & push changed images
