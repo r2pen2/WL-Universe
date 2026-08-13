@@ -1,0 +1,71 @@
+# Optional Docker path for the same local microservice ports as `npm run stack`.
+# Happy path remains Node: npm run stack
+
+services:
+  wl-cms:
+    build:
+      context: ../..
+      dockerfile: deploy/docker/node-express.Dockerfile
+      args:
+        APP_DIR: packages/wl-cms
+        APP_NAME: wl-cms
+        PORT: "3021"
+    ports:
+      - "3021:3021"
+    env_file:
+      - ../local/.env
+    environment:
+      PORT: "3021"
+      WL_CMS_ASSETS_DIR: /data/assets
+    volumes:
+      - wl_cms_assets:/data/assets
+
+  wl-auth:
+    build:
+      context: ../..
+      dockerfile: deploy/docker/node-express.Dockerfile
+      args:
+        APP_DIR: packages/wl-auth
+        APP_NAME: wl-auth
+        PORT: "3022"
+    ports:
+      - "3022:3022"
+    env_file:
+      - ../local/.env
+    environment:
+      PORT: "3022"
+
+  wl-forms:
+    profiles: ["forms"]
+    build:
+      context: ../..
+      dockerfile: deploy/docker/node-express.Dockerfile
+      args:
+        APP_DIR: packages/wl-forms
+        APP_NAME: wl-forms
+        PORT: "3023"
+    ports:
+      - "3023:3023"
+    env_file:
+      - ../local/.env
+    environment:
+      PORT: "3023"
+
+  site-mail:
+    profiles: ["mail"]
+    build:
+      context: ../..
+      dockerfile: deploy/docker/node-express.Dockerfile
+      args:
+        APP_DIR: packages/site-mail
+        APP_NAME: site-mail
+        PORT: "3020"
+    ports:
+      - "3020:3020"
+    env_file:
+      - ../local/.env
+    environment:
+      PORT: "3020"
+
+volumes:
+  wl_cms_assets:

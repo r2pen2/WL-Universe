@@ -13,7 +13,7 @@ import { firestore, removeImage, uploadImgToStorageAndReturnDownloadLink } from 
 import { addDoc, collection, deleteDoc, doc, setDoc } from 'firebase/firestore';
 import { IconButton, TextField } from '@mui/material';
 import { PencilIcon } from '../components/Icons';
-import { AuthenticationManagerContext, CurrentSignInContext, serverURL } from '../App';
+import { AuthenticationManagerContext, CurrentSignInContext } from '../App';
 import { BTBLoader } from '../components/Feedback';
 import { UploadImageCard } from '../libraries/Web-Legos/components/Images';
 import { getFileNameByCurrentTime, openFileBrowser } from '../libraries/Web-Legos/api/files';
@@ -21,6 +21,7 @@ import { WLHeader } from '../libraries/Web-Legos/components/Text';
 import { WLSpinnerPage } from '../libraries/Web-Legos/components/Layout';
 import { WLAliceCarousel, createCarouselBreakpoints } from "../libraries/Web-Legos/components/Content";
 import { sortByOrder } from '../libraries/Web-Legos/api/models.ts';
+import { CmsManager, cmsAssetUrl } from '../libraries/Web-Legos/api/cms.ts';
 
 import logoFull from "../assets/images/LogoFull.png"
 
@@ -77,17 +78,14 @@ export default function HomePage() {
 
   // Fetch current class offerings and testimonials after component mount
   useEffect(() => {
-    // Ask server for current offerings
-    fetch(`${serverURL}offerings`).then(res => {
+    const cms = CmsManager.getShared();
+    cms.fetch(`/offerings`).then(res => {
       res.json().then(data => {
-        // Get json from HTTP response and set data state
         setOfferingData(sortByOrder(data));
       })
     })
-    fetch(`${serverURL}testimonials`).then(res => {
-      // Ask server for current testimonials
+    cms.fetch(`/testimonials`).then(res => {
       res.json().then(data => {
-        // Get json from HTTP response and set data state
         setTestimonialData(sortByOrder(data));
       })
     })
@@ -265,7 +263,7 @@ export default function HomePage() {
     const [tempMessage, setTempMessage] = useState(currentTestimonial.message);
     const [tempPreview, setTempPreview] = useState(currentTestimonial.preview);
     const [tempAuthorDesc, setTempAuthorDesc] = useState(currentTestimonial.authorDescription);
-    const [tempImageURL, setTempImageURL] = useState(currentTestimonial.image ? serverURL + currentTestimonial.image : null);
+    const [tempImageURL, setTempImageURL] = useState(currentTestimonial.image ? cmsAssetUrl(currentTestimonial.image) : null);
     const [tempOrder, setTempOrder] = useState(currentTestimonial.order);
     const [uploadImageFile, setUploadImageFile] = useState(null);
 
@@ -466,7 +464,7 @@ export default function HomePage() {
     const [tempTitle, setTempTitle] = useState(currentOffering.title);
     const [tempOrder, setTempOrder] = useState(currentOffering.order);
     const [tempSchedule, setTempSchedule] = useState(currentOffering.schedule);
-    const [tempImageURL, setTempImageURL] = useState(currentOffering.image ? serverURL + currentOffering.image : null);
+    const [tempImageURL, setTempImageURL] = useState(currentOffering.image ? cmsAssetUrl(currentOffering.image) : null);
     const [uploadImageFile, setUploadImageFile] = useState(null);
 
     function handleOfferingDescriptionChange(e) {
@@ -691,7 +689,7 @@ export default function HomePage() {
           onPress={userCanEditOfferings ? editOffering : handleOfferingPress}
         >
           <Card.Body className="w-100 p-2 d-flex flex-row align-items-center justify-content-between" style={{overflowY: "hidden"}}>
-            <img src={serverURL + o.image} alt={o.title} style={{width: "40%", minHeight: "100%", objectFit:"cover"}} className="img-shadow"/>
+            <img src={cmsAssetUrl(o.image)} alt={o.title} style={{width: "40%", minHeight: "100%", objectFit:"cover"}} className="img-shadow"/>
             <div className="d-none d-sm-flex w-100 h-100 flex-column px-2 py-2 text-center justify-content-around">
               <div className="d-flex flex-column align-items-center justify-content-center">
                 <Text b>
@@ -767,7 +765,7 @@ export default function HomePage() {
         >
           <Card.Body>
               <div className="text-center d-flex flex-column align-items-center justify-content-center h-100 w-100 gap-2">
-                <img src={serverURL + props.testimonial.image} alt="testimonial-img" className="testimonial-img" style={{width: "10rem", height: "10rem", objectFit: "cover"}}/>
+                <img src={cmsAssetUrl(props.testimonial.image)} alt="testimonial-img" className="testimonial-img" style={{width: "10rem", height: "10rem", objectFit: "cover"}}/>
                 <Text className="d-inline d-sm-none">
                   "{props.testimonial.preview}"
                 </Text>
@@ -873,7 +871,7 @@ function ClassOffering({offering}) {
     <div className={`p-3`} style={{ height: "100%", flex: 1}}>
       <Card isHoverable isPressable className="d-flex flex-column justify-content-between" onClick={handleOfferingPress}>
         <Card.Image
-          src={serverURL + offering.image}
+          src={cmsAssetUrl(offering.image)}
           objectFit='cover'
           width="100%"
           height={250}

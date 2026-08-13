@@ -1,9 +1,7 @@
 // @ts-ignore
 import { FirestoreSerializable, SiteModel } from "./models.ts";
 import { getSlashDateString, getTimeOfDay } from "./strings.js";
-import { getHostname } from "./development.ts";
-
-const developmentHostname = getHostname();
+import { getFormsClient } from "./services.ts";
 
 export enum SiteKey {
   TestSiteNoForms = "TESTSITENOFORMS",
@@ -310,7 +308,7 @@ export class FormResponse extends SiteModel implements FirestoreSerializable {
    */
   sendFormData() {
     return new Promise((resolve, reject) => {
-      fetch(`${developmentHostname}/site-forms`, {
+      getFormsClient().fetch(`/site-forms`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

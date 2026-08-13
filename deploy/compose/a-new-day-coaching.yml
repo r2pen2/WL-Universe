@@ -6,11 +6,11 @@ services:
     env_file:
       - ${A_NEW_DAY_COACHING_ENV_FILE:-/opt/services/data/app-env/a-new-day-coaching.env}
     environment:
-      PORT: "3007"
-    volumes:
-      - ${A_NEW_DAY_COACHING_STATIC_PATH:-/opt/services/data/app-assets/a-new-day-coaching/static}:/repo/packages/a-new-day-coaching/static
-      - ${A_NEW_DAY_COACHING_IMAGES_PATH:-/opt/services/data/app-assets/a-new-day-coaching/images}:/repo/packages/a-new-day-coaching/images
-      - ${A_NEW_DAY_COACHING_FIREBASE_SERVICE_ACCOUNT_PATH:-/opt/services/data/app-env/a-new-day-coaching-serviceAccountKey.json}:/repo/packages/a-new-day-coaching/config/serviceAccountKey.json:ro
+      PORT: "8080"
+      WL_CMS_SITE: a-new-day-coaching
+      WL_AUTH_SITE: a-new-day-coaching
+      WL_FORMS_SITE: a-new-day-coaching
+      SITE_MAIL_SITE_SLUG: andc
     networks:
       - proxy
     labels:
@@ -18,7 +18,7 @@ services:
       traefik.enable: "true"
       traefik.http.routers.a-new-day-coaching.rule: Host(`anewdaycoaching.com`) || Host(`www.anewdaycoaching.com`)
       traefik.http.routers.a-new-day-coaching.entrypoints: web
-      traefik.http.services.a-new-day-coaching.loadbalancer.server.port: "3007"
+      traefik.http.services.a-new-day-coaching.loadbalancer.server.port: "8080"
 
 networks:
   proxy:

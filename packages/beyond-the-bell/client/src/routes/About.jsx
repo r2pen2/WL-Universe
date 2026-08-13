@@ -7,7 +7,7 @@ import { useContext, useEffect, useState, } from 'react'
 import "../assets/style/about.css";
 
 // Component Imports
-import { AuthenticationManagerContext, CurrentSignInContext, serverURL, } from '../App';
+import { AuthenticationManagerContext, CurrentSignInContext, } from '../App';
 import { ScheduleBar, } from "../components/Forms";
 
 // API Imports
@@ -19,15 +19,14 @@ import { WLHeader, } from '../libraries/Web-Legos/components/Text';
 import { WLCenteredColumn, WLResponsiveSectionEditable, WLSpinnerPage } from '../libraries/Web-Legos/components/Layout';
 import { TextField } from '@mui/material';
 import { AboutBlockHeader } from '../components/Bar';
+import { CmsManager, cmsAssetUrl } from '../libraries/Web-Legos/api/cms.ts';
 
 export default function About() {
 
   // Fetch current team members after component mount
   useEffect(() => {
-    // Ask server for current staff
-    fetch(`${serverURL}staff`).then(res => {
+    CmsManager.getShared().fetch(`/staff`).then(res => {
       res.json().then(data => {
-        // Get json from HTTP response and set data state
         setStaffData(data);
       })
     });
@@ -116,7 +115,7 @@ export default function About() {
       const [tempPosition, setTempPosition] = useState(currentTeamMember.position);
       const [tempBio, setTempBio] = useState(currentTeamMember.bio);
       const [tempOrder, setTempOrder] = useState(currentTeamMember.order);
-      const [tempImageURL, setTempImageURL] = useState(currentTeamMember.image ? serverURL + currentTeamMember.image : null);
+      const [tempImageURL, setTempImageURL] = useState(currentTeamMember.image ? cmsAssetUrl(currentTeamMember.image) : null);
       const [uploadImageFile, setUploadImageFile] = useState(null);
 
       async function saveChanges() {
@@ -347,7 +346,7 @@ export default function About() {
             onPress={handleCardClick}
           >
             <Card.Body className="d-flex flex-column gap-2 align-items-center w-100 justify-content-center">
-              <img src={serverURL + teamMember.image} alt={teamMember.name} className="img-shadow img-round" style={{height: "10rem", width: "10rem", objectFit: "cover"}}/>
+              <img src={cmsAssetUrl(teamMember.image)} alt={teamMember.name} className="img-shadow img-round" style={{height: "10rem", width: "10rem", objectFit: "cover"}}/>
               <div className="w-100 d-md-none d-lg-flex flex-column justify-content-center text-center align-items-center">
                 <Text size="$lg" css={{fontWeight: "bold"}} >
                   {teamMember.name}

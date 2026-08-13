@@ -115,17 +115,23 @@ function ensureAssets(pr, app) {
       fs.unlinkSync(calTmp);
     }
   }
+  // spa-static: no per-site assets
   return root;
 }
 
 function seedFirestore(pr, app, owner) {
   if (!cmsQaApps().has(app)) return;
-  const image = `ghcr.io/${String(owner).toLowerCase()}/wl-universe-${app}:pr-${pr}`;
+  const entry = APP_BY_NAME[app];
+  // Static nginx SPAs have no Node/firebase-admin — seed via wl-cms image.
+  const seedApp = entry.kind === "spa-static" ? "wl-cms" : app;
+  const image = `ghcr.io/${String(owner).toLowerCase()}/wl-universe-${seedApp}:pr-${pr}`;
   // App image provides firebase-admin; mount checkout scripts + prod SA dir.
   run("sudo", [
     "docker",
     "run",
     "--rm",
+    "-e",
+    `NODE_PATH=/repo/packages/${seedApp}/node_modules`,
     "-v",
     "/opt/services/data/app-env:/opt/services/data/app-env:ro",
     "-v",

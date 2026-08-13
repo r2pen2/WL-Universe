@@ -19,8 +19,13 @@ import { NextUIProvider } from '@nextui-org/react';
 import { AnalyticsManager } from './libraries/Web-Legos/api/analytics.ts';
 import { umamiConfigFor } from './libraries/Web-Legos/api/umamiRegistry.ts';
 import { firebaseConfig } from './api/firebase.ts';
+import { CmsManager } from './libraries/Web-Legos/api/cms.ts';
+import { configureAuthClient } from './libraries/Web-Legos/api/services.ts';
 
 export const CurrentSignInContext = createContext(null);
+
+CmsManager.configure({ site: "you-can-do-it-gardening" });
+configureAuthClient({ site: "you-can-do-it-gardening" });
 
 const permissions = new WLPermissionsConfig({
   beforesAndAfters: "befores-and-afters",

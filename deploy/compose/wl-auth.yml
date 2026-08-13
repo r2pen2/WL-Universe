@@ -1,0 +1,21 @@
+services:
+  wl-auth:
+    image: ghcr.io/r2pen2/wl-universe-wl-auth:${WL_AUTH_IMAGE_TAG:-latest}
+    container_name: wl-auth
+    restart: unless-stopped
+    env_file:
+      - ${WL_AUTH_ENV_FILE:-/opt/services/data/app-env/wl-auth.env}
+    environment:
+      PORT: "3022"
+    networks:
+      - proxy
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+      traefik.enable: "true"
+      traefik.http.routers.wl-auth.rule: Host(`wl-auth.joed.dev`)
+      traefik.http.routers.wl-auth.entrypoints: web
+      traefik.http.services.wl-auth.loadbalancer.server.port: "3022"
+
+networks:
+  proxy:
+    external: true

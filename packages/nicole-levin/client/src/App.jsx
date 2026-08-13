@@ -20,6 +20,8 @@ import { firebaseConfig } from './api/firebase.ts'
 import { AuthenticationManager, WLPermissionsConfig } from './libraries/Web-Legos/api/auth.ts'
 import { AnalyticsManager } from './libraries/Web-Legos/api/analytics.ts'
 import { umamiConfigFor } from './libraries/Web-Legos/api/umamiRegistry.ts'
+import { CmsManager } from './libraries/Web-Legos/api/cms.ts'
+import { configureAuthClient } from './libraries/Web-Legos/api/services.ts'
 import Navigator, { navigatorWidth } from './components/Navigator';
 import { lavender600, orange200 } from './libraries/Web-Legos/api/colors';
 import LandingPage from './routes/LandingPage';
@@ -35,6 +37,9 @@ import { SiteModel } from "./libraries/Web-Legos/api/models.ts";
 /** Context to keep track whether we're running tests right now */
 export const TestingContext = createContext();
 export const CurrentSignInContext = createContext();
+
+CmsManager.configure({ site: "nicole-levin" });
+configureAuthClient({ site: "nicole-levin" });
 
 /** Site specific permissions */
 const permissions = new WLPermissionsConfig();

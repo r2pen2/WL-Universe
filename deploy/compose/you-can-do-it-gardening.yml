@@ -6,11 +6,9 @@ services:
     env_file:
       - ${YOU_CAN_DO_IT_GARDENING_ENV_FILE:-/opt/services/data/app-env/you-can-do-it-gardening.env}
     environment:
-      PORT: "3003"
-    volumes:
-      - ${YOU_CAN_DO_IT_GARDENING_STATIC_PATH:-/opt/services/data/app-assets/you-can-do-it-gardening/static}:/repo/packages/you-can-do-it-gardening/static
-      - ${YOU_CAN_DO_IT_GARDENING_IMAGES_PATH:-/opt/services/data/app-assets/you-can-do-it-gardening/images}:/repo/packages/you-can-do-it-gardening/images
-      - ${YOU_CAN_DO_IT_GARDENING_FIREBASE_SERVICE_ACCOUNT_PATH:-/opt/services/data/app-env/you-can-do-it-gardening-serviceAccountKey.json}:/repo/packages/you-can-do-it-gardening/config/serviceAccountKey.json:ro
+      PORT: "8080"
+      WL_CMS_SITE: you-can-do-it-gardening
+      WL_AUTH_SITE: you-can-do-it-gardening
     networks:
       - proxy
     labels:
@@ -18,7 +16,7 @@ services:
       traefik.enable: "true"
       traefik.http.routers.you-can-do-it-gardening.rule: Host(`youcandoitgardening.com`) || Host(`www.youcandoitgardening.com`)
       traefik.http.routers.you-can-do-it-gardening.entrypoints: web
-      traefik.http.services.you-can-do-it-gardening.loadbalancer.server.port: "3003"
+      traefik.http.services.you-can-do-it-gardening.loadbalancer.server.port: "8080"
 
 networks:
   proxy:

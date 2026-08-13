@@ -14,21 +14,23 @@
  *     → SPA apps with cms: true only
  *   - other packages/server-legos/** → all SPA apps
  *   - scripts/docs/** or packages/docs/** → docs (publish scope)
- *   - deploy/docker/node-react-express.Dockerfile → all SPA apps
- *   - deploy/docker/node-express.Dockerfile → site-mail + site-billing
+ *   - deploy/docker/node-react-express.Dockerfile → Node SPA apps (CRM, joe, admin)
+ *   - deploy/docker/spa-static.Dockerfile → static CMS SPA apps
+ *   - deploy/docker/node-express.Dockerfile → express microservices
  *   - deploy/docker/docs-static.Dockerfile → docs
  *   - deploy/billing/** → site-billing
  *   - scripts/billing/** → site-billing
  *   - root package-lock / package.json / sync script → all apps in scope
- *   - site-mail / site-billing / docs only when their own paths (or shared docker) change
+ *   - express microservices only when their own paths (or shared docker) change
  *
- * --scope qa      (default): SPA + express apps
+ * --scope qa      (default): SPA + express microservices
  * --scope publish: SPA + express + docs
  */
 import { execFileSync } from "node:child_process";
 import {
   ALL_APPS,
   APP_BY_NAME,
+  EXPRESS_APPS,
   PUBLISH_APPS,
   SPA_APPS,
   cmsQaApps,
@@ -109,12 +111,21 @@ function detect(files, catalog) {
       continue;
     }
     if (file === "deploy/docker/node-react-express.Dockerfile") {
-      allSpaDocker = true;
+      for (const a of SPA_APPS) {
+        if (a.kind === "spa" && known.has(a.app)) selected.add(a.app);
+      }
+      continue;
+    }
+    if (file === "deploy/docker/spa-static.Dockerfile") {
+      for (const a of SPA_APPS) {
+        if (a.kind === "spa-static" && known.has(a.app)) selected.add(a.app);
+      }
       continue;
     }
     if (file === "deploy/docker/node-express.Dockerfile") {
-      if (known.has("site-mail")) selected.add("site-mail");
-      if (known.has("site-billing")) selected.add("site-billing");
+      for (const a of EXPRESS_APPS) {
+        if (known.has(a.app)) selected.add(a.app);
+      }
       continue;
     }
     if (file === "deploy/docker/docs-static.Dockerfile") {

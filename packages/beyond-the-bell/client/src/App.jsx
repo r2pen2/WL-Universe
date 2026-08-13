@@ -14,6 +14,8 @@ import { createContext, useEffect, useState } from 'react';
 import { auth, firestore } from './api/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import { MailManager } from './libraries/Web-Legos/api/mail.ts';
+import { CmsManager } from './libraries/Web-Legos/api/cms.ts';
+import { configureAuthClient, configureFormsClient } from './libraries/Web-Legos/api/services.ts';
 import { AuthenticationManager, WLPermissionsConfig } from "./libraries/Web-Legos/api/auth.ts"
 import { AnalyticsManager } from './libraries/Web-Legos/api/analytics.ts';
 import { umamiConfigFor } from './libraries/Web-Legos/api/umamiRegistry.ts';
@@ -25,6 +27,10 @@ export const CurrentSignInContext = createContext(null);
 export const BTBMailManager = new MailManager({ site: "beyond-the-bell" });
 BTBMailManager.addRecipientEmail("joedobbelaar@gmail.com");
 BTBMailManager.addRecipientEmail("nancy@beyondthebelleducation.com");
+
+CmsManager.configure({ site: "beyond-the-bell" });
+configureAuthClient({ site: "beyond-the-bell" });
+configureFormsClient({ site: "beyond-the-bell" });
 
 export const AuthenticationManagerContext = createContext(null);
 

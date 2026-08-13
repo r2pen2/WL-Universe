@@ -7,9 +7,11 @@ import { ImageCompressor } from '../api/images';
 
 // Style imports
 import "../assets/style/images.css";
-import { getHostname } from '../api/development.ts';
+import { CmsManager, cmsAssetUrl } from '../api/cms.ts';
 
-const developmentHostname = getHostname();
+function cms() {
+  return CmsManager.getShared();
+}
 
 /**
  * A card component that prompts a user to upload an image
@@ -64,7 +66,7 @@ export function WLImage(props) {
         formData.append("oldFileName", imageFileName);
 
 
-        fetch(`${developmentHostname}/site-images`, {
+        cms().fetch(`/site-images`, {
           method: "POST",
           body: formData,
         }).then((response) => {
@@ -80,9 +82,9 @@ export function WLImage(props) {
   const [imageFileName, setImageFileName] = useState(null);
 
   useEffect(() => {
-    fetch(`${developmentHostname}/site-images?id=${props.firestoreId}`).then((res) => {
+    cms().fetch(`/site-images?id=${props.firestoreId}`).then((res) => {
       res.json().then(json => {
-        setImageSource(json.source);
+        setImageSource(cmsAssetUrl(json.source));
         setImageFileName(json.fileName);
       })
     })
@@ -149,7 +151,7 @@ export function WLImageV2(props) {
         formData.append("oldFileName", imageFileName);
 
 
-        fetch(`${developmentHostname}/site-images`, {
+        cms().fetch(`/site-images`, {
           method: "POST",
           body: formData,
         }).then((response) => {
@@ -165,9 +167,9 @@ export function WLImageV2(props) {
   const [imageFileName, setImageFileName] = useState(null);
 
   useEffect(() => {
-    fetch(`${developmentHostname}/site-images?id=${props.firestoreId}`).then((res) => {
+    cms().fetch(`/site-images?id=${props.firestoreId}`).then((res) => {
       res.json().then(json => {
-        setImageSource(json.source);
+        setImageSource(cmsAssetUrl(json.source));
         setImageFileName(json.fileName);
       })
     })

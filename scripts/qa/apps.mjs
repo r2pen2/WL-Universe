@@ -9,20 +9,25 @@ export const QA_DOMAIN = "qa.joed.dev";
 /** First-level joed.dev label so Cloudflare Universal SSL (*.joed.dev) covers QA hosts. */
 export const QA_HOST_DOMAIN = "joed.dev";
 
-/** SPA apps that sync web-legos / server-legos into the image. */
+const SPA_STATIC_DOCKERFILE = "deploy/docker/spa-static.Dockerfile";
+const SPA_NODE_DOCKERFILE = "deploy/docker/node-react-express.Dockerfile";
+
+/** SPA apps that sync web-legos into the image. */
 export const SPA_APPS = [
   {
     app: "nicole-levin",
-    port: 3005,
-    kind: "spa",
+    port: 8080,
+    kind: "spa-static",
+    dockerfile: SPA_STATIC_DOCKERFILE,
     extraVolumes: [],
     cms: true,
     siteKey: "NL",
   },
   {
     app: "a-new-day-coaching",
-    port: 3007,
-    kind: "spa",
+    port: 8080,
+    kind: "spa-static",
+    dockerfile: SPA_STATIC_DOCKERFILE,
     extraVolumes: [],
     cms: true,
     siteKey: "ANDC",
@@ -31,36 +36,53 @@ export const SPA_APPS = [
     app: "a-new-day-coaching-crm",
     port: 3008,
     kind: "spa",
+    dockerfile: SPA_NODE_DOCKERFILE,
     extraVolumes: ["cal"],
   },
   {
     app: "beyond-the-bell",
-    port: 3000,
-    kind: "spa",
+    port: 8080,
+    kind: "spa-static",
+    dockerfile: SPA_STATIC_DOCKERFILE,
     extraVolumes: [],
     cms: true,
   },
-  { app: "wl-admin-portal", port: 25565, kind: "spa", extraVolumes: [] },
+  {
+    app: "wl-admin-portal",
+    port: 25565,
+    kind: "spa",
+    dockerfile: SPA_NODE_DOCKERFILE,
+    extraVolumes: [],
+  },
   {
     app: "you-can-do-it-gardening",
-    port: 3003,
-    kind: "spa",
+    port: 8080,
+    kind: "spa-static",
+    dockerfile: SPA_STATIC_DOCKERFILE,
     extraVolumes: [],
     cms: true,
   },
-  { app: "joe-dobbelaar", port: 3002, kind: "spa", extraVolumes: [] },
+  {
+    app: "joe-dobbelaar",
+    port: 3002,
+    kind: "spa",
+    dockerfile: SPA_NODE_DOCKERFILE,
+    extraVolumes: [],
+  },
   {
     app: "talk-about-dreams",
-    port: 3004,
-    kind: "spa",
+    port: 8080,
+    kind: "spa-static",
+    dockerfile: SPA_STATIC_DOCKERFILE,
     extraVolumes: [],
     cms: true,
     siteKey: "TAG",
   },
   {
     app: "boston-mixtape",
-    port: 3010,
-    kind: "spa",
+    port: 8080,
+    kind: "spa-static",
+    dockerfile: SPA_STATIC_DOCKERFILE,
     extraVolumes: [],
     cms: true,
     siteKey: "BBM",
@@ -84,8 +106,26 @@ export const EXPRESS_APPS = [
     dockerfile: "deploy/docker/node-express.Dockerfile",
   },
   {
-    app: "site-billing",
+    app: "wl-cms",
     port: 3021,
+    kind: "express",
+    dockerfile: "deploy/docker/node-express.Dockerfile",
+  },
+  {
+    app: "wl-auth",
+    port: 3022,
+    kind: "express",
+    dockerfile: "deploy/docker/node-express.Dockerfile",
+  },
+  {
+    app: "wl-forms",
+    port: 3023,
+    kind: "express",
+    dockerfile: "deploy/docker/node-express.Dockerfile",
+  },
+  {
+    app: "site-billing",
+    port: 3024,
     kind: "express",
     dockerfile: "deploy/docker/node-express.Dockerfile",
   },
@@ -111,11 +151,6 @@ export const APP_BY_NAME = Object.fromEntries(
 );
 
 export function qaHostname(pr, app) {
-  // pr-N-app.joed.dev — one label under the apex so:
-  // 1) `*.joed.dev` Universal SSL covers HTTPS
-  // 2) a single DNS/tunnel wildcard can route all PR hosts
-  // (pr-N.app.qa.joed.dev cannot work: CF wildcards match only one label, and
-  // Universal SSL does not cover *.qa.joed.dev.)
   return `pr-${pr}-${app}.${QA_HOST_DOMAIN}`;
 }
 

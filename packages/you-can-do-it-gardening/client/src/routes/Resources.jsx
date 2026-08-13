@@ -48,12 +48,11 @@ export default function Resources() {
             justifyContent: "space-between",
             minHeight: "100%"
           }}
-          className="d-flex flex-column flex-md-row"
+          className="d-flex flex-column"
           isPressable
           isHoverable
           onPress={() => window.open(resource.link, "_blank")}
         >
-          <Card.Image style={{minWidth: 200, objectFit: "cover", maxHeight: 200}} src={resource.imageSource}/>
           <div style={{flex: 1}} className="d-flex p-2 flex-column w-100 align-items-start text-start">
             <div className="w-100 mb-1">
               <Text b>{resource.title}</Text>
