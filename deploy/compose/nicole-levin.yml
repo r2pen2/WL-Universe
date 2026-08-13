@@ -6,11 +6,9 @@ services:
     env_file:
       - ${NICOLE_LEVIN_ENV_FILE:-/opt/services/data/app-env/nicole-levin.env}
     environment:
-      PORT: "3005"
-    volumes:
-      - ${NICOLE_LEVIN_STATIC_PATH:-/opt/services/data/app-assets/nicole-levin/static}:/repo/packages/nicole-levin/static
-      - ${NICOLE_LEVIN_IMAGES_PATH:-/opt/services/data/app-assets/nicole-levin/images}:/repo/packages/nicole-levin/images
-      - ${NICOLE_LEVIN_FIREBASE_SERVICE_ACCOUNT_PATH:-/opt/services/data/app-env/nicole-levin-serviceAccountKey.json}:/repo/packages/nicole-levin/config/serviceAccountKey.json:ro
+      PORT: "8080"
+      WL_CMS_SITE: nicole-levin
+      WL_AUTH_SITE: nicole-levin
     networks:
       - proxy
     labels:
@@ -18,7 +16,7 @@ services:
       traefik.enable: "true"
       traefik.http.routers.nicole-levin.rule: Host(`nicolelevin.org`) || Host(`www.nicolelevin.org`)
       traefik.http.routers.nicole-levin.entrypoints: web
-      traefik.http.services.nicole-levin.loadbalancer.server.port: "3005"
+      traefik.http.services.nicole-levin.loadbalancer.server.port: "8080"
 
 networks:
   proxy:

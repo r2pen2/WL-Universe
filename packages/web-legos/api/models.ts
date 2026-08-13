@@ -1,6 +1,8 @@
-import { getHostname } from "./development.ts";
+import { CmsManager } from "./cms.ts";
 
-const developmentHostname = getHostname();
+function cms() {
+  return CmsManager.getShared();
+}
 export abstract class SiteModel implements FirestoreSerializable {
 
   constructor(collection: string | null, modelName: string | null) {
@@ -101,8 +103,7 @@ export interface FirestoreSerializable {
 export async function sendModelData(collection: string, id: string, data: string) {
   return new Promise((resolve, reject) => {
     console.log("Sending model data to server...");
-    console.log(`${developmentHostname}/site-models`);
-    fetch(`${developmentHostname}/site-models`, {
+    cms().fetch(`/site-models`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -120,7 +121,7 @@ export async function sendModelData(collection: string, id: string, data: string
 
 export async function fetchModelData(collection: string) {
   return new Promise((resolve, reject) => {
-    fetch(`${developmentHostname}/site-models?collection=${collection}`).then(res => {
+    cms().fetch(`/site-models?collection=${collection}`).then(res => {
       res.json().then(data => {
         resolve(data);
       })
@@ -134,7 +135,7 @@ export function sortByOrder(array: any[]) {
 
 export async function deleteModel(collection: string, id: string) {
   return new Promise((resolve, reject) => {
-    fetch(`${developmentHostname}/site-models`, {
+    cms().fetch(`/site-models`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -152,7 +153,7 @@ export async function deleteModel(collection: string, id: string) {
 
 export async function createModel(collection: string, data: string) {
   return new Promise((resolve, reject) => {
-    fetch(`${developmentHostname}/site-models`, {
+    cms().fetch(`/site-models`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

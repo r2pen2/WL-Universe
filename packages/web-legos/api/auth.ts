@@ -3,9 +3,8 @@ import { Auth, getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/aut
 // @ts-ignore
 import { WLAdminPermissions, WLEditHistory } from "./admin.ts";
 import { createContext } from "react";
-import { getHostname } from "./development.ts";
+import { getAuthClient } from "./services.ts";
 
-const developmentHostname = getHostname();
 export class AuthenticationManager {
 
   static Context = createContext(null);
@@ -33,10 +32,6 @@ export class AuthenticationManager {
     this.app = initializeApp(this.config);
     this.auth = getAuth();
   }
-
-    /**
-   * Sign in user with google and return user
-   */
 
   async signInWithGoogle() {
     if (!this.config) { return; }
@@ -67,10 +62,9 @@ export class AuthenticationManager {
       if (adminPermissions) {
         user.adminPermissions = adminPermissions;
       }
-//      const jsonUser = user.toJson()
       console.log(user);
 
-      fetch(`${developmentHostname}/site-auth`, {
+      getAuthClient().fetch(`/site-auth`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -86,7 +80,7 @@ export class AuthenticationManager {
     if (!currentSignIn) { return; }
     if (!currentSignIn.uid) { return; }
     return new Promise((resolve, reject) => {
-      fetch(`${developmentHostname}/site-auth?id=${currentSignIn.uid}`).then((res) => {
+      getAuthClient().fetch(`/site-auth?id=${currentSignIn.uid}`).then((res) => {
         res.json().then((json) => {
           resolve(json[perm]);
         })

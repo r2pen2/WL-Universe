@@ -1,0 +1,19 @@
+{
+  "name": "@wl-universe/wl-auth",
+  "version": "1.0.0",
+  "description": "Shared site-auth microservice for WL-Universe",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "author": "Joe Dobbelaar",
+  "license": "ISC",
+  "private": true,
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "firebase-admin": "^11.10.1"
+  }
+}

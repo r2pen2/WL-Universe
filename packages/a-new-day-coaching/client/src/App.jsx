@@ -27,10 +27,16 @@ import { Link, Spacer, Text } from '@nextui-org/react';
 import  {FooterAuthButton} from "./libraries/Web-Legos/components/Auth.jsx"
 
 import {MailManager} from "./libraries/Web-Legos/api/mail.ts"
+import { CmsManager } from "./libraries/Web-Legos/api/cms.ts"
+import { configureAuthClient, configureFormsClient } from "./libraries/Web-Legos/api/services.ts"
 
 export const ANDCMailManager = new MailManager({ site: "andc" });
 ANDCMailManager.addRecipientEmail("joedobbelaar@gmail.com");
 ANDCMailManager.addRecipientEmail("rachel.newday@gmail.com");
+
+CmsManager.configure({ site: "a-new-day-coaching" });
+configureAuthClient({ site: "a-new-day-coaching" });
+configureFormsClient({ site: "a-new-day-coaching" });
 
 /** Context to keep track of current user */
 export const CurrentSignInContext = createContext();

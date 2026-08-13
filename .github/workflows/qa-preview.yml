@@ -76,19 +76,31 @@ jobs:
           set -euo pipefail
           mapfile -t apps < <(node -e 'JSON.parse(process.env.APPS_JSON).forEach(a=>console.log(a))')
           declare -A ports=(
-            [nicole-levin]=3005
-            [a-new-day-coaching]=3007
+            [nicole-levin]=8080
+            [a-new-day-coaching]=8080
             [a-new-day-coaching-crm]=3008
-            [beyond-the-bell]=3000
+            [beyond-the-bell]=8080
             [wl-admin-portal]=25565
-            [you-can-do-it-gardening]=3003
+            [you-can-do-it-gardening]=8080
             [joe-dobbelaar]=3002
-            [talk-about-dreams]=3004
-            [boston-mixtape]=3010
+            [talk-about-dreams]=8080
+            [boston-mixtape]=8080
             [site-mail]=3020
+            [wl-cms]=3021
+            [wl-auth]=3022
+            [wl-forms]=3023
           )
           declare -A dockerfiles=(
             [site-mail]=deploy/docker/node-express.Dockerfile
+            [wl-cms]=deploy/docker/node-express.Dockerfile
+            [wl-auth]=deploy/docker/node-express.Dockerfile
+            [wl-forms]=deploy/docker/node-express.Dockerfile
+            [nicole-levin]=deploy/docker/spa-static.Dockerfile
+            [beyond-the-bell]=deploy/docker/spa-static.Dockerfile
+            [talk-about-dreams]=deploy/docker/spa-static.Dockerfile
+            [boston-mixtape]=deploy/docker/spa-static.Dockerfile
+            [a-new-day-coaching]=deploy/docker/spa-static.Dockerfile
+            [you-can-do-it-gardening]=deploy/docker/spa-static.Dockerfile
           )
 
           owner_lc="$(echo "$OWNER" | tr '[:upper:]' '[:lower:]')"
@@ -123,6 +135,12 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        run: |
+          set -euo pipefail
+          # compose pull runs via sudo; login must be for root's docker config
+          echo "${{ secrets.GITHUB_TOKEN }}" | sudo docker login ghcr.io -u "${{ github.actor }}" --password-stdin
 
       - name: Deploy QA stacks
         id: deploy

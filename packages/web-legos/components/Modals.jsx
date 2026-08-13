@@ -14,9 +14,11 @@ import FavoriteTwoToneIcon from '@mui/icons-material/FavoriteTwoTone';
 import { ImageCompressor } from "../api/images";
 
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-import { getHostname } from "../api/development.ts";
+import { CmsManager, cmsAssetUrl } from "../api/cms.ts";
 
-const developmentHostname = getHostname();
+function cms() {
+  return CmsManager.getShared();
+}
 
 /**
  * @param {boolean} open - whether modal is open
@@ -156,7 +158,7 @@ export function ModelEditModal({open, setOpen, model}) {
         <div key={index} className="py-2 px-lg-5 px-2 d-flex flex-column align-items-center justify-content-center col-xl-4 col-lg-6 col-md-12">
           <Text h5>{compressing ? "Compressing..." : imageKey}</Text>
           { compressing && <Loading />}
-          { !compressing && imagesState[imageKey] && <img onClick={() => handleImageClick(imageKey)} className="web-legos-editable-image" src={getHostname() + "/" + imagesState[imageKey]} alt={imageKey} style={{maxHeight: imageSize, width: "100%", height: "100%", objectFit:"contain",}}/> }
+          { !compressing && imagesState[imageKey] && <img onClick={() => handleImageClick(imageKey)} className="web-legos-editable-image" src={cmsAssetUrl(imagesState[imageKey])} alt={imageKey} style={{maxHeight: imageSize, width: "100%", height: "100%", objectFit:"contain",}}/> }
           { !compressing && !imagesState[imageKey] && <UploadImageCard size={imageSize} fullSize onClick={() => handleImageClick(imageKey)}/> }
         </div>
       )
@@ -208,7 +210,7 @@ export function ModelEditModal({open, setOpen, model}) {
     if (key === "confirm") {
       for (const image of Object.values(model.images)) {
         const imageToDeleteFilename = image.substring(image.lastIndexOf("/") + 1);
-        fetch(`${developmentHostname}/delete-img?path=${model.collection}/${imageToDeleteFilename}`, {
+        cms().fetch(`/delete-img?path=${model.collection}/${imageToDeleteFilename}`, {
           method: "POST",
         });
       }
@@ -238,13 +240,13 @@ export function ModelEditModal({open, setOpen, model}) {
       const formData = new FormData();
       const addPath = `images/${model.collection}/${newFileName}`;
       formData.append("file", compressedImage);
-      console.log(`${developmentHostname}/${addPath}`)
-      await fetch(`${developmentHostname}/${addPath}`, {
+      console.log(`${cms().urlFor(`/${addPath}`)}`)
+      await cms().fetch(`/${addPath}`, {
         method: "POST",
         body: formData,
       });
       if (imageToReplace) {
-        await fetch(`${developmentHostname}/delete-img?path=${model.collection}/${imageToReplaceFileName}`, {
+        await cms().fetch(`/delete-img?path=${model.collection}/${imageToReplaceFileName}`, {
           method: "POST",
         });
       }
