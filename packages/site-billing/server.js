@@ -16,7 +16,7 @@ const logger = require("./lib/logger");
 
 dotenv.config({ path: path.join(__dirname, ".env") });
 
-const PORT = Number(process.env.PORT) || 3021;
+const PORT = Number(process.env.PORT) || 3024;
 const RECONCILE_MS =
   Number(process.env.SITE_BILLING_RECONCILE_MS) || 60 * 60 * 1000;
 const ENFORCE_MS =

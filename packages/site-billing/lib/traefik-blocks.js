@@ -14,7 +14,7 @@ function traefikDynamicPath() {
 function billingServiceUrl() {
   return (
     process.env.SITE_BILLING_TRAEFIK_SERVICE_URL ||
-    "http://site-billing:3021"
+    "http://site-billing:3024"
   );
 }
 

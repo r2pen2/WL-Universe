@@ -21,7 +21,7 @@ async function withTempEnv(fn) {
   process.env.SITE_BILLING_STATE_DIR = stateDir;
   process.env.SITE_BILLING_TRAEFIK_DYNAMIC_PATH = traefikPath;
   process.env.SITE_BILLING_CATALOG_PATH = catalogPath;
-  process.env.SITE_BILLING_TRAEFIK_SERVICE_URL = "http://site-billing:3021";
+  process.env.SITE_BILLING_TRAEFIK_SERVICE_URL = "http://site-billing:3024";
   delete process.env.STRIPE_SECRET_KEY;
 
   for (const key of Object.keys(require.cache)) {

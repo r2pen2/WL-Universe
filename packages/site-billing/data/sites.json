@@ -2,7 +2,7 @@
   "graceDays": 7,
   "hardStopAfterDays": 14,
   "contactEmail": "joe@joed.dev",
-  "notes": "All client sites are listed. Only beyond-the-bell has billingRequired=true for now — paste its Stripe ids when ready. Flip billingRequired on others when retainers move to Stripe.",
+  "notes": "All client sites are listed. Only beyond-the-bell has billingRequired=true. Stripe ids are filled on deploy by scripts/billing/bootstrap-stripe.mjs once STRIPE_SECRET_KEY is real.",
   "sites": [
     {
       "id": "nicole-levin",

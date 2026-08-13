@@ -27,22 +27,33 @@ stay online until you flip the flag and paste their Stripe ids.
 
 ## Bootstrap a client (Beyond the Bell first)
 
-1. Put real `STRIPE_SECRET_KEY` / `STRIPE_WEBHOOK_SECRET` in
-   `/opt/services/data/app-env/site-billing.env` (replace `sk_test_...` stubs).
-2. Create a Stripe Product/Price for the monthly retainer (Dashboard or API).
-3. Call `POST /v1/subscribe` with API key, or create Customer + Subscription in
-   the Stripe Dashboard.
-4. Paste `stripeCustomerId`, `stripeSubscriptionId`, `stripePriceId` into
-   `deploy/billing/sites.json` for `beyond-the-bell`, keep
-   `billingRequired: true`.
-5. Deploy / copy catalog to `/opt/services/apps/site-billing/catalog/sites.json`.
-6. Point a Stripe webhook at `https://billing.joed.dev/v1/webhooks/stripe`
-   for: `customer.subscription.*`, `invoice.paid`, `invoice.payment_failed`.
-7. Send the client a portal link via `POST /v1/portal-session`
+Go-live is automated on deploy once a real Stripe key is in the env file:
+
+1. Put a real `STRIPE_SECRET_KEY` in `/opt/services/data/app-env/site-billing.env`
+   (replace the `sk_test_...` stub). Optional: `SITE_BILLING_CUSTOMER_EMAIL`,
+   `SITE_BILLING_RETAINER_USD` (default **75**).
+2. Deploy `site-billing`. The publish job:
+   - Ensures Cloudflare DNS + tunnel ingress for `billing.joed.dev`
+   - Runs [`scripts/billing/bootstrap-stripe.mjs`](../scripts/billing/bootstrap-stripe.mjs)
+     to create/reuse Product, monthly Price, Customer, Subscription (send_invoice),
+     and webhook `https://billing.joed.dev/v1/webhooks/stripe`
+   - Writes `cus_` / `sub_` / `price_` into the live catalog mount
+   - Generates `SITE_BILLING_API_KEY` and `STRIPE_WEBHOOK_SECRET` if they are still stubs
+3. Send the client a portal link via `POST /v1/portal-session`
    `{ "site": "beyond-the-bell" }`.
 
-When another client is ready: set `billingRequired: true`, paste their Stripe
-ids, redeploy the catalog.
+Manual equivalent:
+
+```bash
+CLOUDFLARE_API_TOKEN=... node scripts/billing/ensure-billing-hostname.mjs
+sudo node scripts/billing/bootstrap-stripe.mjs \
+  --env-file /opt/services/data/app-env/site-billing.env \
+  --write-catalog /opt/services/apps/site-billing/catalog/sites.json \
+  --write-env
+```
+
+When another client is ready: set `billingRequired: true`, set
+`SITE_BILLING_BOOTSTRAP_SITE=<id>`, redeploy (or re-run bootstrap `--site <id>`).
 
 ## Ops API (Bearer `SITE_BILLING_API_KEY`)
 
@@ -82,7 +93,8 @@ sudo chmod +x /opt/services/bin/wl-billing-enforce-compose.mjs
 sudo cp deploy/cron/wl-billing.cron /etc/cron.d/wl-billing
 ```
 
-Add Cloudflare Tunnel hostname `billing.joed.dev` → Traefik.
+Add Cloudflare Tunnel hostname `billing.joed.dev` → Traefik
+(or run `scripts/billing/ensure-billing-hostname.mjs`).
 
 Soft-block writes `/opt/services/infra/traefik/dynamic/billing-blocks.yml` while sites
 are past grace; the file is **deleted** when all sites are clear (Traefik rejects

@@ -155,6 +155,26 @@ jobs:
           fi
           node scripts/dns/ensure-mail-dns.mjs --apps "${MAIL_APPS}"
 
+  ensure-billing-hostname:
+    name: ensure billing.joed.dev
+    needs: detect
+    if: contains(needs.detect.outputs.apps_csv, 'site-billing')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Ensure billing hostname
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${CLOUDFLARE_API_TOKEN}" ]]; then
+            echo "::error::CLOUDFLARE_API_TOKEN secret is not set"
+            exit 1
+          fi
+          node scripts/billing/ensure-billing-hostname.mjs
+
   # Single runner so Buildx boots once (moby/buildkit pull).
   publish:
     name: build & push changed images
@@ -303,8 +323,13 @@ jobs:
             sudo chmod 644 /etc/cron.d/wl-billing
             if [ ! -f /opt/services/data/app-env/site-billing.env ]; then
               sudo cp deploy/compose/site-billing.env.example /opt/services/data/app-env/site-billing.env
-              echo "::warning::Created stub site-billing.env — fill STRIPE_* and SITE_BILLING_API_KEY before go-live"
+              echo "::warning::Created stub site-billing.env — fill STRIPE_SECRET_KEY then re-run bootstrap"
             fi
+            sudo cp scripts/billing/bootstrap-stripe.mjs /opt/services/bin/wl-billing-bootstrap-stripe.mjs
+            sudo node /opt/services/bin/wl-billing-bootstrap-stripe.mjs \
+              --env-file /opt/services/data/app-env/site-billing.env \
+              --write-catalog "${app_dir}/catalog/sites.json" \
+              --write-env
           fi
 
           cd "${app_dir}"
