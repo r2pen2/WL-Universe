@@ -67,61 +67,13 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push changed apps
-        env:
-          OWNER: ${{ github.repository_owner }}
-          SHA: ${{ github.sha }}
-          PR: ${{ github.event.pull_request.number }}
-          APPS_JSON: ${{ needs.detect.outputs.apps }}
-        run: |
-          set -euo pipefail
-          mapfile -t apps < <(node -e 'JSON.parse(process.env.APPS_JSON).forEach(a=>console.log(a))')
-          declare -A ports=(
-            [nicole-levin]=8080
-            [a-new-day-coaching]=8080
-            [a-new-day-coaching-crm]=3008
-            [beyond-the-bell]=8080
-            [wl-admin-portal]=25565
-            [you-can-do-it-gardening]=8080
-            [joe-dobbelaar]=3002
-            [talk-about-dreams]=8080
-            [boston-mixtape]=8080
-            [site-mail]=3020
-            [wl-cms]=3021
-            [wl-auth]=3022
-            [wl-forms]=3023
-          )
-          declare -A dockerfiles=(
-            [site-mail]=deploy/docker/node-express.Dockerfile
-            [wl-cms]=deploy/docker/node-express.Dockerfile
-            [wl-auth]=deploy/docker/node-express.Dockerfile
-            [wl-forms]=deploy/docker/node-express.Dockerfile
-            [nicole-levin]=deploy/docker/spa-static.Dockerfile
-            [beyond-the-bell]=deploy/docker/spa-static.Dockerfile
-            [talk-about-dreams]=deploy/docker/spa-static.Dockerfile
-            [boston-mixtape]=deploy/docker/spa-static.Dockerfile
-            [a-new-day-coaching]=deploy/docker/spa-static.Dockerfile
-            [you-can-do-it-gardening]=deploy/docker/spa-static.Dockerfile
-          )
-
-          owner_lc="$(echo "$OWNER" | tr '[:upper:]' '[:lower:]')"
-          for app in "${apps[@]}"; do
-            port="${ports[$app]}"
-            file="${dockerfiles[$app]:-deploy/docker/node-react-express.Dockerfile}"
-            image="ghcr.io/${owner_lc}/wl-universe-${app}"
-            echo "::group::Build ${app} → ${image}:pr-${PR}"
-            docker buildx build \
-              --file "${file}" \
-              --build-arg "APP_DIR=packages/${app}" \
-              --build-arg "APP_NAME=${app}" \
-              --build-arg "PORT=${port}" \
-              --tag "${image}:pr-${PR}" \
-              --tag "${image}:pr-${PR}-${SHA}" \
-              --cache-from "type=gha,scope=qa-${app}" \
-              --cache-to "type=gha,mode=max,scope=qa-${app}" \
-              --push \
-              .
-            echo "::endgroup::"
-          done
+        uses: r2pen2/deploy-infra-actions/actions/build-push@main
+        with:
+          catalog: deploy/apps.json
+          apps: ${{ needs.detect.outputs.apps_csv }}
+          owner: ${{ github.repository_owner }}
+          sha: ${{ github.sha }}
+          tag-prefix: pr-${{ github.event.pull_request.number }}
 
   deploy:
     name: deploy on glados
@@ -136,32 +88,16 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Log in to GHCR
-        run: |
-          set -euo pipefail
-          # compose pull runs via sudo; login must be for root's docker config
-          echo "${{ secrets.GITHUB_TOKEN }}" | sudo docker login ghcr.io -u "${{ github.actor }}" --password-stdin
-
       - name: Deploy QA stacks
         id: deploy
-        env:
-          PR: ${{ github.event.pull_request.number }}
-          APPS_CSV: ${{ needs.detect.outputs.apps_csv }}
-          SHA: ${{ github.sha }}
-          OWNER: ${{ github.repository_owner }}
-        run: |
-          set -euo pipefail
-          node scripts/qa/deploy-pr.mjs \
-            --pr "$PR" \
-            --apps "$APPS_CSV" \
-            --sha "$SHA" \
-            --owner "$OWNER" \
-            --out /tmp/qa-deployments-${PR}.json
-          {
-            echo "deployments<<EOF"
-            cat "/tmp/qa-deployments-${PR}.json"
-            echo "EOF"
-          } >> "$GITHUB_OUTPUT"
+        uses: r2pen2/deploy-infra-actions/actions/qa-deploy@main
+        with:
+          catalog: deploy/apps.json
+          apps: ${{ needs.detect.outputs.apps_csv }}
+          pr: ${{ github.event.pull_request.number }}
+          sha: ${{ github.sha }}
+          owner: ${{ github.repository_owner }}
+          firestore-script: scripts/qa/firestore-qa.mjs
 
   comment:
     name: PR comment

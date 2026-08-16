@@ -23,12 +23,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Compose down + registry remove
-        env:
-          PR: ${{ github.event.pull_request.number }}
-          OWNER: ${{ github.repository_owner }}
-        run: |
-          set -euo pipefail
-          node scripts/qa/cleanup-pr.mjs --pr "$PR" --owner "$OWNER" --prune-images
+        uses: r2pen2/deploy-infra-actions/actions/qa-cleanup@main
+        with:
+          catalog: deploy/apps.json
+          pr: ${{ github.event.pull_request.number }}
+          owner: ${{ github.repository_owner }}
+          prune-images: "true"
+          firestore-script: scripts/qa/firestore-qa.mjs
 
   comment:
     name: clear QA comment

@@ -1,5 +1,8 @@
 # Deploy
 
+App catalog for CI: [`apps.json`](./apps.json) (consumed by
+[`r2pen2/deploy-infra-actions`](https://github.com/r2pen2/deploy-infra-actions)).
+
 This folder holds shared deployment building blocks.
 
 - `docker/node-react-express.Dockerfile` builds apps that have an Express server at the package root and a React client in `client/`.

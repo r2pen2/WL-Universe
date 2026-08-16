@@ -1,0 +1,162 @@
+{
+  "imagePrefix": "wl-universe",
+  "qaHostDomain": "joed.dev",
+  "apps": [
+    {
+      "app": "nicole-levin",
+      "port": 3005,
+      "kind": "spa",
+      "packagePath": "packages/nicole-levin",
+      "dockerfile": "deploy/docker/node-react-express.Dockerfile",
+      "compose": "deploy/compose/nicole-levin.yml",
+      "serviceDir": "nicole-levin",
+      "cms": true,
+      "watchPaths": [
+        "packages/nicole-levin/",
+        "deploy/compose/nicole-levin.yml"
+      ]
+    },
+    {
+      "app": "a-new-day-coaching",
+      "port": 3007,
+      "kind": "spa",
+      "packagePath": "packages/a-new-day-coaching",
+      "dockerfile": "deploy/docker/node-react-express.Dockerfile",
+      "compose": "deploy/compose/a-new-day-coaching.yml",
+      "serviceDir": "a-new-day-coaching",
+      "cms": true,
+      "watchPaths": [
+        "packages/a-new-day-coaching/",
+        "deploy/compose/a-new-day-coaching.yml"
+      ]
+    },
+    {
+      "app": "a-new-day-coaching-crm",
+      "port": 3008,
+      "kind": "spa",
+      "packagePath": "packages/a-new-day-coaching-crm",
+      "dockerfile": "deploy/docker/node-react-express.Dockerfile",
+      "compose": "deploy/compose/a-new-day-coaching-crm.yml",
+      "serviceDir": "a-new-day-coaching-crm",
+      "extraVolumes": ["cal"],
+      "watchPaths": [
+        "packages/a-new-day-coaching-crm/",
+        "deploy/compose/a-new-day-coaching-crm.yml"
+      ]
+    },
+    {
+      "app": "beyond-the-bell",
+      "port": 3000,
+      "kind": "spa",
+      "packagePath": "packages/beyond-the-bell",
+      "dockerfile": "deploy/docker/node-react-express.Dockerfile",
+      "compose": "deploy/compose/beyond-the-bell.yml",
+      "serviceDir": "beyond-the-bell",
+      "cms": true,
+      "watchPaths": [
+        "packages/beyond-the-bell/",
+        "deploy/compose/beyond-the-bell.yml",
+        "deploy/dns/sites/beyond-the-bell.json"
+      ]
+    },
+    {
+      "app": "wl-admin-portal",
+      "port": 25565,
+      "kind": "spa",
+      "packagePath": "packages/wl-admin-portal",
+      "dockerfile": "deploy/docker/node-react-express.Dockerfile",
+      "compose": "deploy/compose/wl-admin-portal.yml",
+      "serviceDir": "wl-admin-portal",
+      "watchPaths": [
+        "packages/wl-admin-portal/",
+        "deploy/compose/wl-admin-portal.yml"
+      ]
+    },
+    {
+      "app": "you-can-do-it-gardening",
+      "port": 3003,
+      "kind": "spa",
+      "packagePath": "packages/you-can-do-it-gardening",
+      "dockerfile": "deploy/docker/node-react-express.Dockerfile",
+      "compose": "deploy/compose/you-can-do-it-gardening.yml",
+      "serviceDir": "you-can-do-it-gardening",
+      "cms": true,
+      "watchPaths": [
+        "packages/you-can-do-it-gardening/",
+        "deploy/compose/you-can-do-it-gardening.yml",
+        "deploy/dns/sites/you-can-do-it-gardening.json"
+      ]
+    },
+    {
+      "app": "joe-dobbelaar",
+      "port": 3002,
+      "kind": "spa",
+      "packagePath": "packages/joe-dobbelaar",
+      "dockerfile": "deploy/docker/node-react-express.Dockerfile",
+      "compose": "deploy/compose/joe-dobbelaar.yml",
+      "serviceDir": "joe-dobbelaar",
+      "watchPaths": [
+        "packages/joe-dobbelaar/",
+        "deploy/compose/joe-dobbelaar.yml"
+      ]
+    },
+    {
+      "app": "talk-about-dreams",
+      "port": 3004,
+      "kind": "spa",
+      "packagePath": "packages/talk-about-dreams",
+      "dockerfile": "deploy/docker/node-react-express.Dockerfile",
+      "compose": "deploy/compose/talk-about-dreams.yml",
+      "serviceDir": "talk-about-dreams",
+      "cms": true,
+      "watchPaths": [
+        "packages/talk-about-dreams/",
+        "deploy/compose/talk-about-dreams.yml"
+      ]
+    },
+    {
+      "app": "boston-mixtape",
+      "port": 3010,
+      "kind": "spa",
+      "packagePath": "packages/boston-mixtape",
+      "dockerfile": "deploy/docker/node-react-express.Dockerfile",
+      "compose": "deploy/compose/boston-mixtape.yml",
+      "serviceDir": "boston-mixtape",
+      "cms": true,
+      "watchPaths": [
+        "packages/boston-mixtape/",
+        "deploy/compose/boston-mixtape.yml"
+      ]
+    },
+    {
+      "app": "site-mail",
+      "port": 3020,
+      "kind": "express",
+      "packagePath": "packages/site-mail",
+      "dockerfile": "deploy/docker/node-express.Dockerfile",
+      "compose": "deploy/compose/site-mail.yml",
+      "serviceDir": "site-mail",
+      "watchPaths": [
+        "packages/site-mail/",
+        "deploy/compose/site-mail.yml",
+        "deploy/docker/node-express.Dockerfile"
+      ]
+    },
+    {
+      "app": "docs",
+      "port": 8080,
+      "kind": "static",
+      "packagePath": "packages/docs",
+      "dockerfile": "deploy/docker/docs-static.Dockerfile",
+      "compose": "deploy/compose/docs.yml",
+      "serviceDir": "docs",
+      "qa": false,
+      "watchPaths": [
+        "packages/docs/",
+        "scripts/docs/",
+        "deploy/compose/docs.yml",
+        "deploy/docker/docs-static.Dockerfile"
+      ]
+    }
+  ]
+}

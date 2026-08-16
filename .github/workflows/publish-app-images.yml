@@ -10,6 +10,7 @@ on:
       - "deploy/docker/**"
       - "deploy/compose/**"
       - "deploy/dns/**"
+      - "deploy/apps.json"
       - "scripts/**"
       - ".github/workflows/publish-app-images.yml"
       - "package.json"
@@ -66,7 +67,6 @@ jobs:
                 })
               ')"
             else
-              # Validate requested app names against the publish catalog.
               json="$(node -e '
                 import("./scripts/qa/apps.mjs").then((m) => {
                   const wanted = process.env.INPUT_APPS.split(",").map((s) => s.trim()).filter(Boolean);
@@ -107,7 +107,6 @@ jobs:
           csv="$(node -e 'const j=JSON.parse(process.argv[1]); process.stdout.write((j.apps||[]).join(","))' "${json}")"
           count="$(node -e 'const j=JSON.parse(process.argv[1]); process.stdout.write(String((j.apps||[]).length))' "${json}")"
 
-          # Intersection of changed apps with deploy/dns/sites/*.json email.enabled
           mail_csv="$(node -e '
             import("./scripts/dns/load-mail-config.mjs").then((m) => {
               const changed = new Set(JSON.parse(process.argv[1]));
@@ -154,7 +153,6 @@ jobs:
           fi
           node scripts/dns/ensure-mail-dns.mjs --apps "${MAIL_APPS}"
 
-  # Single runner so Buildx boots once (moby/buildkit pull).
   publish:
     name: build & push changed images
     needs: detect
@@ -175,94 +173,15 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push changed app images
-        env:
-          OWNER: ${{ github.repository_owner }}
-          SHA: ${{ github.sha }}
-          APPS_CSV: ${{ needs.detect.outputs.apps_csv }}
-        run: |
-          set -euo pipefail
-
-          # Resolve port/dockerfile from the shared catalog.
-          mapfile -t build_entries < <(node -e '
-            import("./scripts/qa/apps.mjs").then((m) => {
-              const wanted = new Set((process.env.APPS_CSV || "").split(",").filter(Boolean));
-              for (const a of m.PUBLISH_APPS) {
-                if (!wanted.has(a.app)) continue;
-                const file = a.dockerfile || "";
-                process.stdout.write(`${a.app}|${a.port}|${file}\n`);
-              }
-            })
-          ')
-
-          if [ "${#build_entries[@]}" -eq 0 ]; then
-            echo "Nothing to build."
-            exit 0
-          fi
-
-          build_one() {
-            local app="$1" port="$2" dockerfile="$3"
-            local image="ghcr.io/${OWNER}/wl-universe-${app}"
-            local file="${dockerfile:-deploy/docker/node-react-express.Dockerfile}"
-
-            echo "::group::Build ${app}"
-            docker buildx build \
-              --file "${file}" \
-              --build-arg "APP_DIR=packages/${app}" \
-              --build-arg "APP_NAME=${app}" \
-              --build-arg "PORT=${port}" \
-              --tag "${image}:latest" \
-              --tag "${image}:${SHA}" \
-              --cache-from "type=gha,scope=${app}" \
-              --cache-to "type=gha,mode=max,scope=${app}" \
-              --push \
-              .
-            echo "::endgroup::"
-          }
-
-          max_jobs=3
-          fail=0
-          declare -a pids=()
-          declare -a names=()
-
-          reap() {
-            local new_pids=() new_names=()
-            local i
-            for i in "${!pids[@]}"; do
-              local pid="${pids[$i]}"
-              if kill -0 "${pid}" 2>/dev/null; then
-                new_pids+=("${pid}")
-                new_names+=("${names[$i]}")
-                continue
-              fi
-              if ! wait "${pid}"; then
-                echo "::error::Build failed for ${names[$i]}"
-                fail=1
-              fi
-            done
-            pids=("${new_pids[@]}")
-            names=("${new_names[@]}")
-          }
-
-          for entry in "${build_entries[@]}"; do
-            IFS='|' read -r app port dockerfile <<< "${entry}"
-            while [ "${#pids[@]}" -ge "${max_jobs}" ]; do
-              sleep 2
-              reap
-            done
-            build_one "${app}" "${port}" "${dockerfile}" &
-            pids+=("$!")
-            names+=("${app}")
-          done
-
-          while [ "${#pids[@]}" -gt 0 ]; do
-            reap
-            [ "${#pids[@]}" -eq 0 ] || sleep 1
-          done
-
-          exit "${fail}"
+        uses: r2pen2/deploy-infra-actions/actions/build-push@main
+        with:
+          catalog: deploy/apps.json
+          apps: ${{ needs.detect.outputs.apps_csv }}
+          owner: ${{ github.repository_owner }}
+          sha: ${{ github.sha }}
 
   deploy:
-    name: deploy (${{ matrix.app }})
+    name: deploy on glados
     needs:
       - detect
       - publish
@@ -273,25 +192,13 @@ jobs:
       (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master') &&
       needs.detect.outputs.has_apps == 'true' &&
       needs.publish.result == 'success'
-    strategy:
-      fail-fast: false
-      matrix:
-        app: ${{ fromJSON(needs.detect.outputs.apps) }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Deploy compose app
-        run: |
-          set -euo pipefail
-          app="${{ matrix.app }}"
-          app_dir="/opt/services/apps/${app}"
-          compose_file="${app_dir}/compose.yml"
-
-          sudo mkdir -p "${app_dir}"
-          sudo cp "deploy/compose/${app}.yml" "${compose_file}"
-
-          cd "${app_dir}"
-          sudo docker compose -f "${compose_file}" pull
-          sudo docker compose -f "${compose_file}" up -d
-          sudo docker compose -f "${compose_file}" ps
+      - name: Deploy compose apps
+        uses: r2pen2/deploy-infra-actions/actions/deploy-prod@main
+        with:
+          catalog: deploy/apps.json
+          apps: ${{ needs.detect.outputs.apps_csv }}
+          sha: ${{ github.sha }}
