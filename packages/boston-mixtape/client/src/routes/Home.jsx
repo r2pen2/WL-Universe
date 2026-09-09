@@ -224,7 +224,7 @@ export default function Home() {
         />
       </section>
       <Ensemble />
-      <section style={{position: "relative"}} className="red-content peaks-responsive">
+      <section style={{position: "relative", backgroundColor: "#9c2c45"}} className="red-content peaks-responsive">
         <Peaks />
         <div className="container-fluid px-2 px-sm-3" style={{zIndex: 2}}>
           <div className="row">
