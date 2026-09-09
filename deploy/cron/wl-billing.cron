@@ -1,0 +1,6 @@
+# WL-Universe site-billing compose enforcer (soft→hard stop / restore)
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+MAILTO=""
+# Runs as root so docker compose can use the host socket.
+*/5 * * * * root /usr/bin/node /opt/services/bin/wl-billing-enforce-compose.mjs >> /opt/services/data/app-assets/site-billing/enforce-compose.log 2>&1

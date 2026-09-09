@@ -93,6 +93,15 @@ export function generateCompose({ pr, app, owner, tag }) {
       `      SITE_MAIL_DISABLE_SEND: ${yamlQuote("1")}`,
     );
   }
+  if (entry.kind === "express" && app === "site-billing") {
+    // Isolate Traefik writes so QA cannot soft-block production hosts.
+    environment.push(
+      `      SITE_BILLING_STATE_DIR: /opt/services/data/app-assets/site-billing`,
+      `      SITE_BILLING_TRAEFIK_DYNAMIC_PATH: /opt/services/data/app-assets/site-billing/billing-blocks.yml`,
+      `      SITE_BILLING_TRAEFIK_SERVICE_URL: ${yamlQuote(`http://${container}:${port}`)}`,
+      `      SITE_BILLING_ALLOW_DEBUG: ${yamlQuote("true")}`,
+    );
+  }
   if (entry.kind === "express" && entry.cms !== false && app === "wl-cms") {
     environment.push(
       `      CMS_COLLECTION_PREFIX: ${yamlQuote(cmsCollectionPrefix(pr))}`,

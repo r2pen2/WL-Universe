@@ -15,6 +15,7 @@
     { "name": "wl-cms", "url": "https://wl-cms.joed.dev/liveness" },
     { "name": "wl-auth", "url": "https://wl-auth.joed.dev/liveness" },
     { "name": "wl-forms", "url": "https://wl-forms.joed.dev/liveness" },
+    { "name": "site-billing", "url": "https://billing.joed.dev/liveness" },
     { "name": "umami-analytics", "url": "https://analytics.joed.dev/api/heartbeat" }
   ]
 }

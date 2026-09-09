@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Hosting paused</title>
+    <style>
+      :root {
+        --bg: #1a1f1c;
+        --fg: #f2efe6;
+        --muted: #b7b2a5;
+        --accent: #c4a574;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 2rem;
+        font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+        background:
+          radial-gradient(ellipse at 20% 0%, #2a332c 0%, transparent 50%),
+          radial-gradient(ellipse at 80% 100%, #243028 0%, transparent 45%),
+          var(--bg);
+        color: var(--fg);
+      }
+      main {
+        max-width: 32rem;
+        text-align: center;
+      }
+      h1 {
+        font-size: clamp(1.75rem, 4vw, 2.4rem);
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        margin: 0 0 0.75rem;
+      }
+      p {
+        margin: 0 0 1rem;
+        color: var(--muted);
+        line-height: 1.55;
+        font-size: 1.05rem;
+      }
+      a {
+        color: var(--accent);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Hosting paused</h1>
+      <p>
+        This site is temporarily offline because hosting payment has not been
+        received. If you believe this is a mistake, or to update your payment
+        method, contact
+        <a href="mailto:CONTACT_EMAIL_PLACEHOLDER">CONTACT_EMAIL_PLACEHOLDER</a>.
+      </p>
+    </main>
+  </body>
+</html>

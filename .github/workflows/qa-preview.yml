@@ -74,39 +74,26 @@ jobs:
           APPS_JSON: ${{ needs.detect.outputs.apps }}
         run: |
           set -euo pipefail
-          mapfile -t apps < <(node -e 'JSON.parse(process.env.APPS_JSON).forEach(a=>console.log(a))')
-          declare -A ports=(
-            [nicole-levin]=8080
-            [a-new-day-coaching]=8080
-            [a-new-day-coaching-crm]=3008
-            [beyond-the-bell]=8080
-            [wl-admin-portal]=25565
-            [you-can-do-it-gardening]=8080
-            [joe-dobbelaar]=3002
-            [talk-about-dreams]=8080
-            [boston-mixtape]=8080
-            [site-mail]=3020
-            [wl-cms]=3021
-            [wl-auth]=3022
-            [wl-forms]=3023
-          )
-          declare -A dockerfiles=(
-            [site-mail]=deploy/docker/node-express.Dockerfile
-            [wl-cms]=deploy/docker/node-express.Dockerfile
-            [wl-auth]=deploy/docker/node-express.Dockerfile
-            [wl-forms]=deploy/docker/node-express.Dockerfile
-            [nicole-levin]=deploy/docker/spa-static.Dockerfile
-            [beyond-the-bell]=deploy/docker/spa-static.Dockerfile
-            [talk-about-dreams]=deploy/docker/spa-static.Dockerfile
-            [boston-mixtape]=deploy/docker/spa-static.Dockerfile
-            [a-new-day-coaching]=deploy/docker/spa-static.Dockerfile
-            [you-can-do-it-gardening]=deploy/docker/spa-static.Dockerfile
-          )
+          mapfile -t build_entries < <(node -e '
+            import("./scripts/qa/apps.mjs").then((m) => {
+              const wanted = new Set(JSON.parse(process.env.APPS_JSON || "[]"));
+              for (const a of m.ALL_APPS) {
+                if (!wanted.has(a.app)) continue;
+                const file = a.dockerfile || "";
+                process.stdout.write(`${a.app}|${a.port}|${file}\n`);
+              }
+            })
+          ')
+
+          if [ "${#build_entries[@]}" -eq 0 ]; then
+            echo "Nothing to build."
+            exit 0
+          fi
 
           owner_lc="$(echo "$OWNER" | tr '[:upper:]' '[:lower:]')"
-          for app in "${apps[@]}"; do
-            port="${ports[$app]}"
-            file="${dockerfiles[$app]:-deploy/docker/node-react-express.Dockerfile}"
+          for entry in "${build_entries[@]}"; do
+            IFS='|' read -r app port dockerfile <<< "${entry}"
+            file="${dockerfile:-deploy/docker/node-react-express.Dockerfile}"
             image="ghcr.io/${owner_lc}/wl-universe-${app}"
             echo "::group::Build ${app} → ${image}:pr-${PR}"
             docker buildx build \
