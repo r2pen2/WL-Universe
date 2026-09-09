@@ -203,6 +203,71 @@ test("webhook handleStripeEvent applies past_due and restore", async () => {
   });
 });
 
+test("webhook applies one shared subscription to every site on it (family plan)", async () => {
+  await withTempEnv(async ({ tmp }) => {
+    const catalog = JSON.parse(
+      fs.readFileSync(
+        path.join(repoRoot, "deploy/billing/sites.json"),
+        "utf8",
+      ),
+    );
+    const familyIds = [
+      "boston-mixtape",
+      "a-new-day-coaching",
+      "a-new-day-coaching-crm",
+    ];
+    catalog.sites = catalog.sites.map((s) =>
+      familyIds.includes(s.id)
+        ? {
+            ...s,
+            billingRequired: true,
+            stripeCustomerId: "cus_family",
+            stripeSubscriptionId: "sub_family",
+          }
+        : s,
+    );
+    const catalogPath = path.join(tmp, "sites.json");
+    fs.writeFileSync(catalogPath, JSON.stringify(catalog, null, 2));
+    process.env.SITE_BILLING_CATALOG_PATH = catalogPath;
+
+    for (const key of Object.keys(require.cache)) {
+      if (key.includes(`${path.sep}site-billing${path.sep}`)) {
+        delete require.cache[key];
+      }
+    }
+
+    const { handleStripeEvent } = require("../lib/webhooks.js");
+    const { readState } = require("../lib/entitlement.js");
+
+    const failed = await handleStripeEvent({
+      type: "invoice.payment_failed",
+      data: {
+        object: { id: "in_fam_1", customer: "cus_family", subscription: "sub_family" },
+      },
+    });
+    assert.equal(failed.ok, true);
+    assert.deepEqual([...failed.sites].sort(), [...familyIds].sort());
+    for (const id of familyIds) {
+      assert.equal(readState().sites[id].entitlement, "grace");
+    }
+    // A site NOT on the shared subscription must be untouched.
+    assert.equal(readState().sites["beyond-the-bell"].entitlement, "active");
+
+    const paid = await handleStripeEvent({
+      type: "invoice.paid",
+      data: {
+        object: { id: "in_fam_2", customer: "cus_family", subscription: "sub_family" },
+      },
+    });
+    assert.equal(paid.ok, true);
+    for (const id of familyIds) {
+      const s = readState().sites[id];
+      assert.equal(s.entitlement, "active");
+      assert.equal(s.composeDesired, "running");
+    }
+  });
+});
+
 test("host compose enforcer dry-run reacts to composeDesired", async () => {
   await withTempEnv(({ stateDir, tmp }) => {
     const statePath = path.join(stateDir, "state.json");
