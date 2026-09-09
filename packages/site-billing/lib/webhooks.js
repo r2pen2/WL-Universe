@@ -1,39 +1,43 @@
 const {
   getSite,
-  getSiteByCustomerId,
-  getSiteBySubscriptionId,
+  getSitesByCustomerId,
+  getSitesBySubscriptionId,
 } = require("./catalog");
 const { applyStripeStatus, readState, writeState } = require("./entitlement");
 const { enforceAll } = require("./enforcer");
 const { getStripe } = require("./stripe-client");
 const logger = require("./logger");
 
-function resolveSiteFromSubscription(subscription) {
-  if (!subscription) return null;
-  const bySub = getSiteBySubscriptionId(subscription.id);
-  if (bySub) return bySub;
+// A shared-plan customer/subscription (e.g. one family paying for several
+// sites) resolves to more than one catalog site — always returns an array,
+// possibly empty, so callers apply the event to every matching site instead
+// of silently updating just the first one.
+function resolveSitesFromSubscription(subscription) {
+  if (!subscription) return [];
+  const bySub = getSitesBySubscriptionId(subscription.id);
+  if (bySub.length) return bySub;
   const customerId =
     typeof subscription.customer === "string"
       ? subscription.customer
       : subscription.customer?.id;
-  return getSiteByCustomerId(customerId);
+  return getSitesByCustomerId(customerId);
 }
 
-function resolveSiteFromInvoice(invoice) {
-  if (!invoice) return null;
+function resolveSitesFromInvoice(invoice) {
+  if (!invoice) return [];
   const subId =
     typeof invoice.subscription === "string"
       ? invoice.subscription
       : invoice.subscription?.id;
   if (subId) {
-    const bySub = getSiteBySubscriptionId(subId);
-    if (bySub) return bySub;
+    const bySub = getSitesBySubscriptionId(subId);
+    if (bySub.length) return bySub;
   }
   const customerId =
     typeof invoice.customer === "string"
       ? invoice.customer
       : invoice.customer?.id;
-  return getSiteByCustomerId(customerId);
+  return getSitesByCustomerId(customerId);
 }
 
 function syncSubscriptionIds(site, subscription) {
@@ -53,7 +57,7 @@ function syncSubscriptionIds(site, subscription) {
 
 async function handleStripeEvent(event) {
   const type = event.type;
-  let site = null;
+  let sites = [];
   let stripeStatus = null;
 
   switch (type) {
@@ -61,9 +65,9 @@ async function handleStripeEvent(event) {
     case "customer.subscription.deleted":
     case "customer.subscription.created": {
       const subscription = event.data.object;
-      site = resolveSiteFromSubscription(subscription);
-      if (site) {
-        syncSubscriptionIds(site, subscription);
+      sites = resolveSitesFromSubscription(subscription);
+      if (sites.length) {
+        for (const site of sites) syncSubscriptionIds(site, subscription);
         stripeStatus =
           type === "customer.subscription.deleted"
             ? "canceled"
@@ -73,8 +77,8 @@ async function handleStripeEvent(event) {
     }
     case "invoice.paid": {
       const invoice = event.data.object;
-      site = resolveSiteFromInvoice(invoice);
-      if (site) {
+      sites = resolveSitesFromInvoice(invoice);
+      if (sites.length) {
         // Prefer live subscription status when available
         const subId =
           typeof invoice.subscription === "string"
@@ -83,7 +87,7 @@ async function handleStripeEvent(event) {
         if (subId && process.env.STRIPE_SECRET_KEY) {
           try {
             const sub = await getStripe().subscriptions.retrieve(subId);
-            syncSubscriptionIds(site, sub);
+            for (const site of sites) syncSubscriptionIds(site, sub);
             stripeStatus = sub.status;
           } catch {
             stripeStatus = "active";
@@ -96,7 +100,7 @@ async function handleStripeEvent(event) {
     }
     case "invoice.payment_failed": {
       const invoice = event.data.object;
-      site = resolveSiteFromInvoice(invoice);
+      sites = resolveSitesFromInvoice(invoice);
       stripeStatus = "past_due";
       break;
     }
@@ -105,7 +109,7 @@ async function handleStripeEvent(event) {
       return { ok: true, ignored: true, type };
   }
 
-  if (!site) {
+  if (!sites.length) {
     logger.warn("stripe_event_unmapped", {
       type,
       objectId: event.data?.object?.id,
@@ -113,19 +117,23 @@ async function handleStripeEvent(event) {
     return { ok: true, unmapped: true, type };
   }
 
-  applyStripeStatus(site.id, stripeStatus, type);
+  for (const site of sites) applyStripeStatus(site.id, stripeStatus, type);
   const enforcement = enforceAll();
+  const siteIds = sites.map((s) => s.id);
   logger.info("stripe_event_applied", {
     type,
-    site: site.id,
+    sites: siteIds,
     stripeStatus,
-    entitlement: enforcement.sites.find((s) => s.id === site.id)?.entitlement,
+    entitlements: enforcement.sites
+      .filter((s) => siteIds.includes(s.id))
+      .map((s) => ({ id: s.id, entitlement: s.entitlement })),
   });
 
   return {
     ok: true,
     type,
-    site: site.id,
+    site: siteIds[0],
+    sites: siteIds,
     stripeStatus,
   };
 }
@@ -149,8 +157,8 @@ function applyStatusForSite(siteId, stripeStatus, eventType) {
 }
 
 module.exports = {
-  resolveSiteFromSubscription,
-  resolveSiteFromInvoice,
+  resolveSitesFromSubscription,
+  resolveSitesFromInvoice,
   handleStripeEvent,
   constructEvent,
   applyStatusForSite,

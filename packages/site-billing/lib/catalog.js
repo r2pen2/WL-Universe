@@ -48,19 +48,18 @@ function getSite(id) {
   return listSites().find((s) => s.id === id) || null;
 }
 
-function getSiteByCustomerId(customerId) {
-  if (!customerId) return null;
-  return (
-    listSites().find((s) => s.stripeCustomerId === customerId) || null
-  );
+// A Stripe customer/subscription can cover more than one catalog site (a
+// shared family/bundle plan), so these return every match, not just the
+// first — callers that used to treat the result as a single site need to
+// iterate.
+function getSitesByCustomerId(customerId) {
+  if (!customerId) return [];
+  return listSites().filter((s) => s.stripeCustomerId === customerId);
 }
 
-function getSiteBySubscriptionId(subscriptionId) {
-  if (!subscriptionId) return null;
-  return (
-    listSites().find((s) => s.stripeSubscriptionId === subscriptionId) ||
-    null
-  );
+function getSitesBySubscriptionId(subscriptionId) {
+  if (!subscriptionId) return [];
+  return listSites().filter((s) => s.stripeSubscriptionId === subscriptionId);
 }
 
 function sharedPriceId() {
@@ -81,8 +80,8 @@ module.exports = {
   loadCatalog,
   listSites,
   getSite,
-  getSiteByCustomerId,
-  getSiteBySubscriptionId,
+  getSitesByCustomerId,
+  getSitesBySubscriptionId,
   sharedPriceId,
   policy,
 };
