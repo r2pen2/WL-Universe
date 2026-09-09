@@ -282,6 +282,9 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
+      - name: Log in to GHCR
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | sudo docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+
       - name: Deploy compose app
         run: |
           set -euo pipefail
