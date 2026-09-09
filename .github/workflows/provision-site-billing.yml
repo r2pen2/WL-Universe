@@ -1,0 +1,78 @@
+name: Provision site billing (Stripe)
+
+# Idempotent: creates/reuses the shared Stripe product, a monthly price for
+# the requested amount, a customer for the site, and a Checkout Session link.
+# Writes the resulting ids into packages/site-billing/data/sites.json via a
+# PR for review — nothing lands on main unreviewed, and no Stripe writes
+# happen at all when dry_run is left on.
+#
+# Requires repository secret STRIPE_SECRET_KEY (never commit the key).
+
+on:
+  workflow_dispatch:
+    inputs:
+      site_id:
+        description: "Site id from packages/site-billing/data/sites.json (e.g. beyond-the-bell)"
+        required: true
+        type: string
+      price_per_month:
+        description: "Monthly retainer amount, decimal dollars (e.g. 150.00)"
+        required: true
+        type: string
+      customer_email:
+        description: "Client billing email for the Stripe Checkout link"
+        required: true
+        type: string
+      currency:
+        description: "Currency code"
+        required: false
+        default: "usd"
+        type: string
+      dry_run:
+        description: "Dry run (no Stripe writes, no PR)"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  provision:
+    name: provision site billing
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Provision Stripe billing
+        env:
+          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+          SITE_ID: ${{ inputs.site_id }}
+          PRICE_PER_MONTH: ${{ inputs.price_per_month }}
+          CUSTOMER_EMAIL: ${{ inputs.customer_email }}
+          CURRENCY: ${{ inputs.currency }}
+          DRY_RUN: ${{ inputs.dry_run && '1' || '' }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${STRIPE_SECRET_KEY}" ]]; then
+            echo "::error::STRIPE_SECRET_KEY secret is not set"
+            exit 1
+          fi
+          node scripts/billing/provision-site.mjs
+
+      - name: Open PR with catalog update
+        if: ${{ !inputs.dry_run }}
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "Provision Stripe billing for ${{ inputs.site_id }}"
+          branch: "billing/provision-${{ inputs.site_id }}-${{ github.run_id }}"
+          title: "Provision Stripe billing: ${{ inputs.site_id }}"
+          body: |
+            Provisions ${{ inputs.site_id }} at ${{ inputs.price_per_month }} ${{ inputs.currency }}/month.
+
+            See the job summary on this workflow run for the Checkout link to
+            send the client. Merging this PR just links the Stripe customer id
+            into the catalog — the subscription id fills in automatically via
+            webhook once the client completes checkout.
+          add-paths: packages/site-billing/data/sites.json
