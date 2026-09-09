@@ -23,17 +23,33 @@
  * no-op unless FORCE=1 (billing is already linked — go edit sites.json
  * by hand if you actually mean to replace it).
  *
+ * SITE_IDS (plural) provisions a shared plan instead: one Customer and one
+ * Checkout Session covering every listed site, e.g. a family that owns
+ * several businesses paying one combined retainer. All of them get the same
+ * stripeCustomerId written back, so paying once covers all of them and a
+ * failed payment blocks all of them — packages/site-billing/lib/webhooks.js
+ * resolves a Stripe event to every catalog site sharing that customer id,
+ * not just the first. Checkout's success/cancel redirect uses the first
+ * listed site's host, and the Stripe Customer name defaults to PLAN_LABEL
+ * (or the sites' labels joined together if that's not given).
+ *
  * Env:
  *   STRIPE_SECRET_KEY   (required) — Stripe secret key
- *   SITE_ID             (required) — must match an id in the catalog
+ *   SITE_ID             one catalog id — mutually exclusive with SITE_IDS
+ *   SITE_IDS            comma-separated catalog ids sharing one subscription
+ *   PLAN_LABEL           optional — Stripe Customer display name for a SITE_IDS group
  *   PRICE_PER_MONTH     (required) — decimal dollars, e.g. "150.00"
  *   CUSTOMER_EMAIL      (required) — client billing email for the Checkout Session
  *   CURRENCY            default "usd"
- *   FORCE               "1" to proceed even if the site already has a subscription id
+ *   FORCE               "1" to proceed even if a targeted site already has a subscription id
  *   DRY_RUN              "1" print intended changes only, no Stripe writes
  *
  * Usage:
  *   STRIPE_SECRET_KEY=... SITE_ID=beyond-the-bell PRICE_PER_MONTH=150.00 \
+ *     CUSTOMER_EMAIL=client@example.com node scripts/billing/provision-site.mjs
+ *
+ *   STRIPE_SECRET_KEY=... SITE_IDS=boston-mixtape,a-new-day-coaching,a-new-day-coaching-crm \
+ *     PLAN_LABEL="Dayanim Family Plan" PRICE_PER_MONTH=40.00 \
  *     CUSTOMER_EMAIL=client@example.com node scripts/billing/provision-site.mjs
  */
 import fs from "node:fs";
@@ -41,15 +57,18 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const CATALOG_PATH = path.join(
-  __dirname,
-  "../../packages/site-billing/data/sites.json",
-);
+// deploy/billing/sites.json is the actual source of truth: publish-app-images.yml
+// copies it onto glados as the live, read-only-mounted catalog on every deploy.
+// packages/site-billing/data/sites.json is only a static fallback baked into the
+// image for standalone `docker run` — writing there would never take effect.
+const CATALOG_PATH = path.join(__dirname, "../../deploy/billing/sites.json");
 
 const DRY_RUN = process.env.DRY_RUN === "1" || process.env.DRY_RUN === "true";
 const FORCE = process.env.FORCE === "1" || process.env.FORCE === "true";
 const KEY = process.env.STRIPE_SECRET_KEY;
 const SITE_ID = process.env.SITE_ID;
+const SITE_IDS = process.env.SITE_IDS;
+const PLAN_LABEL = process.env.PLAN_LABEL;
 const CURRENCY = (process.env.CURRENCY || "usd").toLowerCase();
 const CUSTOMER_EMAIL = process.env.CUSTOMER_EMAIL;
 const PRICE_PER_MONTH = process.env.PRICE_PER_MONTH;
@@ -59,7 +78,10 @@ const PRODUCT_NAME = "WL-Universe Hosting Retainer";
 function requireEnv() {
   const missing = [];
   if (!KEY) missing.push("STRIPE_SECRET_KEY");
-  if (!SITE_ID) missing.push("SITE_ID");
+  if (!SITE_ID && !SITE_IDS) missing.push("SITE_ID or SITE_IDS");
+  if (SITE_ID && SITE_IDS) {
+    throw new Error("Set only one of SITE_ID or SITE_IDS, not both.");
+  }
   if (!PRICE_PER_MONTH) missing.push("PRICE_PER_MONTH");
   if (!CUSTOMER_EMAIL) missing.push("CUSTOMER_EMAIL");
   if (missing.length) {
@@ -146,24 +168,28 @@ async function ensurePrice(productId, unitAmount) {
   return price.id;
 }
 
-async function ensureCustomer(site) {
-  console.log(`Will create customer for ${site.id} <${CUSTOMER_EMAIL}>.`);
+// `sites` is always an array — a single site is just a group of one. `label`
+// is what the client sees as the Stripe Customer name / on their receipt.
+async function ensureCustomer(sites, label) {
+  const siteIds = sites.map((s) => s.id).join(",");
+  console.log(`Will create customer "${label}" (${siteIds}) <${CUSTOMER_EMAIL}>.`);
   if (DRY_RUN) return "cus_DRYRUN";
   const customer = await stripe(
     "POST",
     "/customers",
     new URLSearchParams({
       email: CUSTOMER_EMAIL,
-      name: site.label,
-      "metadata[site_id]": site.id,
+      name: label,
+      "metadata[site_ids]": siteIds,
     }),
   );
   console.log(`Created customer ${customer.id}`);
   return customer.id;
 }
 
-async function createCheckoutSession(site, customerId, priceId) {
-  const host = site.hosts?.[0] || "joed.dev";
+async function createCheckoutSession(sites, customerId, priceId) {
+  const siteIds = sites.map((s) => s.id).join(",");
+  const host = sites[0]?.hosts?.[0] || "joed.dev";
   if (DRY_RUN) {
     console.log("Would create a Checkout Session (mode=subscription) here.");
     return { url: "(dry run — no session created)" };
@@ -178,8 +204,8 @@ async function createCheckoutSession(site, customerId, priceId) {
       "line_items[0][quantity]": "1",
       success_url: `https://${host}/?billing=success`,
       cancel_url: `https://${host}/?billing=cancelled`,
-      "subscription_data[metadata][site_id]": site.id,
-      "metadata[site_id]": site.id,
+      "subscription_data[metadata][site_ids]": siteIds,
+      "metadata[site_ids]": siteIds,
     }),
   );
   return session;
@@ -188,28 +214,42 @@ async function createCheckoutSession(site, customerId, priceId) {
 async function main() {
   const unitAmount = requireEnv();
   const catalog = readCatalog();
-  const site = (catalog.sites || []).find((s) => s.id === SITE_ID);
-  if (!site) {
-    throw new Error(
-      `Unknown SITE_ID '${SITE_ID}'. Known ids: ${(catalog.sites || []).map((s) => s.id).join(", ")}`,
-    );
-  }
+  const wantedIds = (SITE_IDS ? SITE_IDS.split(",") : [SITE_ID])
+    .map((id) => id.trim())
+    .filter(Boolean);
 
-  if (site.stripeSubscriptionId && !FORCE) {
+  const sites = wantedIds.map((id) => {
+    const site = (catalog.sites || []).find((s) => s.id === id);
+    if (!site) {
+      throw new Error(
+        `Unknown site id '${id}'. Known ids: ${(catalog.sites || []).map((s) => s.id).join(", ")}`,
+      );
+    }
+    return site;
+  });
+  const label =
+    PLAN_LABEL || sites.map((s) => s.label).join(" + ");
+
+  const alreadyConfigured = sites.filter((s) => s.stripeSubscriptionId);
+  if (alreadyConfigured.length && !FORCE) {
     console.log(
-      `${site.id} already has stripeSubscriptionId=${site.stripeSubscriptionId} — nothing to do (set FORCE=1 to override).`,
+      `Already has a subscription, nothing to do (set FORCE=1 to override): ${alreadyConfigured
+        .map((s) => `${s.id}=${s.stripeSubscriptionId}`)
+        .join(", ")}`,
     );
     return;
   }
 
   const productId = await ensureProduct(catalog);
   const priceId = await ensurePrice(productId, unitAmount);
-  const customerId = await ensureCustomer(site);
-  const session = await createCheckoutSession(site, customerId, priceId);
+  const customerId = await ensureCustomer(sites, label);
+  const session = await createCheckoutSession(sites, customerId, priceId);
 
-  site.stripeCustomerId = DRY_RUN ? site.stripeCustomerId : customerId;
-  site.stripePriceId = DRY_RUN ? site.stripePriceId : priceId;
-  site.billingRequired = true;
+  for (const site of sites) {
+    site.stripeCustomerId = DRY_RUN ? site.stripeCustomerId : customerId;
+    site.stripePriceId = DRY_RUN ? site.stripePriceId : priceId;
+    site.billingRequired = true;
+  }
 
   if (DRY_RUN) {
     console.log("\nDRY RUN — no Stripe objects created, sites.json not written.");
@@ -218,14 +258,14 @@ async function main() {
     console.log(`\nUpdated ${path.relative(process.cwd(), CATALOG_PATH)}`);
   }
 
-  console.log(`\nCheckout link for ${site.label}:\n  ${session.url}`);
+  console.log(`\nCheckout link for ${label}:\n  ${session.url}`);
 
   const summaryFile = process.env.GITHUB_STEP_SUMMARY;
   if (summaryFile) {
     fs.appendFileSync(
       summaryFile,
       [
-        `### Billing provisioned for ${site.label} (\`${site.id}\`)`,
+        `### Billing provisioned for ${label} (\`${sites.map((s) => s.id).join(", ")}\`)`,
         "",
         DRY_RUN
           ? "**Dry run — nothing was created in Stripe.**"
@@ -233,6 +273,9 @@ async function main() {
         DRY_RUN ? "" : `- Price: \`${priceId}\` (${unitAmount / 100} ${CURRENCY}/mo)`,
         DRY_RUN ? "" : `- Checkout link: ${session.url}`,
         "",
+        sites.length > 1
+          ? "One subscription covers all the sites listed above: paying once activates all of them, and a failed payment later blocks all of them together."
+          : "",
         "Send the Checkout link to the client. Once they pay, Stripe creates the",
         "subscription and site-billing links it automatically via the customer id.",
         "",

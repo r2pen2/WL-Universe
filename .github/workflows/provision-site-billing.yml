@@ -2,7 +2,7 @@ name: Provision site billing (Stripe)
 
 # Idempotent: creates/reuses the shared Stripe product, a monthly price for
 # the requested amount, a customer for the site, and a Checkout Session link.
-# Writes the resulting ids into packages/site-billing/data/sites.json via a
+# Writes the resulting ids into deploy/billing/sites.json via a
 # PR for review — nothing lands on main unreviewed, and no Stripe writes
 # happen at all when dry_run is left on.
 #
@@ -12,8 +12,16 @@ on:
   workflow_dispatch:
     inputs:
       site_id:
-        description: "Site id from packages/site-billing/data/sites.json (e.g. beyond-the-bell)"
-        required: true
+        description: "Site id from deploy/billing/sites.json (e.g. beyond-the-bell). Leave blank if using site_ids instead."
+        required: false
+        type: string
+      site_ids:
+        description: "Comma-separated site ids sharing ONE subscription (e.g. a family plan across several sites). Leave blank if using site_id instead."
+        required: false
+        type: string
+      plan_label:
+        description: "Stripe Customer display name for a site_ids group (defaults to the sites' labels joined together)"
+        required: false
         type: string
       price_per_month:
         description: "Monthly retainer amount, decimal dollars (e.g. 150.00)"
@@ -49,6 +57,8 @@ jobs:
         env:
           STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
           SITE_ID: ${{ inputs.site_id }}
+          SITE_IDS: ${{ inputs.site_ids }}
+          PLAN_LABEL: ${{ inputs.plan_label }}
           PRICE_PER_MONTH: ${{ inputs.price_per_month }}
           CUSTOMER_EMAIL: ${{ inputs.customer_email }}
           CURRENCY: ${{ inputs.currency }}
@@ -61,18 +71,25 @@ jobs:
           fi
           node scripts/billing/provision-site.mjs
 
+      - name: Set PR branch/title slug
+        if: ${{ !inputs.dry_run }}
+        id: slug
+        run: |
+          raw="${{ inputs.site_ids || inputs.site_id }}"
+          echo "slug=$(echo "$raw" | tr ',' '-' )" >> "$GITHUB_OUTPUT"
+
       - name: Open PR with catalog update
         if: ${{ !inputs.dry_run }}
         uses: peter-evans/create-pull-request@v6
         with:
-          commit-message: "Provision Stripe billing for ${{ inputs.site_id }}"
-          branch: "billing/provision-${{ inputs.site_id }}-${{ github.run_id }}"
-          title: "Provision Stripe billing: ${{ inputs.site_id }}"
+          commit-message: "Provision Stripe billing for ${{ inputs.site_ids || inputs.site_id }}"
+          branch: "billing/provision-${{ steps.slug.outputs.slug }}-${{ github.run_id }}"
+          title: "Provision Stripe billing: ${{ inputs.plan_label || inputs.site_ids || inputs.site_id }}"
           body: |
-            Provisions ${{ inputs.site_id }} at ${{ inputs.price_per_month }} ${{ inputs.currency }}/month.
+            Provisions ${{ inputs.site_ids || inputs.site_id }} at ${{ inputs.price_per_month }} ${{ inputs.currency }}/month${{ inputs.site_ids && ' (one shared subscription across all listed sites)' || '' }}.
 
             See the job summary on this workflow run for the Checkout link to
             send the client. Merging this PR just links the Stripe customer id
             into the catalog — the subscription id fills in automatically via
             webhook once the client completes checkout.
-          add-paths: packages/site-billing/data/sites.json
+          add-paths: deploy/billing/sites.json
