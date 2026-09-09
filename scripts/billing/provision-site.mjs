@@ -170,15 +170,15 @@ async function ensurePrice(productId, unitAmount) {
 
 // `sites` is always an array — a single site is just a group of one. `label`
 // is what the client sees as the Stripe Customer name / on their receipt.
-async function ensureCustomer(sites, label) {
+async function ensureCustomer(sites, label, email) {
   const siteIds = sites.map((s) => s.id).join(",");
-  console.log(`Will create customer "${label}" (${siteIds}) <${CUSTOMER_EMAIL}>.`);
+  console.log(`Will create customer "${label}" (${siteIds}) <${email}>.`);
   if (DRY_RUN) return "cus_DRYRUN";
   const customer = await stripe(
     "POST",
     "/customers",
     new URLSearchParams({
-      email: CUSTOMER_EMAIL,
+      email,
       name: label,
       "metadata[site_ids]": siteIds,
     }),
@@ -242,7 +242,7 @@ async function main() {
 
   const productId = await ensureProduct(catalog);
   const priceId = await ensurePrice(productId, unitAmount);
-  const customerId = await ensureCustomer(sites, label);
+  const customerId = await ensureCustomer(sites, label, CUSTOMER_EMAIL);
   const session = await createCheckoutSession(sites, customerId, priceId);
 
   for (const site of sites) {

@@ -43,6 +43,27 @@ async function withTempEnv(fn) {
   }
 }
 
+// Some tests need catalog fields (billingRequired, stripeCustomerId, ...) that
+// don't match the real deploy/billing/sites.json — write a temp copy with the
+// given per-site overrides merged in and point SITE_BILLING_CATALOG_PATH at
+// it, so the tests stay valid regardless of the real business-state flags.
+function useCatalogOverrides(tmp, overrides) {
+  const catalog = JSON.parse(
+    fs.readFileSync(path.join(repoRoot, "deploy/billing/sites.json"), "utf8"),
+  );
+  catalog.sites = catalog.sites.map((s) =>
+    overrides[s.id] ? { ...s, ...overrides[s.id] } : s,
+  );
+  const catalogPath = path.join(tmp, "sites.json");
+  fs.writeFileSync(catalogPath, JSON.stringify(catalog, null, 2));
+  process.env.SITE_BILLING_CATALOG_PATH = catalogPath;
+  for (const key of Object.keys(require.cache)) {
+    if (key.includes(`${path.sep}site-billing${path.sep}`)) {
+      delete require.cache[key];
+    }
+  }
+}
+
 test("catalog loads billable + exempt sites", async () => {
   await withTempEnv(() => {
     const { loadCatalog } = require("../lib/catalog.js");
@@ -51,7 +72,9 @@ test("catalog loads billable + exempt sites", async () => {
     assert.equal(catalog.product.name, "Standard web hosting");
     const btb = catalog.sites.find((s) => s.id === "beyond-the-bell");
     assert.ok(btb);
-    assert.equal(btb.billingRequired, true);
+    // Not live yet — Joe wants to review the platform and prep client comms
+    // before switching billingRequired on for anyone.
+    assert.equal(btb.billingRequired, false);
     assert.equal(btb.stripePriceId, undefined);
     assert.equal(
       catalog.sites.find((s) => s.id === "nicole-levin").billingRequired,
@@ -62,7 +85,8 @@ test("catalog loads billable + exempt sites", async () => {
 });
 
 test("unconfigured billable site stays active", async () => {
-  await withTempEnv(() => {
+  await withTempEnv(({ tmp }) => {
+    useCatalogOverrides(tmp, { "beyond-the-bell": { billingRequired: true } });
     const { computeEntitlement, defaultSiteState } = require("../lib/entitlement.js");
     const { getSite } = require("../lib/catalog.js");
     const site = defaultSiteState(getSite("beyond-the-bell"));
@@ -74,7 +98,8 @@ test("unconfigured billable site stays active", async () => {
 });
 
 test("fail → grace → soft block → suspend → pay restores", async () => {
-  await withTempEnv(({ traefikPath }) => {
+  await withTempEnv(({ tmp, traefikPath }) => {
+    useCatalogOverrides(tmp, { "beyond-the-bell": { billingRequired: true } });
     const {
       applyStripeStatus,
       readState,
@@ -142,30 +167,13 @@ test("fail → grace → soft block → suspend → pay restores", async () => {
 
 test("webhook handleStripeEvent applies past_due and restore", async () => {
   await withTempEnv(async ({ tmp }) => {
-    const catalog = JSON.parse(
-      fs.readFileSync(
-        path.join(repoRoot, "deploy/billing/sites.json"),
-        "utf8",
-      ),
-    );
-    catalog.sites = catalog.sites.map((s) =>
-      s.id === "beyond-the-bell"
-        ? {
-            ...s,
-            stripeCustomerId: "cus_btb",
-            stripeSubscriptionId: "sub_btb",
-          }
-        : s,
-    );
-    const catalogPath = path.join(tmp, "sites.json");
-    fs.writeFileSync(catalogPath, JSON.stringify(catalog, null, 2));
-    process.env.SITE_BILLING_CATALOG_PATH = catalogPath;
-
-    for (const key of Object.keys(require.cache)) {
-      if (key.includes(`${path.sep}site-billing${path.sep}`)) {
-        delete require.cache[key];
-      }
-    }
+    useCatalogOverrides(tmp, {
+      "beyond-the-bell": {
+        billingRequired: true,
+        stripeCustomerId: "cus_btb",
+        stripeSubscriptionId: "sub_btb",
+      },
+    });
 
     const { handleStripeEvent } = require("../lib/webhooks.js");
     const { readState } = require("../lib/entitlement.js");
@@ -205,36 +213,24 @@ test("webhook handleStripeEvent applies past_due and restore", async () => {
 
 test("webhook applies one shared subscription to every site on it (family plan)", async () => {
   await withTempEnv(async ({ tmp }) => {
-    const catalog = JSON.parse(
-      fs.readFileSync(
-        path.join(repoRoot, "deploy/billing/sites.json"),
-        "utf8",
-      ),
-    );
     const familyIds = [
       "boston-mixtape",
       "a-new-day-coaching",
       "a-new-day-coaching-crm",
     ];
-    catalog.sites = catalog.sites.map((s) =>
-      familyIds.includes(s.id)
-        ? {
-            ...s,
+    useCatalogOverrides(
+      tmp,
+      Object.fromEntries(
+        familyIds.map((id) => [
+          id,
+          {
             billingRequired: true,
             stripeCustomerId: "cus_family",
             stripeSubscriptionId: "sub_family",
-          }
-        : s,
+          },
+        ]),
+      ),
     );
-    const catalogPath = path.join(tmp, "sites.json");
-    fs.writeFileSync(catalogPath, JSON.stringify(catalog, null, 2));
-    process.env.SITE_BILLING_CATALOG_PATH = catalogPath;
-
-    for (const key of Object.keys(require.cache)) {
-      if (key.includes(`${path.sep}site-billing${path.sep}`)) {
-        delete require.cache[key];
-      }
-    }
 
     const { handleStripeEvent } = require("../lib/webhooks.js");
     const { readState } = require("../lib/entitlement.js");
