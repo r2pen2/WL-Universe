@@ -10,8 +10,10 @@ services:
       WL_CMS_ASSETS_DIR: /opt/services/data/app-assets/wl-cms
     volumes:
       - ${WL_CMS_ASSETS_PATH:-/opt/services/data/app-assets/wl-cms}:/opt/services/data/app-assets/wl-cms
-      # Mount per-site Firebase service accounts as needed, e.g.:
-      # - /opt/services/data/app-secrets/nicole-levin:/sa/nicole-levin:ro
+      # lib/sites.js falls back to /opt/services/data/app-env/<slug>-serviceAccountKey.json
+      # (the same files each site's pre-migration server already used) when no
+      # WL_CMS_SA_<SITE> override is set, so mount that dir read-only.
+      - /opt/services/data/app-env:/opt/services/data/app-env:ro
     networks:
       - proxy
     labels:
