@@ -26,7 +26,7 @@ router.get("/getInvoiceById" , (req, res) => {
 
 router.post("/", async (req, res) => {
 
-  const invoice = getInvoiceById(req.body.id);
+  const invoice = await getInvoiceById(req.body.id);
   if (!invoice) { return res.status(404).json({error: "Invoice not found"}); }
 
   const item = {

@@ -2,87 +2,100 @@ const express = require('express');
 const router = express.Router();
 const bodyParser = require('body-parser');
 const db = require('../firebase');
-const { getUser, getAllUsers, setUser } = require('./users');
+const { getUser, setUser } = require('./users');
 
 router.use(bodyParser.json());
 
-let allInvoices = {};
-
-/** Update invoices when a change is detected */
-db.collection("invoices").onSnapshot((querySnapshot) => {
-  allInvoices = {};
-  querySnapshot.forEach((doc) => {
-    allInvoices[doc.id] = doc.data();
-    allInvoices[doc.id].id = doc.id;
+/** Same one-shot-read approach as users.js -- see the comment there. */
+async function getAllInvoices() {
+  const snapshot = await db.collection("invoices").get();
+  const invoices = {};
+  snapshot.forEach((doc) => {
+    invoices[doc.id] = { ...doc.data(), id: doc.id };
   });
-});
+  return invoices;
+}
 
-router.get("/", (req, res) => {
+async function getInvoiceById(id) {
+  const doc = await db.collection("invoices").doc(id).get();
+  return doc.exists ? { ...doc.data(), id: doc.id } : null;
+}
+
+router.get("/", async (req, res) => {
   const userId = req.query.userId;
   if (!userId) { res.send("Error: No userId provided"); return; }
-  const user = getUser(userId);
+  const user = await getUser(userId);
   if (!user) { res.send("Error: User not found"); return; }
 
+  const allInvoices = await getAllInvoices();
   const retInvoices = Object.values(allInvoices).filter(invoice => user.invoices.includes(invoice.id));
   res.json(retInvoices);
 });
 
 // Get invoice by ID (for email links)
-router.get("/by-id/:id", (req, res) => {
+router.get("/by-id/:id", async (req, res) => {
   const invoiceId = req.params.id;
-  const invoice = allInvoices[invoiceId];
-  
+  const invoice = await getInvoiceById(invoiceId);
+
   if (!invoice) {
     res.status(404).json({ error: "Invoice not found" });
     return;
   }
-  
+
   // Return invoice with user display name if assigned
   if (invoice.assignedTo) {
-    const user = getUser(invoice.assignedTo);
+    const user = await getUser(invoice.assignedTo);
     if (user) {
       invoice.userDisplayName = user.personalData.displayName;
     }
   }
-  
+
   res.json(invoice);
 });
 
-router.get("/limbo", (req, res) => {
+router.get("/limbo", async (req, res) => {
+  const allInvoices = await getAllInvoices();
   const limboInvoices = Object.values(allInvoices).filter(invoice => invoice.limbo);
   for (const invoice of limboInvoices) {
-    invoice.userDisplayName = getUser(invoice.assignedTo).personalData.displayName;
+    const user = await getUser(invoice.assignedTo);
+    invoice.userDisplayName = user?.personalData?.displayName;
   }
   res.json(limboInvoices);
 })
 
-router.get("/unpaid", (req, res) => {
+router.get("/unpaid", async (req, res) => {
+  const allInvoices = await getAllInvoices();
   const unpaidInvoices = Object.values(allInvoices).filter(invoice => !invoice.paid && !invoice.paidAt);
   for (const invoice of unpaidInvoices) {
-    invoice.userDisplayName = getUser(invoice.assignedTo).personalData.displayName;
+    const user = await getUser(invoice.assignedTo);
+    invoice.userDisplayName = user?.personalData?.displayName;
   }
   res.json(unpaidInvoices);
 })
 
-router.get("/paid", (req, res) => {
+router.get("/paid", async (req, res) => {
+  const allInvoices = await getAllInvoices();
   const paidInvoices = Object.values(allInvoices).filter(invoice => invoice.paid);
   for (const invoice of paidInvoices) {
-    invoice.userDisplayName = getUser(invoice.assignedTo).personalData.displayName;
+    const user = await getUser(invoice.assignedTo);
+    invoice.userDisplayName = user?.personalData?.displayName;
   }
   res.json(paidInvoices);
 })
 
-router.post("/limbo", (req, res) => {
+router.post("/limbo", async (req, res) => {
   const action = req.body.action;
   const invoiceId = req.body.id;
-  const invoice = allInvoices[invoiceId];
+  const invoice = await getInvoiceById(invoiceId);
   if (!invoice) { res.send("Error: Invoice not found"); return; }
   if (action === "accept") {
     invoice.paid = true;
     // Lower num unpaid invoices
-    const user = getUser(invoice.assignedTo);
-    user.numUnpaidInvoices--;
-    setUser(user)
+    const user = await getUser(invoice.assignedTo);
+    if (user) {
+      user.numUnpaidInvoices--;
+      await setUser(user);
+    }
   } else {
     invoice.paid = false;
     invoice.paidAt = null;
@@ -99,7 +112,7 @@ router.post("/limbo", (req, res) => {
 // Function to send invoice email using Server-Legos
 async function sendInvoiceEmail(recipientEmail, invoiceId, amount, invoiceNumber) {
   const paymentUrl = `https://www.bluprint.anewdaycoaching.com/#invoices?invoice=${invoiceId}`;
-  
+
   const emailText = `
 A New Day Coaching - Invoice #${invoiceNumber}
 
@@ -177,7 +190,7 @@ async function sendEmailWithMailManager(toAddress, subject, text, html) {
   }
 }
 
-router.post("/create", (req, res) => {
+router.post("/create", async (req, res) => {
   const invoice = req.body.invoice;
   const recipientEmail = req.body.recipientEmail; // New field for email-only invoices
 
@@ -186,57 +199,57 @@ router.post("/create", (req, res) => {
     // Create invoice without user assignment
     invoice.assignedTo = null;
     invoice.recipientEmail = recipientEmail;
-    
+
     if (invoice.invoiceNumber === -1) {
       // Generate a unique invoice number based on total invoices
+      const allInvoices = await getAllInvoices();
       invoice.invoiceNumber = Object.keys(allInvoices).length + 1;
     }
-    
-    db.collection("invoices").add(invoice).then(async (ref) => {
+
+    try {
+      const ref = await db.collection("invoices").add(invoice);
       const invoiceId = ref.id;
-      
+
       // Send email notification
       const emailSent = await sendInvoiceEmail(recipientEmail, invoiceId, invoice.amount, invoice.invoiceNumber);
-      
-      res.json({ 
-        success: true, 
-        id: invoiceId, 
+
+      res.json({
+        success: true,
+        id: invoiceId,
         emailSent: emailSent,
         message: emailSent ? 'Invoice created and email sent successfully' : 'Invoice created but email failed to send'
       });
-    }).catch((error) => {
+    } catch (error) {
       console.error(error);
       res.json({ success: false });
-    });
-    
+    }
+
   } else if (invoice.assignedTo) {
     // Existing flow for user-assigned invoices
-    const user = getUser(invoice.assignedTo);
+    const user = await getUser(invoice.assignedTo);
+    if (!user) { res.json({ success: false, error: 'User not found' }); return; }
     user.numUnpaidInvoices++;
     if (invoice.invoiceNumber === -1) {
       invoice.invoiceNumber = user.invoices.length + 1;
     }
-    db.collection("invoices").add(invoice).then(async (ref) => {
+    try {
+      const ref = await db.collection("invoices").add(invoice);
       // We have a ref to the invoice
       const invoiceId = ref.id;
       user.invoices.push(invoiceId);
-      
+
       // Send email if user has email notification enabled
       let emailSent = false;
       if (user.settings?.invoices?.newInvoiceEmailNotification && user.personalData?.email) {
         emailSent = await sendInvoiceEmail(user.personalData.email, invoiceId, invoice.amount, invoice.invoiceNumber);
       }
-      
-      setUser(user).then(() => {
-        res.json({ success: true, id: invoiceId, emailSent: emailSent });
-      }).catch((error) => {
-        console.error(error);
-        res.json({ success: false });
-      });
-    }).catch((error) => {
+
+      await setUser(user);
+      res.json({ success: true, id: invoiceId, emailSent: emailSent });
+    } catch (error) {
       console.error(error);
       res.json({ success: false });
-    });
+    }
   } else {
     res.json({ success: false, error: 'Either assignedTo user ID or recipientEmail must be provided' });
   }
@@ -251,17 +264,15 @@ router.post("/update", (req, res) => {
   });
 })
 
-router.post("/delete", (req, res) => {
+router.post("/delete", async (req, res) => {
   const invoice = req.body.invoice;
-  const user = getUser(invoice.assignedTo);
-  user.numUnpaidInvoices--;
-  setUser(user).then(() => {
-    db.collection("invoices").doc(invoice.id).delete().then(() => {
-      res.json({ success: true });
-    }).catch((error) => {
-      console.error(error);
-      res.json({ success: false });
-    });
+  const user = await getUser(invoice.assignedTo);
+  if (user) {
+    user.numUnpaidInvoices--;
+    await setUser(user);
+  }
+  db.collection("invoices").doc(invoice.id).delete().then(() => {
+    res.json({ success: true });
   }).catch((error) => {
     console.error(error);
     res.json({ success: false });
@@ -269,41 +280,41 @@ router.post("/delete", (req, res) => {
 })
 
 // Link invoice to user (when user creates account from email)
-router.post("/link-to-user", (req, res) => {
+router.post("/link-to-user", async (req, res) => {
   const { invoiceId, userId } = req.body;
-  
+
   if (!invoiceId || !userId) {
     res.json({ success: false, error: 'Invoice ID and User ID are required' });
     return;
   }
-  
-  const invoice = allInvoices[invoiceId];
-  const user = getUser(userId);
-  
+
+  const invoice = await getInvoiceById(invoiceId);
+  const user = await getUser(userId);
+
   if (!invoice) {
     res.json({ success: false, error: 'Invoice not found' });
     return;
   }
-  
+
   if (!user) {
     res.json({ success: false, error: 'User not found' });
     return;
   }
-  
+
   // Check if invoice email matches user email (security check)
   if (invoice.recipientEmail && invoice.recipientEmail.toLowerCase() !== user.personalData.email.toLowerCase()) {
     res.json({ success: false, error: 'Email mismatch' });
     return;
   }
-  
+
   // Link the invoice to the user
   invoice.assignedTo = userId;
   user.invoices.push(invoiceId);
   user.numUnpaidInvoices++;
-  
+
   // Remove the recipientEmail field since it's now assigned
   delete invoice.recipientEmail;
-  
+
   Promise.all([setInvoice(invoice), setUser(user)]).then(() => {
     res.json({ success: true });
   }).catch((error) => {
@@ -312,9 +323,9 @@ router.post("/link-to-user", (req, res) => {
   });
 });
 
-router.get("/stripe-complete", (req, res) => {
+router.get("/stripe-complete", async (req, res) => {
   const invoiceId = req.query.id;
-  const invoice = allInvoices[invoiceId];
+  const invoice = await getInvoiceById(invoiceId);
   if (!invoice) { res.send("Error: Invoice not found"); return; }
   invoice.paid = true;
   invoice.paidAt = new Date();
@@ -327,9 +338,7 @@ router.get("/stripe-complete", (req, res) => {
   });
 })
 
-function getAllInvoices() { return allInvoices }
-function getInvoiceById(id) { return allInvoices[id] }
-async function setInvoice(invoice) { return new Promise((resolve, reject) => { db.collection("invoices").doc(invoice.id).set(invoice).then((ref) => { resolve(ref); }).catch((error) => { reject(error); }); }) }
+async function setInvoice(invoice) { return db.collection("invoices").doc(invoice.id).set(invoice); }
 
 module.exports = { router, getAllInvoices, getInvoiceById, setInvoice };
 

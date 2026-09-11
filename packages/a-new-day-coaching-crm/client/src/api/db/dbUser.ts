@@ -1,6 +1,6 @@
 import { UserCredential } from "firebase/auth";
 import { db } from "../firebase";
-import { DocumentReference, doc, getDoc, onSnapshot, setDoc } from "firebase/firestore";
+import { DocumentReference, collection, doc, getDoc, getDocs, onSnapshot, setDoc } from "firebase/firestore";
 import { navigationItems } from "../../components/Navigation";
 import { hostname } from "./dbManager.ts";
 import { FormAssignment } from "./dbFormAssignment.ts";
@@ -189,76 +189,69 @@ export class User {
     })
   }
 
-  static async fetchAll(): Promise<any[]> {
-    return new Promise<any[]>((resolve, reject) => {
-      fetch(hostname + "/users").then((response) => {
-        response.json().then((data) => {
-          resolve(data);
-        })
-      }).catch((error) => {
-        reject(error);
-      })
-    })
+  /**
+   * These used to go through a backend route (`fetch(hostname + "/users/...")`)
+   * that served an in-memory cache kept warm by a Firestore realtime listener.
+   * That listener can't survive on glados (see the comment in ../firebase.js),
+   * and separately, any fetch to this app's own domain is one bad ISP/DNS
+   * filter away from hanging forever with no error. Reading straight from
+   * Firestore removes both dependencies for these plain reads -- the
+   * security rules (see firestore.rules) are what actually gate access now,
+   * same as they always did for `subscribe()`/`setData()` below.
+   */
+  static async fetchAll(): Promise<any> {
+    const snapshot = await getDocs(collection(db, "users"));
+    const users: any = {};
+    snapshot.forEach((d) => { users[d.id] = { ...d.data(), id: d.id }; });
+    return users;
   }
 
   static async getById(id: string): Promise<any> {
-    return new Promise<any>((resolve, reject) => {
-      fetch(hostname + `/users/user?id=${id}`).then((response) => {
-        response.json().then((data) => {
-          resolve(data);
-        }).catch((error) => {
-          reject(error);
-        })
-      }).catch((error) => {
-        reject(error);
-      })
-    })
+    const snap = await getDoc(doc(db, `users/${id}`));
+    return snap.exists() ? { ...snap.data(), id: snap.id } : {};
   }
 
-  static async fetchSearch(navPage: string): Promise<any[]> {
-
-    return new Promise<any[]>((resolve, reject) => {
-      
-      let endpoint = ""
+  static async fetchSearch(navPage: string): Promise<any> {
+    const snapshot = await getDocs(collection(db, "users"));
+    const resUsers: any = {};
+    snapshot.forEach((d) => {
+      const u = d.data();
+      const base = {
+        personalData: {
+          displayName: u.personalData.displayName,
+          email: u.personalData.email,
+          role: u.personalData.role
+        },
+        id: d.id,
+      };
       if (navPage === navigationItems.ADMINFORMS) {
-        endpoint = "search-forms";
+        resUsers[d.id] = { ...base, formAssignments: u.formAssignments };
       } else if (navPage === navigationItems.ADMININVOICES) {
-        endpoint = "search-invoices";
+        if (u.personalData.role === UserRole.STUDENT) { resUsers[d.id] = base; }
       } else if (navPage === navigationItems.ADMINTOOLS) {
-        endpoint = "search-tools";
+        resUsers[d.id] = { ...base, tools: u.tools };
       } else if (navPage === navigationItems.ADMINUSERS) {
-        endpoint = "search-users";
+        resUsers[d.id] = base;
       }
-
-      fetch(hostname + `/users/${endpoint}`).then((response) => {
-        response.json().then((data) => {
-          resolve(data);
-        })
-      }).catch((error) => {
-        reject(error);
-      })
-    })
+    });
+    return resUsers;
   }
 
   async getFirstChild(): Promise<User | null> {
     if (this.personalData.role !== UserRole.PARENT && this.personalData.role !== UserRole.DEVELOPER) { return null; }
-    
-    return new Promise<User>((resolve) => {
-      if (this.linkedAccounts.length === 0) { 
-        resolve(this);
-        return;
-      } else {
-        for (let i = 0; i < this.linkedAccounts.length; i++) {
-          User.getById(this.linkedAccounts[i]).then((data) => {
-            if (data.personalData.role === UserRole.STUDENT) {
-              resolve(data);
-              return;
-            }
-          });
-        }
-        return null;
+    if (this.linkedAccounts.length === 0) { return this; }
+
+    for (const linkedId of this.linkedAccounts) {
+      try {
+        const data = await User.getById(linkedId);
+        if (data?.personalData?.role === UserRole.STUDENT) { return data; }
+      } catch (error) {
+        // A single bad/unreachable linked account should never hang delegate
+        // resolution forever -- log it and keep checking the others.
+        console.error(`getFirstChild: failed to look up linked account ${linkedId}:`, error);
       }
-    })
+    }
+    return null;
   }
 
   async assignDelegate(): Promise<void> {
@@ -314,10 +307,15 @@ export class User {
     onSnapshot(this.docRef, (doc) => {
       if (doc.exists()) {
         this.fillData(doc.data());
-        this.assignDelegate().then(() => {
+        // assignDelegate() shouldn't reject anymore (getFirstChild catches its
+        // own lookup failures), but don't let sign-in hang forever on this
+        // secondary step if it ever does -- fall through and show the app.
+        this.assignDelegate().catch((error) => {
+          console.error("assignDelegate failed, continuing without a delegate:", error);
+        }).finally(() => {
           // We need to create a clone of this User object so that the state actually updates
           const cloneUser = this.clone()
-          setter(cloneUser); 
+          setter(cloneUser);
           setColorScheme(cloneUser?.settings.darkMode ? "dark" : "light");
         })
       }
@@ -512,29 +510,22 @@ export class User {
   }
 
   async generateSyncCode(): Promise<string> {
-    return new Promise<string>((resolve, reject) => {
-      fetch(hostname + "/users/sync").then((response) => {
-        response.json().then((data) => {
-          this.syncCode = data.code;
-        }).then(() => {
-          resolve(this.syncCode as string)
-        })
-      }).catch((error) => {
-        reject(error)
-      })
-    })
+    // Note: this still goes through the backend rather than a client Firestore
+    // query, since it needs to check a freshly-generated code against every
+    // other user's syncCode before handing it out. (A previous version of
+    // this chained un-returned .then()s off response.json(), so a failure here
+    // never reached the outer .catch() and just hung forever -- same bug class
+    // as getFirstChild() above.)
+    const response = await fetch(hostname + "/users/sync");
+    const data = await response.json();
+    this.syncCode = data.code;
+    return this.syncCode as string;
   }
 
   static async getSyncCodeOwner(code: string): Promise<boolean> {
-    return new Promise<boolean>((resolve, reject) => {
-      fetch(hostname + `/users/sync?code=${code}`).then((response) => {
-        response.json().then((data) => {
-          resolve(data.user);
-        })
-      }).catch((error) => {
-        reject(error);
-      })
-    })
+    const response = await fetch(hostname + `/users/sync?code=${code}`);
+    const data = await response.json();
+    return data.user;
   }
 
   /**

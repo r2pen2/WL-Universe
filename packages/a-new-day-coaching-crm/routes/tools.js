@@ -2,58 +2,66 @@ const express = require('express');
 const router = express.Router();
 const bodyParser = require('body-parser');
 const db = require('../firebase');
-const { getAllUsers, getUser, setUser } = require('./users');
+const { getUser, setUser } = require('./users');
 
 router.use(bodyParser.json());
 
-let allTools = {};
-
-/** Update tools when a change is detected */
-db.collection("tools").onSnapshot((querySnapshot) => {
-  allTools = {};
-  querySnapshot.forEach((doc) => {
-    allTools[doc.id] = doc.data();
-    allTools[doc.id].id = doc.id;
+/** Same one-shot-read approach as users.js -- see the comment there. */
+async function getAllTools() {
+  const snapshot = await db.collection("tools").get();
+  const tools = {};
+  snapshot.forEach((doc) => {
+    tools[doc.id] = { ...doc.data(), id: doc.id };
   });
-});
+  return tools;
+}
 
-router.post("/create", (req, res) => {
-  const toolId = req.body.title;
+async function getTool(id) {
+  const doc = await db.collection("tools").doc(id).get();
+  return doc.exists ? { ...doc.data(), id: doc.id } : null;
+}
+
+router.post("/create", async (req, res) => {
+  const title = req.body.title;
   const description = req.body.description;
 
-  db.collection("tools").add({
-    title: toolId,
-    description: description,
-    assignedTo: []
-  }).then((docRef) => {
+  try {
+    const docRef = await db.collection("tools").add({
+      title,
+      description,
+      assignedTo: []
+    });
     console.log(`Created tool with ID: ${docRef.id}`);
     res.json({ id: docRef.id });
-  }).catch((error) => {
+  } catch (error) {
     console.error("Error adding document: ", error);
     res.json({ error: error });
-  });
+  }
 })
 
-router.post("/delete", (req, res) => {
+router.post("/delete", async (req, res) => {
   const toolId = req.body.toolId;
+  const tool = await getTool(toolId);
 
-  if (allTools[toolId].assignedTo) {
+  if (tool?.assignedTo) {
     // Remove tool from all users
-    for (const userId of allTools[toolId].assignedTo) {
-      const user = getUser(userId);
-      delete user.tools[toolId];
-      setUser(user);
+    for (const userId of tool.assignedTo) {
+      const user = await getUser(userId);
+      if (user) {
+        delete user.tools[toolId];
+        await setUser(user);
+      }
     }
   }
 
   // Delete the tool itself
-  db.collection("tools").doc(toolId).delete().then(() => {
-    // Delete tool from all users
-    res.json(allTools);
-  }).catch((error) => {
+  try {
+    await db.collection("tools").doc(toolId).delete();
+    res.json(await getAllTools());
+  } catch (error) {
     console.error("Error deleting document: ", error);
     res.json({ error: error });
-  });
+  }
 })
 
 router.post("/assign-multiple", async (req, res) => {
@@ -63,58 +71,60 @@ router.post("/assign-multiple", async (req, res) => {
   const description = req.body.description;
 
   for (const userId of users) {
-    const user = getUser(userId);
+    const user = await getUser(userId);
+    if (!user) { continue; }
     const tool = { id: toolId, title: title, description: description, starred: false };
     if (!user.tools) { user.tools = {}; }
     user.tools[toolId] = tool;
     await setUser(user);
   }
 
-  const tool = allTools[toolId];
-  if (!tool.assignedTo) { tool.assignedTo = []; }
-  tool.assignedTo = tool.assignedTo.concat(users);
-  db.collection("tools").doc(toolId).set(tool).then(() => {
-    res.json(allTools);
-  }).catch((error) => {
+  try {
+    const tool = (await getTool(toolId)) || { id: toolId, title, description, assignedTo: [] };
+    tool.assignedTo = (tool.assignedTo || []).concat(users);
+    await db.collection("tools").doc(toolId).set(tool);
+    res.json(await getAllTools());
+  } catch (error) {
     console.error("Error assigning tool to users: ", error);
     res.json({ error: error });
-  });
+  }
 })
 
 router.post("/unassign-multiple", async (req, res) => {
   const toolId = req.body.toolId;
   const users = req.body.users;
-  
+
   for (const userId of users) {
-    const user = getUser(userId);
+    const user = await getUser(userId);
+    if (!user) { continue; }
     if (!user.tools) { user.tools = {}; }
     delete user.tools[toolId];
     await setUser(user);
   }
 
-  // Remove users from the tool
-  const tool = allTools[toolId];
-  if (!tool.assignedTo) { tool.assignedTo = []; }
-  tool.assignedTo = tool.assignedTo.filter((userId) => !users.includes(userId));
-  db.collection("tools").doc(toolId).set(tool).then(() => {
-    res.json(allTools);
-  }).catch((error) => {
+  try {
+    const tool = await getTool(toolId);
+    if (!tool) { res.json(await getAllTools()); return; }
+    tool.assignedTo = (tool.assignedTo || []).filter((userId) => !users.includes(userId));
+    await db.collection("tools").doc(toolId).set(tool);
+    res.json(await getAllTools());
+  } catch (error) {
     console.error("Error unassign tool from users: ", error);
     res.json({ error: error });
-  });
+  }
 })
 
-router.post("/user-star", (req, res) => {
+router.post("/user-star", async (req, res) => {
   const toolId = req.body.toolId;
   const userId = req.body.userId;
 
-  const user = getUser(userId);
+  const user = await getUser(userId);
+  if (!user || !user.tools?.[toolId]) { return res.json({ success: false }); }
   user.tools[toolId].starred = !user.tools[toolId].starred;
-  setUser(user);
+  await setUser(user);
+  res.json({ success: true });
 })
 
-router.get("/", (req, res) => { res.json(allTools); })
-
-function getAllTools() { return allTools; }
+router.get("/", async (req, res) => { res.json(await getAllTools()); })
 
 module.exports = { router, getAllTools };
