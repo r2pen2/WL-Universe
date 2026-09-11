@@ -1,0 +1,68 @@
+rules_version = '2';
+
+// Previously: `match /{document=**} { allow read, write: if request.auth != null; }`
+// -- i.e. any signed-in Google account (student, parent, coach, anyone) could
+// read AND WRITE every document in the whole database, including other
+// people's invoices, homework, and personal info. That was never actually
+// exercised as a hole (the client only ever wrote to its own doc, or a
+// staff member editing a client's doc), but it's more permissive than the
+// app actually needs, and the "unauthenticated backend routes" incident this
+// tightening accompanies is a good reason to close it properly rather than
+// leave it as wide as it happened to be.
+//
+// Now: reads require being signed in (the client reads other users' docs
+// directly for rosters, sync-code lookup, and delegate/linked-account
+// resolution -- see client/src/api/db/dbUser.ts). Writes to another
+// person's data require the actor's own `users/{uid}` doc to have a staff
+// role (Coach, Admin, or Developer) -- everyone can always write their own.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function myRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.personalData.role;
+    }
+
+    function isStaff() {
+      return isSignedIn() && myRole() in ['Coach', 'Admin', 'Developer'];
+    }
+
+    match /users/{userId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && (request.auth.uid == userId || isStaff());
+    }
+
+    // Maps a secondary Firebase Auth uid to the canonical account it should
+    // resolve to (see resolveCanonicalUserId in dbUser.ts). Only staff manage
+    // these; any signed-in user needs to be able to read their own, which the
+    // broad read below covers.
+    match /userAliases/{aliasId} {
+      allow read: if isSignedIn();
+      allow write: if isStaff();
+    }
+
+    // Invoice creation/editing normally goes through the backend (Stripe
+    // checkout + email side effects use the admin SDK, which bypasses these
+    // rules entirely) -- these entries are for the staff-only admin UI paths
+    // that write invoices directly from the client.
+    match /invoices/{invoiceId} {
+      allow read: if isSignedIn();
+      allow write: if isStaff();
+    }
+
+    match /tools/{toolId} {
+      allow read: if isSignedIn();
+      allow write: if isStaff();
+    }
+
+    // Anything else (form templates, resources, etc.): keep the same
+    // signed-in-read/staff-write shape rather than leaving it open.
+    match /{document=**} {
+      allow read: if isSignedIn();
+      allow write: if isStaff();
+    }
+  }
+}
