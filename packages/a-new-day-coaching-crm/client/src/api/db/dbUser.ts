@@ -26,6 +26,26 @@ export enum LMS {
   OTHER = "Other"
 }
 
+/**
+ * Some people sign into the CRM with more than one Google account (e.g. a personal vs.
+ * a business email) and end up with two separate Firebase Auth uids. `userAliases/{uid}`
+ * lets an admin point a secondary uid at the account that should actually own the data,
+ * so every login for that uid resolves to the same `users/{canonicalUid}` document
+ * instead of silently creating a second blank profile.
+ */
+async function resolveCanonicalUserId(uid: string): Promise<string> {
+  try {
+    const aliasSnap = await getDoc(doc(db, `userAliases/${uid}`));
+    const canonicalUid = aliasSnap.exists() ? aliasSnap.data()?.canonicalUid : null;
+    return canonicalUid || uid;
+  } catch (error) {
+    // Missing/denied alias lookup should never block sign-in — just fall back to the
+    // uid that actually authenticated.
+    console.error("userAliases lookup failed, continuing without alias:", error);
+    return uid;
+  }
+}
+
 export class User {
   
   firebaseUser: UserCredential;
@@ -110,6 +130,22 @@ export class User {
 
   static getInstanceById(id: string): User {
     return new User({uid: id});
+  }
+
+  /**
+   * Build a User for a freshly-authenticated Firebase user, resolving through
+   * userAliases first so a linked secondary account (see resolveCanonicalUserId)
+   * lands on the same document as its canonical account. Use this instead of
+   * `new User(firebaseUser)` anywhere a user is signing in.
+   */
+  static async fromFirebaseUser(firebaseUser: any): Promise<User> {
+    const canonicalId = await resolveCanonicalUserId(firebaseUser.uid);
+    const user = new User(firebaseUser);
+    if (canonicalId !== firebaseUser.uid) {
+      user.id = canonicalId;
+      user.docRef = doc(db, `users/${canonicalId}`);
+    }
+    return user;
   }
 
   async registerSignIn(): Promise<void> {

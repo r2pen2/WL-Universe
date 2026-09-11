@@ -30,7 +30,7 @@ export const auth = getAuth(app);
 export async function getCurrentUser(setter, colorSchemeSetter) {
   auth.onAuthStateChanged(async (user) => {
     if (user) {
-      const userObject = new User(user);
+      const userObject = await User.fromFirebaseUser(user);
       await userObject.createDocument();
       userObject.subscribe(setter, colorSchemeSetter)
     } else {
