@@ -25,7 +25,7 @@
       "composeApp": "beyond-the-bell",
       "label": "Beyond the Bell",
       "hosts": ["beyondthebelleducation.com", "www.beyondthebelleducation.com"],
-      "billingRequired": true,
+      "billingRequired": false,
       "exempt": false,
       "stripeCustomerId": null,
       "stripeSubscriptionId": null
