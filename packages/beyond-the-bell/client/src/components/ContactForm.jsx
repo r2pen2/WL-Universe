@@ -1,4 +1,4 @@
-import { useContext, useState, } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { Button, Input, Modal, Text, Textarea } from "@nextui-org/react";
 
@@ -7,24 +7,19 @@ import ReCAPTCHA from "react-google-recaptcha";
 import "../assets/style/services.css"
 import { WLHeader, WLText } from '../libraries/Web-Legos/components/Text';
 import { AuthenticationManagerContext, BTBMailManager, CurrentSignInContext } from '../App';
-import { WLSpinnerPage } from '../libraries/Web-Legos/components/Layout';
-import { ContactBlockHeader } from '../components/Bar';
+import { ContactBlockHeader } from './Bar';
 import { FormResponse } from '../libraries/Web-Legos/api/admin.ts';
-import { useEffect } from 'react';
 
-export default function Contact() {
-  
-  const [contactHeaderLoaded, setContactHeaderLoaded] = useState(false);
-  const [contactSubtitleLoaded, setContactSubtitleLoaded] = useState(false);
+export function ContactForm({ setHeaderLoaded, setSubtitleLoaded }) {
 
   const [recaptchaModalOpen, setRecaptchaModalOpen] = useState(false);
 
   async function sendForm() {
     function getEmailBody() {
-      const body = `Name: ${document.getElementById("name").value}\n` + 
+      const body = `Name: ${document.getElementById("name").value}\n` +
       `Phone: ${document.getElementById("phone").value}\n` +
       `Email: ${document.getElementById("email").value}\n` +
-      `Contact Method: ${document.getElementById("contact").value}\n` +
+      `Contact Method: ${document.getElementById("contact-method").value}\n` +
       `Location: ${document.getElementById("location").value}\n` +
       `Message: ${document.getElementById("message").value}`
       return body;
@@ -39,7 +34,7 @@ export default function Contact() {
     res.content["Name"] =  document.getElementById("name").value;
     res.content["Email"] =  document.getElementById("email").value;
     res.content["Phone Number"] =  document.getElementById("phone").value;
-    res.content["Preferred Contact Method"] =  document.getElementById("contact").value;
+    res.content["Preferred Contact Method"] =  document.getElementById("contact-method").value;
     res.content["City, State"] =  document.getElementById("location").value;
     res.content["Message"] =  document.getElementById("message").value;
     res.shortStrings.formId = "contact-us";
@@ -47,10 +42,9 @@ export default function Contact() {
     await res.sendFormData();
   }
 
-
   const {currentSignIn} = useContext(CurrentSignInContext);
   const {authenticationManager} = useContext(AuthenticationManagerContext);
-  
+
   const [userCanEditText, setUserCanEditText] = useState(false);
 
   useEffect(() => {
@@ -92,7 +86,7 @@ export default function Contact() {
       if (array.length === 0) {
           return null; // return null if the array is empty
       }
-  
+
       var randomIndex = Math.floor(Math.random() * array.length);
       return array[randomIndex];
     }
@@ -101,14 +95,14 @@ export default function Contact() {
   }
 
   return (
-    <WLSpinnerPage itemsCentered dependencies={[contactHeaderLoaded, contactSubtitleLoaded]}>
+    <section id="contact" className="d-flex flex-row justify-content-center">
       <Modal
         blur
         open={recaptchaModalOpen}
         onClose={() => setRecaptchaModalOpen(false)}
         closeButton
       >
-        <Modal.Body      
+        <Modal.Body
           className="d-flex flex-column w-100 align-items-center text-center py-3"
         >
           <Text>
@@ -120,42 +114,40 @@ export default function Contact() {
           />
         </Modal.Body>
       </Modal>
-      <ContactBlockHeader />
-      <section className="d-flex flex-row justify-content-center">
-        <div className="gap-2 d-flex flex-column align-items-start justify-content-center contact-form w-100 mx-2 my-5 mx-md-5"  style={{maxWidth: 1400}}>
-          <div className="container-fluid d-flex flex-column">
-            <div className="row">
-              <WLHeader setLoaded={setContactHeaderLoaded} align="start" firestoreId="contact-header" editable={userCanEditText} />
-              <WLText setLoaded={setContactSubtitleLoaded} align="start" firestoreId="contact-subtitle" editable={userCanEditText} />
+      <div className="gap-2 d-flex flex-column align-items-start justify-content-center contact-form w-100 mx-2 my-5 mx-md-5"  style={{maxWidth: 1400}}>
+        <ContactBlockHeader />
+        <div className="container-fluid d-flex flex-column">
+          <div className="row">
+            <WLHeader setLoaded={setHeaderLoaded} align="start" firestoreId="contact-header" editable={userCanEditText} />
+            <WLText setLoaded={setSubtitleLoaded} align="start" firestoreId="contact-subtitle" editable={userCanEditText} />
+          </div>
+          <div className="row pt-2">
+            <Input id="name" clearable bordered label="Your Name" fullWidth css={{display: "flex", alignItems: "start"}} />
+          </div>
+          <div className="row">
+            <div className="col-lg-6 col-md-12 pt-2">
+              <Input id="phone" clearable bordered label="Your phone" fullWidth css={{display: "flex", alignItems: "start"}} />
             </div>
-            <div className="row pt-2">
-              <Input id="name" clearable bordered label="Your Name" fullWidth css={{display: "flex", alignItems: "start"}} />
-            </div>
-            <div className="row">
-              <div className="col-lg-6 col-md-12 pt-2">
-                <Input id="phone" clearable bordered label="Your phone" fullWidth css={{display: "flex", alignItems: "start"}} />
-              </div>      
-              <div className="col-lg-6 col-md-12 pt-2">
-                <Input id="email" clearable bordered label="Your email" fullWidth css={{display: "flex", alignItems: "start"}} />
-              </div>      
-            </div>
-            <div className="row pt-2">
-              <Input id="contact" clearable bordered label="Preferred contact method" fullWidth css={{display: "flex", alignItems: "start"}} />
-            </div>
-            <div className="row pt-2">
-              <Input id="location" clearable bordered label="City, State" fullWidth css={{display: "flex", alignItems: "start"}} />
-            </div>
-            <div className="row pt-2">
-              <Textarea id="message" bordered label="How can we help?" placeholder="Tell us what you're looking for." fullWidth css={{display: "flex", alignItems: "start"}} />
+            <div className="col-lg-6 col-md-12 pt-2">
+              <Input id="email" clearable bordered label="Your email" fullWidth css={{display: "flex", alignItems: "start"}} />
             </div>
           </div>
-          <div className="d-flex justify-content-center w-100 mt-3">
-            <Button color="primary" shadow onPress={() => setRecaptchaModalOpen(true)}>
-              Submit
-            </Button>
+          <div className="row pt-2">
+            <Input id="contact-method" clearable bordered label="Preferred contact method" fullWidth css={{display: "flex", alignItems: "start"}} />
+          </div>
+          <div className="row pt-2">
+            <Input id="location" clearable bordered label="City, State" fullWidth css={{display: "flex", alignItems: "start"}} />
+          </div>
+          <div className="row pt-2">
+            <Textarea id="message" bordered label="How can we help?" placeholder="Tell us what you're looking for." fullWidth css={{display: "flex", alignItems: "start"}} />
           </div>
         </div>
-      </section>
-    </WLSpinnerPage>
+        <div className="d-flex justify-content-center w-100 mt-3">
+          <Button color="primary" shadow onPress={() => setRecaptchaModalOpen(true)}>
+            Submit
+          </Button>
+        </div>
+      </div>
+    </section>
   )
 }

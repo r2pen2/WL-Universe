@@ -98,7 +98,7 @@ function FooterContent() {
           </Link>
         </Text>
         <Text>
-          <Link block color="primary" href="contact">
+          <Link block color="primary" href="/#contact">
             Contact Us
           </Link>
         </Text>

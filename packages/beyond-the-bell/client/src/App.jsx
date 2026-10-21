@@ -7,7 +7,6 @@ import HomePage from "./routes/HomePage";
 import Footer from './components/Footer';
 import About from './routes/About';
 import Services from './routes/Services';
-import Contact from './routes/Contact';
 import ThankYou from './routes/ThankYou';
 import Gallery from './routes/Gallery';
 import { createContext, useEffect, useState } from 'react';
@@ -73,7 +72,6 @@ function App() {
               <Route path="*" element={<HomePage />} />
               <Route path="/about" element={<About />} />
               <Route path="/services" element={<Services />} />
-              <Route path="/contact" element={<Contact />} />
               <Route path="/thank-you" element={<ThankYou />} />
               <Route path="/gallery" element={<Gallery />} />
             </Routes>

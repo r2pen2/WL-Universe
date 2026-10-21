@@ -26,8 +26,6 @@ export default function Services() {
     authenticationManager.getPermission(currentSignIn, "siteText").then(p => setUserCanEditText(p))
   }, [authenticationManager, currentSignIn]);
 
-  const [formModalOpen, setFormModalOpen] = useState(false);
-
   return (
     <WLSpinnerPage dependencies={[afterSchoolLoaded, tutoringLoaded, wilsonTutoringLoaded]}>
       <ServicesBlockHeader />
@@ -78,7 +76,7 @@ export default function Services() {
           </div>
         }
       />
-      <ScheduleBar open={formModalOpen} setOpen={setFormModalOpen} />
+      <ScheduleBar />
     </WLSpinnerPage>
   )
 }
