@@ -124,7 +124,24 @@ function seedFirestore(pr, app, owner) {
   const entry = APP_BY_NAME[app];
   // Static nginx SPAs have no Node/firebase-admin — seed via wl-cms image.
   const seedApp = entry.kind === "spa-static" ? "wl-cms" : app;
-  const image = `ghcr.io/${String(owner).toLowerCase()}/wl-universe-${seedApp}:pr-${pr}`;
+  const ownerLc = String(owner).toLowerCase();
+  const prImage = `ghcr.io/${ownerLc}/wl-universe-${seedApp}:pr-${pr}`;
+  const latestImage = `ghcr.io/${ownerLc}/wl-universe-${seedApp}:latest`;
+
+  // seedApp (wl-cms) only gets a :pr-<N> tag when its own files changed in
+  // this PR. If this PR didn't touch it, fall back to the published :latest
+  // image rather than failing the deploy outright.
+  let image = prImage;
+  try {
+    run("sudo", ["docker", "pull", prImage]);
+  } catch {
+    console.warn(
+      `${prImage} not found (seedApp "${seedApp}" unchanged in this PR); falling back to ${latestImage}`,
+    );
+    run("sudo", ["docker", "pull", latestImage]);
+    image = latestImage;
+  }
+
   // App image provides firebase-admin; mount checkout scripts + prod SA dir.
   run("sudo", [
     "docker",
