@@ -39,8 +39,6 @@ export default function About() {
   
   const [staffData, setStaffData] = useState([]);
 
-  const [formModalOpen, setFormModalOpen] = useState(false);
-
   const [currentTeamMember, setCurrentTeamMember] = useState({
     order: 0,
     name: null,
@@ -105,7 +103,7 @@ export default function About() {
         </div>
         { userCanEditStaff && <AddStaffButton /> }
       </WLCenteredColumn>
-      <ScheduleBar open={formModalOpen} setOpen={setFormModalOpen} />
+      <ScheduleBar />
     </WLSpinnerPage>
   )
 

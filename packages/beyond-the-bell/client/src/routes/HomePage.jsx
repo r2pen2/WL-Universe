@@ -7,7 +7,7 @@ import { ImageCompressor } from "../libraries/Web-Legos/api/images";
 import {Swoosh, WaveBottom, WaveTop} from "../libraries/Web-Legos/components/Waves.jsx"
 
 import "../assets/style/homepage.css"
-import { FormModal, ScheduleBar } from '../components/Forms';
+import { ContactForm } from '../components/ContactForm';
 
 import { firestore, removeImage, uploadImgToStorageAndReturnDownloadLink } from '../api/firebase';
 import { addDoc, collection, deleteDoc, doc, setDoc } from 'firebase/firestore';
@@ -43,7 +43,6 @@ export default function HomePage() {
     title: "",              // No class offering selected, so no title yet
     order: 0,               // No class offering selected, so no order yet
   });
-  const [formModalOpen, setFormModalOpen] = useState(false);                      // Whether form modal is open
   const [testimonialModalOpen, setTestimonialModalOpen] = useState(false);        // Whether focused testimonial modal is open
   const [offeringModalOpen, setOfferingModalOpen] = useState(false);              // Whether focused class offering modal is open
   const [testimonialEdit, setTestimonialEdit] = useState(false);                  // Whether current user is currently editing a testimonial
@@ -109,6 +108,12 @@ export default function HomePage() {
 
   const [testimonialHeaderLoaded, setTestimonialHeaderloaded] = useState(false);
   const [offeringsHeaderLoaded, setOfferingsHeaderloaded] = useState(false);
+  const [contactHeaderLoaded, setContactHeaderLoaded] = useState(false);
+  const [contactSubtitleLoaded, setContactSubtitleLoaded] = useState(false);
+
+  function scrollToContact() {
+    document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
+  }
 
   function SpinningLogo() {
     
@@ -127,7 +132,7 @@ export default function HomePage() {
   }
 
   return (
-    <WLSpinnerPage dependencies={[testimonialHeaderLoaded, offeringsHeaderLoaded, testimonialData, offeringData]}>
+    <WLSpinnerPage dependencies={[testimonialHeaderLoaded, offeringsHeaderLoaded, testimonialData, offeringData, contactHeaderLoaded, contactSubtitleLoaded]}>
       <Modal 
         closeButton
         width="80vw"
@@ -160,7 +165,6 @@ export default function HomePage() {
           </div>
         </Modal.Footer>
       </Modal>
-      <FormModal open={formModalOpen} setOpen={setFormModalOpen} />
       <section className="home-image w-100 py-5 px-2">
         <div className="container">
         <div className="row px-2 d-flex flex-row align-items-center justify-content-center">
@@ -200,9 +204,9 @@ export default function HomePage() {
               color="gradient"
               size="xl"
               className="d-none d-md-inline"
-              onClick={() => setFormModalOpen(true)}
+              onClick={scrollToContact}
             >
-              Schedule
+              Contact Us
             </Button>
             <Button
               bordered
@@ -210,9 +214,9 @@ export default function HomePage() {
               size="lg"
               color="gradient"
               className="d-md-none d-inline"
-              onClick={() => setFormModalOpen(true)}
+              onClick={scrollToContact}
             >
-              Schedule
+              Contact Us
             </Button>
           </div>
             </div>        
@@ -254,7 +258,7 @@ export default function HomePage() {
         { userCanEditTestimonials && <AddTestimonialButton /> }
         {/* <Swoosh color="white" shadowTop flipX style={{marginBottom: "-3.125rem"}} /> */}
       </section>
-      <ScheduleBar open={formModalOpen} setOpen={setFormModalOpen} />
+      <ContactForm setHeaderLoaded={setContactHeaderLoaded} setSubtitleLoaded={setContactSubtitleLoaded} />
     </WLSpinnerPage>
   )
 
