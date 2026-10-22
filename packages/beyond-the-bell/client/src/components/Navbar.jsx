@@ -6,7 +6,7 @@ import { iconFills } from './Icons';
 
 import { callLink, facebookLink, mapsLink, mailLink } from '../api/links';
 
-import { iconColors } from "../libraries/Web-Legos/components/Icons";
+import { iconColors, MailIcon } from "../libraries/Web-Legos/components/Icons";
 
 import logoBlack from "../assets/images/logoTransparentBlack.png";
 
@@ -151,9 +151,12 @@ export function Navbar() {
 function NavbarContactButton() {
   return (
     <NextUINavbar.Item css={{fontSize: navbarItemFontSize}}>
-      <Button auto bordered color="gradient" onClick={() => window.location.href = "/#contact"}>
-        Contact Us
-      </Button>
+      <Button
+        auto
+        bordered
+        icon={<MailIcon color={iconFills.orange} size={24} />}
+        onClick={() => window.location.href = "/#contact"}
+      />
     </NextUINavbar.Item>
   )
 }

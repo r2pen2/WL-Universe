@@ -95,7 +95,7 @@ export function ContactForm({ setHeaderLoaded, setSubtitleLoaded }) {
   }
 
   return (
-    <section id="contact" className="d-flex flex-row justify-content-center">
+    <div id="contact">
       <Modal
         blur
         open={recaptchaModalOpen}
@@ -114,40 +114,42 @@ export function ContactForm({ setHeaderLoaded, setSubtitleLoaded }) {
           />
         </Modal.Body>
       </Modal>
-      <div className="gap-2 d-flex flex-column align-items-start justify-content-center contact-form w-100 mx-2 my-5 mx-md-5"  style={{maxWidth: 1400}}>
-        <ContactBlockHeader />
-        <div className="container-fluid d-flex flex-column">
-          <div className="row">
-            <WLHeader setLoaded={setHeaderLoaded} align="start" firestoreId="contact-header" editable={userCanEditText} />
-            <WLText setLoaded={setSubtitleLoaded} align="start" firestoreId="contact-subtitle" editable={userCanEditText} />
-          </div>
-          <div className="row pt-2">
-            <Input id="name" clearable bordered label="Your Name" fullWidth css={{display: "flex", alignItems: "start"}} />
-          </div>
-          <div className="row">
-            <div className="col-lg-6 col-md-12 pt-2">
-              <Input id="phone" clearable bordered label="Your phone" fullWidth css={{display: "flex", alignItems: "start"}} />
+      <ContactBlockHeader />
+      <section className="d-flex flex-row justify-content-center">
+        <div className="gap-2 d-flex flex-column align-items-start justify-content-center contact-form w-100 mx-2 my-5 mx-md-5"  style={{maxWidth: 1400}}>
+          <div className="container-fluid d-flex flex-column">
+            <div className="row">
+              <WLHeader setLoaded={setHeaderLoaded} align="start" firestoreId="contact-header" editable={userCanEditText} />
+              <WLText setLoaded={setSubtitleLoaded} align="start" firestoreId="contact-subtitle" editable={userCanEditText} />
             </div>
-            <div className="col-lg-6 col-md-12 pt-2">
-              <Input id="email" clearable bordered label="Your email" fullWidth css={{display: "flex", alignItems: "start"}} />
+            <div className="row pt-2">
+              <Input id="name" clearable bordered label="Your Name" fullWidth css={{display: "flex", alignItems: "start"}} />
+            </div>
+            <div className="row">
+              <div className="col-lg-6 col-md-12 pt-2">
+                <Input id="phone" clearable bordered label="Your phone" fullWidth css={{display: "flex", alignItems: "start"}} />
+              </div>
+              <div className="col-lg-6 col-md-12 pt-2">
+                <Input id="email" clearable bordered label="Your email" fullWidth css={{display: "flex", alignItems: "start"}} />
+              </div>
+            </div>
+            <div className="row pt-2">
+              <Input id="contact-method" clearable bordered label="Preferred contact method" fullWidth css={{display: "flex", alignItems: "start"}} />
+            </div>
+            <div className="row pt-2">
+              <Input id="location" clearable bordered label="City, State" fullWidth css={{display: "flex", alignItems: "start"}} />
+            </div>
+            <div className="row pt-2">
+              <Textarea id="message" bordered label="How can we help?" placeholder="Tell us what you're looking for." fullWidth css={{display: "flex", alignItems: "start"}} />
             </div>
           </div>
-          <div className="row pt-2">
-            <Input id="contact-method" clearable bordered label="Preferred contact method" fullWidth css={{display: "flex", alignItems: "start"}} />
-          </div>
-          <div className="row pt-2">
-            <Input id="location" clearable bordered label="City, State" fullWidth css={{display: "flex", alignItems: "start"}} />
-          </div>
-          <div className="row pt-2">
-            <Textarea id="message" bordered label="How can we help?" placeholder="Tell us what you're looking for." fullWidth css={{display: "flex", alignItems: "start"}} />
+          <div className="d-flex justify-content-center w-100 mt-3">
+            <Button color="primary" shadow onPress={() => setRecaptchaModalOpen(true)}>
+              Submit
+            </Button>
           </div>
         </div>
-        <div className="d-flex justify-content-center w-100 mt-3">
-          <Button color="primary" shadow onPress={() => setRecaptchaModalOpen(true)}>
-            Submit
-          </Button>
-        </div>
-      </div>
-    </section>
+      </section>
+    </div>
   )
 }
