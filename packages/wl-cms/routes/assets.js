@@ -24,16 +24,23 @@ function attachPublicAssets(app) {
     const rel = req.params[1];
     const site = getSite(siteSlug);
     if (!site) {
+      res.set("Cache-Control", "no-store");
       return res.sendStatus(404);
     }
     try {
       const ctx = getOrCreateContext(site);
       const filePath = safeJoinImages(ctx.imagesDir, rel);
       if (!filePath || !fs.existsSync(filePath)) {
+        // No explicit Cache-Control here previously let browsers (per RFC 9111
+        // 4.2.2, 404 is heuristically cacheable) cache a transient "missing
+        // asset" 404 on disk and keep replaying it after the file showed up,
+        // with no request ever reaching the origin to reveal the fix.
+        res.set("Cache-Control", "no-store");
         return res.sendStatus(404);
       }
       return res.sendFile(filePath);
     } catch {
+      res.set("Cache-Control", "no-store");
       return res.sendStatus(503);
     }
   });
