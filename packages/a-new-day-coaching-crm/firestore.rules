@@ -3,18 +3,17 @@ rules_version = '2';
 // Previously: `match /{document=**} { allow read, write: if request.auth != null; }`
 // -- i.e. any signed-in Google account (student, parent, coach, anyone) could
 // read AND WRITE every document in the whole database, including other
-// people's invoices, homework, and personal info. That was never actually
-// exercised as a hole (the client only ever wrote to its own doc, or a
-// staff member editing a client's doc), but it's more permissive than the
-// app actually needs, and the "unauthenticated backend routes" incident this
-// tightening accompanies is a good reason to close it properly rather than
-// leave it as wide as it happened to be.
+// people's invoices, homework, and personal info.
 //
 // Now: reads require being signed in (the client reads other users' docs
 // directly for rosters, sync-code lookup, and delegate/linked-account
-// resolution -- see client/src/api/db/dbUser.ts). Writes to another
-// person's data require the actor's own `users/{uid}` doc to have a staff
-// role (Coach, Admin, or Developer) -- everyone can always write their own.
+// resolution -- see client/src/api/db/dbUser.ts). Writes to another person's
+// data require the actor's own user doc to have a staff role (Coach, Admin,
+// or Developer) -- everyone can always write their own, and can add/remove
+// themselves in someone else's linkedAccounts (sync-code linking).
+//
+// Deployed by .github/workflows/firestore-rules.yml; tested by
+// test/firestore.rules.test.cjs against the Firestore emulator.
 service cloud.firestore {
   match /databases/{database}/documents {
 
@@ -22,25 +21,47 @@ service cloud.firestore {
       return request.auth != null;
     }
 
-    function myRole() {
-      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.personalData.role;
+    // A secondary login can be aliased to the account that owns its data (see
+    // resolveCanonicalUserId in dbUser.ts), and the client then reads and writes
+    // users/{canonicalUid} -- so "my doc" and "my role" go through the alias.
+    function myUid() {
+      let alias = /databases/$(database)/documents/userAliases/$(request.auth.uid);
+      return exists(alias) ? get(alias).data.canonicalUid : request.auth.uid;
+    }
+
+    function isMe(userId) {
+      return userId == request.auth.uid || userId == myUid();
     }
 
     function isStaff() {
-      return isSignedIn() && myRole() in ['Coach', 'Admin', 'Developer'];
+      let me = /databases/$(database)/documents/users/$(myUid());
+      return isSignedIn()
+        && exists(me)
+        && get(me).data.get('personalData', {}).get('role', '') in ['Coach', 'Admin', 'Developer'];
+    }
+
+    // Sync-code linking: a parent/student writes the *other* person's doc to add
+    // (or remove) their own id in its linkedAccounts, and touches nothing else.
+    function isOwnLinkChange() {
+      let before = resource.data.get('linkedAccounts', []).toSet();
+      let after = request.resource.data.get('linkedAccounts', []).toSet();
+      let changed = after.difference(before).union(before.difference(after));
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(['linkedAccounts'])
+        && changed.size() == 1
+        && changed.hasOnly([request.auth.uid, myUid()]);
     }
 
     match /users/{userId} {
       allow read: if isSignedIn();
-      allow write: if isSignedIn() && (request.auth.uid == userId || isStaff());
+      allow create: if isSignedIn() && (isMe(userId) || isStaff());
+      allow update: if isSignedIn() && (isMe(userId) || isStaff() || isOwnLinkChange());
+      allow delete: if isStaff();
     }
 
     // Maps a secondary Firebase Auth uid to the canonical account it should
-    // resolve to (see resolveCanonicalUserId in dbUser.ts). Only staff manage
-    // these; any signed-in user needs to be able to read their own, which the
-    // broad read below covers.
+    // resolve to. Only staff manage these; each login can read its own.
     match /userAliases/{aliasId} {
-      allow read: if isSignedIn();
+      allow read: if isSignedIn() && (aliasId == request.auth.uid || isStaff());
       allow write: if isStaff();
     }
 
@@ -59,10 +80,12 @@ service cloud.firestore {
     }
 
     // Anything else (form templates, resources, etc.): keep the same
-    // signed-in-read/staff-write shape rather than leaving it open.
-    match /{document=**} {
-      allow read: if isSignedIn();
-      allow write: if isStaff();
+    // signed-in-read/staff-write shape rather than leaving it open. Rules that
+    // match the same doc are OR'd together, so this skips the collections above
+    // -- otherwise it would quietly widen them.
+    match /{collection}/{document=**} {
+      allow read: if isSignedIn() && !(collection in ['users', 'userAliases', 'invoices', 'tools']);
+      allow write: if isStaff() && !(collection in ['users', 'userAliases', 'invoices', 'tools']);
     }
   }
 }

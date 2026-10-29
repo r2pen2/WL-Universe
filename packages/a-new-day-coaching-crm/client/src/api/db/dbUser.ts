@@ -1,12 +1,13 @@
 import { UserCredential } from "firebase/auth";
 import { db } from "../firebase";
-import { DocumentReference, collection, doc, getDoc, getDocs, limit, onSnapshot, query, runTransaction, setDoc, updateDoc, where } from "firebase/firestore";
+import { DocumentReference, DocumentSnapshot, arrayRemove, arrayUnion, collection, doc, getDoc, getDocs, limit, onSnapshot, query, runTransaction, setDoc, updateDoc, where } from "firebase/firestore";
 import { navigationItems } from "../../components/Navigation";
 import { FormAssignment } from "./dbFormAssignment.ts";
-import { Homework, HomeworkLoaderType, HomeworkPriority, HomeworkPriorityVerbosity, HomeworkStatus, HomeworkSubject } from "./dbHomework.ts";
+import { Homework, HomeworkStatus, HomeworkSubject } from "./dbHomework.ts";
 import { Document } from "./dbDocument.ts";
 import { getOrthodoxDate } from "../dates.ts";
 import { Resource } from "./dbResource.ts";
+import { USER_DEFAULTS, applyUserDefaults } from "./userDefaults";
 
 export enum UserRole {
   STUDENT = "Student",
@@ -46,94 +47,53 @@ async function resolveCanonicalUserId(uid: string): Promise<string> {
 }
 
 /**
- * Roster rows (Manage Users / Forms / Tools / Invoices) only need a few personalData
- * fields. A `users` doc that is missing personalData entirely (half-written, created by
- * hand in the console, etc.) used to throw a TypeError here, which rejected the whole
- * query and every admin roster showed "No users found." -- one bad doc blanked the list.
+ * Read a user doc and check it against USER_DEFAULTS. If any fields are missing,
+ * write the defaults back to the doc and read it again, so callers always get a
+ * complete record and the doc gets fixed for the next reader. (One doc without
+ * personalData used to throw here and blank every admin roster.) The write is
+ * best-effort: it needs permission to write that doc, and the in-memory defaults are
+ * used either way. routes/users.js does the same check on the server.
  */
-function rosterPersonalData(u: any) {
-  const p = u?.personalData || {};
-  return {
-    displayName: p.displayName || p.email || "(no name)",
-    email: p.email || "",
-    role: p.role || "",
-  };
+async function loadUserRecord(snap: DocumentSnapshot): Promise<any> {
+  const { record, patch } = applyUserDefaults(snap.data(), snap.id);
+  if (!patch) { return { ...record, id: snap.id }; }
+  try {
+    await setDoc(snap.ref, patch, { merge: true });
+    const retry = await getDoc(snap.ref);
+    return { ...applyUserDefaults(retry.data(), snap.id).record, id: snap.id };
+  } catch (error) {
+    console.error(`users/${snap.id}: couldn't write missing default fields:`, error);
+    return { ...record, id: snap.id };
+  }
 }
 
 export class User {
   
   firebaseUser: UserCredential;
 
-  metadata: any = {
-    lastSignIn: null
-  };
-  
-  invoices: string[] = [];
-  admin: boolean = false;
-  formAssignments: FormAssignment[] = [];
+  // Defaults for all of these come from USER_DEFAULTS (see the constructor).
+  metadata: any;
+  invoices: string[];
+  admin: boolean;
+  formAssignments: FormAssignment[];
   id: string;
   docRef: DocumentReference;
-  tools: any = {};
-  numUnpaidInvoices: number = 0;
-  syncCode: string | null = null;
-
-  linkedAccounts: string[] = [];
-
-  homework: Homework[] = [];
-
-  resources: any[] = [];
-
+  tools: any;
+  numUnpaidInvoices: number;
+  syncCode: string | null;
+  linkedAccounts: string[];
+  homework: Homework[];
+  resources: any[];
   delegate: User | null = null;
-
-  subjects: { [key: string]: any } = {
-    "todo": { 
-      color: "#ffffff",
-      title: "todo",
-    }
-  }
-
-  documents: any[] = [];
-
-  intents: string[] = [];
-
-  personalData: any = {
-    displayName: "",
-    email: "",
-    pfpUrl: "",
-    phoneNumber: "",
-    address: "",
-    city: "",
-    state: "",
-    zip: "",
-    role: "",
-  }
-
-  schoolInfo: any = {
-    advisorName: "",
-    advisorHref: "",
-    advisorEmail: "",
-    advisorOffice: "",
-    LMSHref: "",
-    LMSName: "",
-    sessionNotes: "",
-  }
-
-  settings: any = {
-    darkMode: false,
-    priorityVerbosity: HomeworkPriorityVerbosity.COLORS,
-    priorityPulseThreshold: HomeworkPriority.HIGH,
-    homeworkLoaderType: HomeworkLoaderType.CIRCLE,
-    requireHomeworkDeleteConfirmation: true,
-    ringDeadlineThresholdHours: 24,
-    invoices: {
-      studentVisibility: false,
-      newInvoiceEmailNotification: true,
-      pendingStatusEmailNotification: true,
-    },
-    meetingLink: "",
-  }
+  subjects: { [key: string]: any };
+  documents: any[];
+  intents: string[];
+  personalData: any;
+  schoolInfo: any;
+  settings: any;
 
   constructor(firebaseUser?: any) {
+    Object.assign(this, JSON.parse(JSON.stringify(USER_DEFAULTS)));
     this.firebaseUser = firebaseUser;
     this.id = firebaseUser?.uid;
     this.docRef = doc(db, `users/${this.id}`);
@@ -218,36 +178,38 @@ export class User {
    */
   static async fetchAll(): Promise<any> {
     const snapshot = await getDocs(collection(db, "users"));
+    const records = await Promise.all(snapshot.docs.map(loadUserRecord));
     const users: any = {};
-    snapshot.forEach((d) => { users[d.id] = { ...d.data(), id: d.id }; });
+    for (const u of records) { users[u.id] = u; }
     return users;
   }
 
   static async getById(id: string): Promise<any> {
     const snap = await getDoc(doc(db, `users/${id}`));
-    return snap.exists() ? { ...snap.data(), id: snap.id } : {};
+    return snap.exists() ? loadUserRecord(snap) : {};
   }
 
   static async fetchSearch(navPage: string): Promise<any> {
-    const snapshot = await getDocs(collection(db, "users"));
     const resUsers: any = {};
-    snapshot.forEach((d) => {
-      const u = d.data();
-      if (!u?.personalData) { console.warn(`fetchSearch: users/${d.id} has no personalData`); }
+    for (const u of Object.values(await User.fetchAll()) as any[]) {
       const base = {
-        personalData: rosterPersonalData(u),
-        id: d.id,
+        personalData: {
+          displayName: u.personalData.displayName || u.personalData.email,
+          email: u.personalData.email,
+          role: u.personalData.role
+        },
+        id: u.id,
       };
       if (navPage === navigationItems.ADMINFORMS) {
-        resUsers[d.id] = { ...base, formAssignments: u.formAssignments || [] };
+        resUsers[u.id] = { ...base, formAssignments: u.formAssignments };
       } else if (navPage === navigationItems.ADMININVOICES) {
-        if (base.personalData.role === UserRole.STUDENT) { resUsers[d.id] = base; }
+        if (u.personalData.role === UserRole.STUDENT) { resUsers[u.id] = base; }
       } else if (navPage === navigationItems.ADMINTOOLS) {
-        resUsers[d.id] = { ...base, tools: u.tools || {} };
+        resUsers[u.id] = { ...base, tools: u.tools };
       } else if (navPage === navigationItems.ADMINUSERS) {
-        resUsers[d.id] = base;
+        resUsers[u.id] = base;
       }
-    });
+    }
     return resUsers;
   }
 
@@ -279,28 +241,28 @@ export class User {
 
   fillData(data: any): User | void {
     if (data === null) { return; }
-    // Fall back to this instance's defaults for anything an older/partial doc is
-    // missing. Previously a doc without e.g. `resources` threw inside subscribe()'s
-    // snapshot callback, so that person could authenticate but never got past the
-    // login screen.
-    this.invoices = data.invoices ?? this.invoices;
-    this.admin = data.admin ?? this.admin;
-    this.formAssignments = data.formAssignments ?? this.formAssignments;
-    this.id = data.id ?? this.id;
-    this.personalData = { ...this.personalData, ...(data.personalData || {}) };
-    this.tools = data.tools ?? this.tools;
-    this.numUnpaidInvoices = data.numUnpaidInvoices ?? this.numUnpaidInvoices;
-    this.homework = (data.homework ?? []).map((h: any) => Homework.load(h));
-    this.subjects = data.subjects ?? this.subjects;
-    this.documents = (data.documents ?? []).map((d: any) => Document.load(d));
-    this.intents = data.intents ?? this.intents;
-    this.settings = { ...this.settings, ...(data.settings || {}) };
-    this.schoolInfo = { ...this.schoolInfo, ...(data.schoolInfo || {}) };
-    this.metadata = data.metadata ?? this.metadata;
-    this.syncCode = data.syncCode ?? this.syncCode;
-    this.linkedAccounts = data.linkedAccounts ?? this.linkedAccounts;
+    // Anything an older/partial doc is missing comes from USER_DEFAULTS. Previously a
+    // doc without e.g. `resources` threw inside subscribe()'s snapshot callback, so
+    // that person could authenticate but never got past the login screen.
+    const record = applyUserDefaults(data, this.id).record;
+    this.invoices = record.invoices;
+    this.admin = record.admin;
+    this.formAssignments = record.formAssignments;
+    this.id = record.id;
+    this.personalData = record.personalData;
+    this.tools = record.tools;
+    this.numUnpaidInvoices = record.numUnpaidInvoices;
+    this.homework = record.homework.map((h: any) => Homework.load(h));
+    this.subjects = record.subjects;
+    this.documents = record.documents.map((d: any) => Document.load(d));
+    this.intents = record.intents;
+    this.settings = record.settings;
+    this.schoolInfo = record.schoolInfo;
+    this.metadata = record.metadata;
+    this.syncCode = record.syncCode;
+    this.linkedAccounts = record.linkedAccounts;
     this.delegate = data.delegate;
-    this.resources = (data.resources ?? []).map((r: any) => Resource.load(r)) ;
+    this.resources = record.resources.map((r: any) => Resource.load(r)) ;
     return this;
   }
 
@@ -339,6 +301,12 @@ export class User {
         this.createDocument().catch((error) => console.error("subscribe: createDocument failed:", error));
         return;
       }
+      // Same check as loadUserRecord(): write back any missing fields. The snapshot
+      // that write triggers lands back here with the complete doc.
+      const { patch } = applyUserDefaults(doc.data(), doc.id);
+      if (patch) {
+        setDoc(this.docRef, patch, { merge: true }).catch((error) => console.error("subscribe: couldn't write missing default fields:", error));
+      }
       this.fillData(doc.data());
       // assignDelegate() shouldn't reject anymore (getFirstChild catches its
       // own lookup failures), but don't let sign-in hang forever on this
@@ -354,29 +322,22 @@ export class User {
     })
   }
 
-  async linkAccount(id: string, role: UserRole): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      if (this.linkedAccounts.includes(id)) { reject("Account already linked"); } else {
-        this.linkedAccounts.push(id);
-        this.linkedAccounts = this.linkedAccounts.filter(a => a !== undefined);
-        this.setData().then(() => {
-          resolve();
-        }).catch((error) => {
-          reject(error);
-        });
-      }
-    })
+  /**
+   * Add/remove one id in this user's linkedAccounts. This is also how a parent or
+   * student links *someone else's* doc to theirs via sync code, so it touches only
+   * that one field: firestore.rules lets a non-staff user write another person's doc
+   * only to add or remove their own id there.
+   */
+  async linkAccount(id: string, role?: UserRole): Promise<void> {
+    if (!id) { return; }
+    if (this.linkedAccounts.includes(id)) { throw new Error("Account already linked"); }
+    await updateDoc(this.docRef, { linkedAccounts: arrayUnion(id) });
+    this.linkedAccounts = [...this.linkedAccounts, id];
   }
 
   async unlinkAccount(id: string): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      this.linkedAccounts = this.linkedAccounts.filter(a => a !== id);
-      this.setData().then(() => {
-        resolve();
-      }).catch((error) => {
-        reject(error);
-      });
-    })
+    await updateDoc(this.docRef, { linkedAccounts: arrayRemove(id) });
+    this.linkedAccounts = this.linkedAccounts.filter(a => a !== id);
   }
 
   async addSubject(subject: HomeworkSubject): Promise<void> {
