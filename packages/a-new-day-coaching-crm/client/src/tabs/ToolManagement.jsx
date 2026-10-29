@@ -9,7 +9,7 @@ import { User } from '../api/db/dbUser.ts';
 
 // Component Imports
 import { navigationItems } from '../components/Navigation.jsx';
-import { notifSuccess } from '../components/Notifications.jsx';
+import { notifFail, notifSuccess } from '../components/Notifications.jsx';
 
 // Style Imports
 import "../assets/style/toolsAdmin.css";
@@ -43,7 +43,7 @@ export default function ToolManagement() {
   /** Fetch tools and users on component mount */
   React.useEffect(() => {
     fetchTools()
-    User.fetchSearch(navigationItems.ADMINTOOLS).then((users) => { setAllUsers(users); })
+    User.fetchSearch(navigationItems.ADMINTOOLS).then((users) => { setAllUsers(users); }).catch((error) => { console.error(error); notifFail("Couldn't load users", error.message); })
   }, [])
 
   /** Create tool on database w/ fields from form */
