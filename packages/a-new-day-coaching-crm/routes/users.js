@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const bodyParser = require('body-parser');
 const db = require('../firebase');
+const { applyUserDefaults } = require('../client/src/api/db/userDefaults');
 
 router.use(bodyParser.json());
 
@@ -14,19 +15,36 @@ router.use(bodyParser.json());
  * invoices.js all did this). One-shot reads/writes were never affected, so
  * everything below just reads Firestore directly on each request instead of
  * trusting a background listener to still be alive.
+ *
+ * Each doc is also checked against the shared defaults (see
+ * client/src/api/db/userDefaults.js). If any fields are missing, write the defaults
+ * back to the doc and read it again, so callers always get a complete record and the
+ * doc itself gets fixed rather than tripping up the next reader.
  */
+async function loadUser(doc) {
+  const { record, patch } = applyUserDefaults(doc.data(), doc.id);
+  if (!patch) { return { ...record, id: doc.id }; }
+  try {
+    await doc.ref.set(patch, { merge: true });
+    const retry = await doc.ref.get();
+    return { ...applyUserDefaults(retry.data(), doc.id).record, id: doc.id };
+  } catch (error) {
+    console.error(`users/${doc.id}: failed to write missing default fields:`, error);
+    return { ...record, id: doc.id };
+  }
+}
+
 async function getAllUsers() {
   const snapshot = await db.collection("users").get();
+  const records = await Promise.all(snapshot.docs.map(loadUser));
   const users = {};
-  snapshot.forEach((doc) => {
-    users[doc.id] = { ...doc.data(), id: doc.id };
-  });
+  for (const user of records) { users[user.id] = user; }
   return users;
 }
 
 async function getUser(id) {
   const doc = await db.collection("users").doc(id).get();
-  return doc.exists ? { ...doc.data(), id: doc.id } : null;
+  return doc.exists ? loadUser(doc) : null;
 }
 
 async function setUser(user) {
