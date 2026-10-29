@@ -1,8 +1,7 @@
 import { UserCredential } from "firebase/auth";
 import { db } from "../firebase";
-import { DocumentReference, collection, doc, getDoc, getDocs, onSnapshot, setDoc } from "firebase/firestore";
+import { DocumentReference, collection, doc, getDoc, getDocs, limit, onSnapshot, query, runTransaction, setDoc, updateDoc, where } from "firebase/firestore";
 import { navigationItems } from "../../components/Navigation";
-import { hostname } from "./dbManager.ts";
 import { FormAssignment } from "./dbFormAssignment.ts";
 import { Homework, HomeworkLoaderType, HomeworkPriority, HomeworkPriorityVerbosity, HomeworkStatus, HomeworkSubject } from "./dbHomework.ts";
 import { Document } from "./dbDocument.ts";
@@ -44,6 +43,21 @@ async function resolveCanonicalUserId(uid: string): Promise<string> {
     console.error("userAliases lookup failed, continuing without alias:", error);
     return uid;
   }
+}
+
+/**
+ * Roster rows (Manage Users / Forms / Tools / Invoices) only need a few personalData
+ * fields. A `users` doc that is missing personalData entirely (half-written, created by
+ * hand in the console, etc.) used to throw a TypeError here, which rejected the whole
+ * query and every admin roster showed "No users found." -- one bad doc blanked the list.
+ */
+function rosterPersonalData(u: any) {
+  const p = u?.personalData || {};
+  return {
+    displayName: p.displayName || p.email || "(no name)",
+    email: p.email || "",
+    role: p.role || "",
+  };
 }
 
 export class User {
@@ -159,28 +173,31 @@ export class User {
     })
   }
   
+  toJson(): any {
+    return {
+      invoices: this.invoices,
+      admin: this.admin,
+      formAssignments: this.formAssignments,
+      id: this.id,
+      personalData: this.personalData,
+      tools: this.tools,
+      homework: this.homework.map((h) => h.toJson()),
+      subjects: this.subjects,
+      numUnpaidInvoices: this.numUnpaidInvoices,
+      documents: this.documents.map((d) => d.toJson()),
+      intents: this.intents,
+      settings: this.settings,
+      metadata: this.metadata,
+      schoolInfo: this.schoolInfo,
+      syncCode: this.syncCode,
+      linkedAccounts: this.linkedAccounts,
+      resources: this.resources.map((r) => r.toJson()),
+    }
+  }
+
   async setData(): Promise<void> {
     return new Promise<void>((resolve, reject) => {
-      const data = {
-        invoices: this.invoices,
-        admin: this.admin,
-        formAssignments: this.formAssignments,
-        id: this.id,
-        personalData: this.personalData,
-        tools: this.tools,
-        homework: this.homework.map((h) => h.toJson()),
-        subjects: this.subjects,
-        numUnpaidInvoices: this.numUnpaidInvoices,
-        documents: this.documents.map((d) => d.toJson()),
-        intents: this.intents,
-        settings: this.settings,
-        metadata: this.metadata,
-        schoolInfo: this.schoolInfo,
-        syncCode: this.syncCode,
-        linkedAccounts: this.linkedAccounts,
-        resources: this.resources.map((r) => r.toJson()),
-      }
-      setDoc(this.docRef, data).then(() => {
+      setDoc(this.docRef, this.toJson()).then(() => {
         resolve();
       }).catch((error) => {
         reject(error);
@@ -216,20 +233,17 @@ export class User {
     const resUsers: any = {};
     snapshot.forEach((d) => {
       const u = d.data();
+      if (!u?.personalData) { console.warn(`fetchSearch: users/${d.id} has no personalData`); }
       const base = {
-        personalData: {
-          displayName: u.personalData.displayName,
-          email: u.personalData.email,
-          role: u.personalData.role
-        },
+        personalData: rosterPersonalData(u),
         id: d.id,
       };
       if (navPage === navigationItems.ADMINFORMS) {
-        resUsers[d.id] = { ...base, formAssignments: u.formAssignments };
+        resUsers[d.id] = { ...base, formAssignments: u.formAssignments || [] };
       } else if (navPage === navigationItems.ADMININVOICES) {
-        if (u.personalData.role === UserRole.STUDENT) { resUsers[d.id] = base; }
+        if (base.personalData.role === UserRole.STUDENT) { resUsers[d.id] = base; }
       } else if (navPage === navigationItems.ADMINTOOLS) {
-        resUsers[d.id] = { ...base, tools: u.tools };
+        resUsers[d.id] = { ...base, tools: u.tools || {} };
       } else if (navPage === navigationItems.ADMINUSERS) {
         resUsers[d.id] = base;
       }
@@ -265,39 +279,52 @@ export class User {
 
   fillData(data: any): User | void {
     if (data === null) { return; }
-    this.invoices = data.invoices;
-    this.admin = data.admin;
-    this.formAssignments = data.formAssignments;
-    this.id = data.id;
-    this.personalData = data.personalData;
-    this.tools = data.tools;
-    this.numUnpaidInvoices = data.numUnpaidInvoices;
-    this.homework = data.homework.map((h: any) => Homework.load(h));
-    this.subjects = data.subjects;
-    this.documents = data.documents.map((d: any) => Document.load(d));
-    this.intents = data.intents;
-    this.settings = data.settings;
-    this.schoolInfo = data.schoolInfo;
-    this.metadata = data.metadata;
-    this.syncCode = data.syncCode;
-    this.linkedAccounts = data.linkedAccounts;
+    // Fall back to this instance's defaults for anything an older/partial doc is
+    // missing. Previously a doc without e.g. `resources` threw inside subscribe()'s
+    // snapshot callback, so that person could authenticate but never got past the
+    // login screen.
+    this.invoices = data.invoices ?? this.invoices;
+    this.admin = data.admin ?? this.admin;
+    this.formAssignments = data.formAssignments ?? this.formAssignments;
+    this.id = data.id ?? this.id;
+    this.personalData = { ...this.personalData, ...(data.personalData || {}) };
+    this.tools = data.tools ?? this.tools;
+    this.numUnpaidInvoices = data.numUnpaidInvoices ?? this.numUnpaidInvoices;
+    this.homework = (data.homework ?? []).map((h: any) => Homework.load(h));
+    this.subjects = data.subjects ?? this.subjects;
+    this.documents = (data.documents ?? []).map((d: any) => Document.load(d));
+    this.intents = data.intents ?? this.intents;
+    this.settings = { ...this.settings, ...(data.settings || {}) };
+    this.schoolInfo = { ...this.schoolInfo, ...(data.schoolInfo || {}) };
+    this.metadata = data.metadata ?? this.metadata;
+    this.syncCode = data.syncCode ?? this.syncCode;
+    this.linkedAccounts = data.linkedAccounts ?? this.linkedAccounts;
     this.delegate = data.delegate;
-    this.resources = data.resources.map((r: any) => Resource.load(r)) ;
+    this.resources = (data.resources ?? []).map((r: any) => Resource.load(r)) ;
     return this;
   }
 
+  /**
+   * Create this user's doc if (and only if) it doesn't exist yet.
+   *
+   * This runs on every sign-in from getCurrentUser(), and on registration it races
+   * Login.jsx writing the new student's name/role. It used to be a plain
+   * get-then-setDoc, so whichever write landed second won -- and if it was this one,
+   * the student's name and role were overwritten with blanks. It also had to wait on
+   * a backend fetch for the sync code first; if that fetch failed the doc was never
+   * created at all and the person was stuck on the login screen (then "Email already
+   * in use" when they tried registering again). Now it's a create-if-absent
+   * transaction with a client-side sync code.
+   */
   async createDocument(): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      getDoc(this.docRef).then((doc) => {
-        if (doc.exists()) { resolve(); } else { 
-          this.generateSyncCode().then(() => {
-            this.setData().then(() => { resolve(); }).catch((error) => { reject(error); });
-          })
-        }
-      }).catch((error) => {
-        reject(error);
-      })
-    })
+    const existing = await getDoc(this.docRef);
+    if (existing.exists()) { return; }
+    if (!this.syncCode) { await this.generateSyncCode(); }
+    const data = this.toJson();
+    await runTransaction(db, async (transaction) => {
+      const snap = await transaction.get(this.docRef);
+      if (!snap.exists()) { transaction.set(this.docRef, data); }
+    });
   }
 
   /** Need to be able to create a shallow clione so that state can update */
@@ -305,20 +332,25 @@ export class User {
 
   subscribe(setter: Function, setColorScheme: Function) {
     onSnapshot(this.docRef, (doc) => {
-      if (doc.exists()) {
-        this.fillData(doc.data());
-        // assignDelegate() shouldn't reject anymore (getFirstChild catches its
-        // own lookup failures), but don't let sign-in hang forever on this
-        // secondary step if it ever does -- fall through and show the app.
-        this.assignDelegate().catch((error) => {
-          console.error("assignDelegate failed, continuing without a delegate:", error);
-        }).finally(() => {
-          // We need to create a clone of this User object so that the state actually updates
-          const cloneUser = this.clone()
-          setter(cloneUser);
-          setColorScheme(cloneUser?.settings.darkMode ? "dark" : "light");
-        })
+      if (!doc.exists()) {
+        // Signed in but no profile doc (e.g. createDocument() failed earlier) --
+        // create it instead of leaving them stuck on the login screen forever.
+        // The resulting snapshot lands back here.
+        this.createDocument().catch((error) => console.error("subscribe: createDocument failed:", error));
+        return;
       }
+      this.fillData(doc.data());
+      // assignDelegate() shouldn't reject anymore (getFirstChild catches its
+      // own lookup failures), but don't let sign-in hang forever on this
+      // secondary step if it ever does -- fall through and show the app.
+      this.assignDelegate().catch((error) => {
+        console.error("assignDelegate failed, continuing without a delegate:", error);
+      }).finally(() => {
+        // We need to create a clone of this User object so that the state actually updates
+        const cloneUser = this.clone()
+        setter(cloneUser);
+        setColorScheme(cloneUser?.settings.darkMode ? "dark" : "light");
+      })
     })
   }
 
@@ -498,6 +530,16 @@ export class User {
     })
   }
 
+  /**
+   * Patch only the given personalData fields on the stored doc, without
+   * rewriting the rest of it from this (possibly stale) instance.
+   */
+  async updatePersonalData(fields: { [key: string]: any }): Promise<void> {
+    const update: { [key: string]: any } = {};
+    for (const [key, value] of Object.entries(fields)) { update[`personalData.${key}`] = value; }
+    await updateDoc(this.docRef, update);
+  }
+
   async changeSchoolInfo(field: string, newValue: any): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       this.schoolInfo[field] = newValue;
@@ -509,23 +551,27 @@ export class User {
     })
   }
 
+  /**
+   * Generate a 6-character sync code no other user has. This used to fetch the
+   * backend's /users/sync, which made creating a brand-new student's doc depend on
+   * that server (and this domain) being reachable -- see createDocument().
+   */
   async generateSyncCode(): Promise<string> {
-    // Note: this still goes through the backend rather than a client Firestore
-    // query, since it needs to check a freshly-generated code against every
-    // other user's syncCode before handing it out. (A previous version of
-    // this chained un-returned .then()s off response.json(), so a failure here
-    // never reached the outer .catch() and just hung forever -- same bug class
-    // as getFirstChild() above.)
-    const response = await fetch(hostname + "/users/sync");
-    const data = await response.json();
-    this.syncCode = data.code;
-    return this.syncCode as string;
+    for (let attempt = 0; attempt < 10; attempt++) {
+      const code = Math.random().toString(36).substring(2, 8).toUpperCase().padEnd(6, "0");
+      if (!(await User.getSyncCodeOwner(code))) {
+        this.syncCode = code;
+        return code;
+      }
+    }
+    throw new Error("Could not generate an unused sync code");
   }
 
-  static async getSyncCodeOwner(code: string): Promise<boolean> {
-    const response = await fetch(hostname + `/users/sync?code=${code}`);
-    const data = await response.json();
-    return data.user;
+  static async getSyncCodeOwner(code: string): Promise<any> {
+    const snapshot = await getDocs(query(collection(db, "users"), where("syncCode", "==", code), limit(1)));
+    if (snapshot.empty) { return undefined; }
+    const d = snapshot.docs[0];
+    return { ...d.data(), id: d.id };
   }
 
   /**
@@ -537,7 +583,7 @@ export class User {
   static filterByDisplayNameAndEmail(users: User[], query: string): User[] {
     if ( query.length <= 0 ) { return users; }
     query = query.toLowerCase();
-    return users.filter((user) => { return user.personalData.displayName.toLowerCase().includes(query) || user.personalData.email.toLowerCase().includes(query) })
+    return users.filter((user) => { return (user.personalData?.displayName || "").toLowerCase().includes(query) || (user.personalData?.email || "").toLowerCase().includes(query) })
   }
 
   /**

@@ -31,7 +31,9 @@ export async function getCurrentUser(setter, colorSchemeSetter) {
   auth.onAuthStateChanged(async (user) => {
     if (user) {
       const userObject = await User.fromFirebaseUser(user);
-      await userObject.createDocument();
+      // If this fails, still subscribe: subscribe() retries the create when it
+      // sees no doc, rather than leaving the person stuck on the login screen.
+      await userObject.createDocument().catch((error) => console.error("createDocument failed:", error));
       userObject.subscribe(setter, colorSchemeSetter)
     } else {
       setter({id: null})

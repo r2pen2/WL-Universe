@@ -38,7 +38,7 @@ export default function InvoiceManagement() {
   const [pendingEmailInvoice, setPendingEmailInvoice] = React.useState(null)
   React.useEffect(() => {
     fetchInvoices()
-    User.fetchSearch(navigationItems.ADMININVOICES).then((users) => { setAllUsers(users); })
+    User.fetchSearch(navigationItems.ADMININVOICES).then((users) => { setAllUsers(users); }).catch((error) => { console.error(error); notifFail("Couldn't load users", error.message); })
   }, [])
 
   function createInvoice(event) {

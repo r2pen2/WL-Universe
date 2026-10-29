@@ -90,31 +90,38 @@ export default function Login() {
             setLoading(true)
             if (type === "login") {
               signInWithEmailAndPassword(auth, values.email, values.password).then((userCredential) => {
-                User.getById(userCredential.user.uid).then((dbUser) => { 
-                  notifSuccess("Login Success", "Welcome back, " + dbUser.personalData.displayName);
-                  
-                  // If there's an invoice to redirect to, go there
-                  if (invoiceRedirect) {
-                    window.location.hash = `#invoices?invoice=${invoiceRedirect}`;
-                  }
-                });
+                // App takes over once auth state changes (and creates the profile doc if
+                // it's missing); this is just the greeting, so a missing doc is fine here.
+                notifSuccess("Login Success", "Welcome back" + (userCredential.user.displayName ? ", " + userCredential.user.displayName : "!"));
+
+                // If there's an invoice to redirect to, go there
+                if (invoiceRedirect) {
+                  window.location.hash = `#invoices?invoice=${invoiceRedirect}`;
+                }
               }).catch((error) => {
                 if (error.code === 'auth/user-not-found') {
                   notifFail("Login Error", 'User not found');
-                  setLoading(false)
-                } else if (error.code === 'auth/invalid-credential') {
-                  notifFail("Login Error", 'Email / password is invalid.');
-                  setLoading(false)
+                } else if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password') {
+                  notifFail("Login Error", 'Email / password is invalid. If you signed up with Google, use the Google button instead.');
+                } else {
+                  notifFail("Login Error", "There was an unknown issue logging you in: " + error.code + " - " + error.message);
                 }
+                setLoading(false)
               });
             } else {
-              createUserWithEmailAndPassword(auth, values.email, values.password).then((userCredential) => {
-                const dbUser = User.getInstanceById(userCredential.user.uid)
-                dbUser.personalData.displayName = values.name
-                dbUser.personalData.role = values.role
-                dbUser.personalData.email = values.email
-                dbUser.personalData.pfpUrl = "https://www.gravatar.com/avatar/" + Math.floor(Math.random() * 1000000) + "?d=identicon"
-                dbUser.setData().then((user) => {
+              createUserWithEmailAndPassword(auth, values.email, values.password).then(async (userCredential) => {
+                // getCurrentUser() is creating this same doc in parallel (auth state just
+                // changed). Both sides create-if-absent, then we patch in the details from
+                // the form -- previously both did a full setDoc and whichever landed last
+                // won, which could wipe the new student's name and role.
+                const dbUser = await User.fromFirebaseUser(userCredential.user)
+                await dbUser.createDocument()
+                return dbUser.updatePersonalData({
+                  displayName: values.name,
+                  role: values.role,
+                  email: values.email,
+                  pfpUrl: "https://www.gravatar.com/avatar/" + Math.floor(Math.random() * 1000000) + "?d=identicon",
+                }).then(() => {
                   notifSuccess("Registration Success", "Welcome to A New Day Coaching, " + values.name);
                   
                   // If there's an invoice to link, do it now
@@ -129,7 +136,8 @@ export default function Login() {
                 })
               }).catch((error) => {
                 if (error.code === 'auth/email-already-in-use') {
-                  notifFail("Resigtration Error", 'Email already in use');
+                  notifFail("Account Already Exists", 'An account with this email already exists, so log in instead. If you signed up with Google, use the Google button.');
+                  setType('login')
                   setLoading(false)
                 } else {
                   notifFail("Registration Error", "There was an unknown issue signing you in: " + error.code + " - " + error.message);

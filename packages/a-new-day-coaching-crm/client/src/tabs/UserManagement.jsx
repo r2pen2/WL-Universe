@@ -2,6 +2,7 @@ import { Paper, Tabs } from '@mantine/core'
 import React from 'react'
 import { User, UserRole } from '../api/db/dbUser.ts';
 import { navigationItems } from '../components/Navigation';
+import { notifFail } from '../components/Notifications.jsx';
 import ModuleHeader from '../components/dashboard/ModuleHeader.jsx';
 import { UserSelect } from '../components/userManagement/UserManagementSelectPaper.jsx';
 import { PersonalData, SyncData, InvoiceData, AddInvoice, ManagementTracker, FormsData, ToolsData, DriveData, ExternalData} from '../components/userManagement/UserData.jsx';
@@ -12,7 +13,7 @@ export default function UserManagement() {
   const [selectedUser, setSelectedUser] = React.useState(null);
   const [allUsers, setAllUsers] = React.useState({});
 
-  React.useEffect(() => { User.fetchSearch(navigationItems.ADMINUSERS).then((users) => { setAllUsers(users); }) }, [])
+  React.useEffect(() => { User.fetchSearch(navigationItems.ADMINUSERS).then((users) => { setAllUsers(users); }).catch((error) => { console.error(error); notifFail("Couldn't load users", error.message); }) }, [])
 
   const [fullUserData, setFullUserData] = React.useState(null)
   

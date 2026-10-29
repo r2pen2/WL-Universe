@@ -9,7 +9,7 @@ import { allForms } from '../api/forms.ts';
 
 // Component Imports
 import { navigationItems } from '../components/Navigation.jsx';
-import { notifSuccess } from '../components/Notifications.jsx';
+import { notifFail, notifSuccess } from '../components/Notifications.jsx';
 
 // Style Imports
 import "../assets/style/formsAdmin.css";
@@ -31,7 +31,7 @@ export default function FormManagement() {
 
   const [assignMode, setAssignMode] = React.useState(null);
 
-  React.useEffect(() => { User.fetchSearch(navigationItems.ADMINFORMS).then((users) => { setAllUsers(users); }) }, [])
+  React.useEffect(() => { User.fetchSearch(navigationItems.ADMINFORMS).then((users) => { setAllUsers(users); }).catch((error) => { console.error(error); notifFail("Couldn't load users", error.message); }) }, [])
 
   const UserSearchResults = () => {
 
