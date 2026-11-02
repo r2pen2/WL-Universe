@@ -20,3 +20,6 @@ packages/*/libraries/Server-Legos/
 # Local microservice secrets (keep .env.example)
 deploy/local/.env
 
+
+# Firestore emulator
+firestore-debug.log
