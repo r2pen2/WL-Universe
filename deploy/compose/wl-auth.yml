@@ -7,6 +7,13 @@ services:
       - ${WL_AUTH_ENV_FILE:-/opt/services/data/app-env/wl-auth.env}
     environment:
       PORT: "3022"
+    volumes:
+      # lib/sites.js falls back to /opt/services/data/app-env/<slug>-serviceAccountKey.json
+      # (the same files each site's pre-migration server used) when no
+      # WL_AUTH_SA_<SITE> override is set. Without this mount wl-auth has no
+      # credentials for any site and every /site-auth lookup fails, so nobody
+      # gets edit permissions anywhere. Same mount as wl-cms.yml.
+      - /opt/services/data/app-env:/opt/services/data/app-env:ro
     networks:
       - proxy
     labels:

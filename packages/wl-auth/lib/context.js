@@ -31,12 +31,7 @@ function resolveSiteMiddleware(req, res, next) {
 function getOrCreateContext(site) {
   if (contexts.has(site.slug)) return contexts.get(site.slug);
   const db = getDbForSite(site.slug);
-  const ctx = {
-    site,
-    db,
-    permissionsData: {},
-    listening: false,
-  };
+  const ctx = { site, db };
   contexts.set(site.slug, ctx);
   return ctx;
 }
