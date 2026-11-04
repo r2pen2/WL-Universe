@@ -204,6 +204,8 @@ async function main() {
 
   console.log(`\n== ${problems.length} problem(s)`);
   for (const p of problems) console.log(`- ${p}`);
+  // The scheduled run fails (so GitHub emails) when anything is wrong; PR runs just report.
+  if (problems.length && process.env.AUDIT_FAIL_ON_PROBLEMS === "1") process.exitCode = 1;
 }
 
 main().catch((e) => { console.error(e); process.exit(1); });

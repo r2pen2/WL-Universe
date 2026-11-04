@@ -6,8 +6,9 @@ name: Site audit (read-only)
 
 on:
   workflow_dispatch:
-  push:
-    branches: [claude/crm-database-issues-jb5sby]
+  schedule:
+    - cron: "17 13 * * *"
+  pull_request:
     paths:
       - scripts/audit/**
       - .github/workflows/site-audit.yml
@@ -25,3 +26,5 @@ jobs:
         with:
           node-version: "22"
       - run: node scripts/audit/site-audit.mjs
+        env:
+          AUDIT_FAIL_ON_PROBLEMS: ${{ github.event_name == 'schedule' && '1' || '' }}
