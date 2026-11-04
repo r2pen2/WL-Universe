@@ -7,6 +7,10 @@ services:
       - ${WL_FORMS_ENV_FILE:-/opt/services/data/app-env/wl-forms.env}
     environment:
       PORT: "3023"
+    volumes:
+      # lib/sites.js falls back to /opt/services/data/app-env/<slug>-serviceAccountKey.json
+      # when no WL_FORMS_SA_<SITE> override is set. Same mount as wl-cms.yml / wl-auth.yml.
+      - /opt/services/data/app-env:/opt/services/data/app-env:ro
     networks:
       - proxy
     labels:

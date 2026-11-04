@@ -165,9 +165,28 @@ function seedFirestore(pr, app, owner) {
   ]);
 }
 
+// Static SPAs get all their content, permissions, form storage and mail from these,
+// at their own pr-<n>-<service> hosts (see generate-compose). They have to be
+// deployed with the SPA even when this PR didn't change them, or the preview site
+// comes up with no CMS content at all.
+const SPA_STATIC_SERVICES = ["wl-cms", "wl-auth", "wl-forms", "site-mail"];
+
+/** This PR's image for app if one was built, else the published :latest. */
+function imageTagFor(pr, app, owner) {
+  const base = `ghcr.io/${String(owner).toLowerCase()}/wl-universe-${app}`;
+  try {
+    run("sudo", ["docker", "pull", `${base}:pr-${pr}`]);
+    return `pr-${pr}`;
+  } catch {
+    console.warn(`${base}:pr-${pr} not found (${app} unchanged in this PR); using :latest`);
+    return "latest";
+  }
+}
+
 function deployOne({ pr, app, owner, sha }) {
   ensureQaEnv(app);
   ensureAssets(pr, app);
+  const tag = imageTagFor(pr, app, owner);
 
   const project = qaProjectName(pr, app);
   const composeDir = path.join(QA_COMPOSE_ROOT, `pr-${pr}`, app);
@@ -178,7 +197,7 @@ function deployOne({ pr, app, owner, sha }) {
     pr,
     app,
     owner,
-    tag: `pr-${pr}`,
+    tag,
   });
   const tmp = path.join("/tmp", `qa-compose-${pr}-${app}.yml`);
   fs.writeFileSync(tmp, yaml);
@@ -198,9 +217,9 @@ function deployOne({ pr, app, owner, sha }) {
     ]);
   } catch (err) {
     console.warn(
-      `compose pull failed for ${app}:pr-${pr}; trying local image if present`,
+      `compose pull failed for ${app}:${tag}; trying local image if present`,
     );
-    const image = `ghcr.io/${String(owner).toLowerCase()}/wl-universe-${app}:pr-${pr}`;
+    const image = `ghcr.io/${String(owner).toLowerCase()}/wl-universe-${app}:${tag}`;
     try {
       execFileSync("sudo", ["docker", "image", "inspect", image], {
         stdio: "ignore",
@@ -252,7 +271,13 @@ function main() {
   const args = parseArgs(process.argv.slice(2));
   sh(`sudo mkdir -p ${JSON.stringify(QA_ASSETS_ROOT)}`);
   const deployments = [];
-  for (const app of args.apps) {
+  const apps = [...args.apps];
+  if (apps.some((app) => APP_BY_NAME[app].kind === "spa-static")) {
+    // Services first, so they're up before the sites that call them.
+    const missing = SPA_STATIC_SERVICES.filter((svc) => !apps.includes(svc));
+    apps.unshift(...missing);
+  }
+  for (const app of apps) {
     deployments.push(
       deployOne({
         pr: args.pr,
