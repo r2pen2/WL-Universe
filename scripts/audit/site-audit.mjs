@@ -14,7 +14,8 @@ import tls from "node:tls";
 import vm from "node:vm";
 
 const TIMEOUT_MS = 15000;
-const PROBE_ID = "__site_audit_probe__";
+// Firestore rejects ids matching __.*__, so keep this plain.
+const PROBE_ID = "site-audit-probe";
 
 const SITES = [
   { slug: "nicole-levin", domain: "nicolelevin.org" },
@@ -157,6 +158,8 @@ async function auditSite(site) {
 
   // wl-cms: unknown text id -> 404 means it read Firestore for this site; 503 = no credentials.
   const text = await call("__WL_CMS__", `/site-text?id=${PROBE_ID}`);
+  const rules = await call("__WL_CMS__", `/site-rules`);
+  console.log(`  wl-cms  site-rules: ${rules.status || rules.error} ${short(rules.text, 120)}`);
   console.log(`  wl-cms  site-text probe: ${text.status || text.error} ${short(text.text, 120)}`);
   if (text.status !== 404) problem(label, `wl-cms can't serve this site (site-text probe ${text.status || text.error}: ${short(text.text, 120)})`);
 
