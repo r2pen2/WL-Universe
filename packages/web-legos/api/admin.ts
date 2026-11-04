@@ -304,11 +304,14 @@ export class FormResponse extends SiteModel implements FirestoreSerializable {
   }
 
   /**
-   * Send this form response to the server
+   * Send this form response to the server. Resolves with the HTTP status, or 0 if
+   * the request couldn't be made. Never rejects or hangs: the contact forms email
+   * the submission first and then `await` this, so a wl-forms failure used to leave
+   * the visitor stuck on the form even though their message had already been sent.
    */
-  sendFormData() {
-    return new Promise((resolve, reject) => {
-      getFormsClient().fetch(`/site-forms`, {
+  async sendFormData(): Promise<number> {
+    try {
+      const res = await getFormsClient().fetch(`/site-forms`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -316,9 +319,11 @@ export class FormResponse extends SiteModel implements FirestoreSerializable {
         body: JSON.stringify({
           documentData: this.toFirestore(),
         }),
-      }).then(res => {
-        resolve(res.status);
       });
-    })
+      return res.status;
+    } catch (error) {
+      console.error("FormResponse: couldn't save form response to wl-forms", error);
+      return 0;
+    }
   }
 }
