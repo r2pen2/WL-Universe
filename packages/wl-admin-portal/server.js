@@ -78,48 +78,59 @@ app.get("/external-forms", (req, res) => {
 })
 
 /**
+ * Site permissions live in the shared wl-auth service (packages/wl-auth) now. The
+ * sites themselves became static SPAs in the August migration, so the old
+ * https://www.<site>/site-auth URLs just return the site's index.html.
+ */
+const AUTH_SITES = {
+    BTB: { slug: "beyond-the-bell", keyEnv: "BTBUSERKEY" },
+    YCD: { slug: "you-can-do-it-gardening", keyEnv: "YCDUSERKEY" },
+};
+
+/** fetch() against wl-auth's /site-auth for one site, with wl-auth's API key. */
+function siteAuthFetch(site, query, init = {}) {
+    const base = (process.env.WL_AUTH_URL || "https://wl-auth.joed.dev").replace(/\/$/, "");
+    return fetch(`${base}/site-auth${query}`, {
+        ...init,
+        headers: {
+            ...(init.headers || {}),
+            "Authorization": `Bearer ${process.env.WL_AUTH_API_KEY || ""}`,
+            "X-WL-Site": site.slug,
+        },
+    });
+}
+
+/**
  * Allow users to securely request user information. This cannot be done form the client becuase we must keep environment variables secret.
  */
 app.get("/external-users", (req, res) => {
     // Harvest siteId and user accessToken from query
-    const siteId = req.query.siteId;
+    const site = AUTH_SITES[req.query.siteId];
     const accessToken = req.query.accessToken;
     // Validate that this GET request is coming from an authenticated user
     auth.verifyIdToken(accessToken).then(decodedToken => {
-        // We made it through!
-        let secret = null;
-        let url = null;
-        // Get the right URL and KEY from env
-        switch (siteId) {
-            case "BTB":
-                secret = process.env.BTBUSERKEY;
-                url = "https://www.beyondthebelleducation.com"
-                break;
-            case "YCD":
-                secret = process.env.YCDUSERKEY;
-                url = "https://www.youcandoitgardening.com"
-                break;
-            default:
-                break;
-        }
-        const userEmail = decodedToken.email;
         // TODO: Before this fetch, scrape AvailableSites to make sure this user has access to the requested user deck
-        // Send the post body to the correct /site-auth endpoint
-        if (!url) {
-            // URL is not valid— send 404
+        if (!site) {
+            // Site is not valid— send 404
             res.sendStatus(404)
-        } else {
-            fetch(`${url}/site-auth?key=${secret}`).then(externalRes => {
-                // Send JSON response w/ site's users to the client
-                externalRes.json().then(json => {
-                    res.json(json);
-                })
-            }).catch(error => {
-                // Something went wrong in our fetch— send a 404
-                console.log(error)
-                res.sendStatus(404)
-            })
+            return;
         }
+        const secret = process.env[site.keyEnv];
+        siteAuthFetch(site, `?key=${encodeURIComponent(secret || "")}`).then(externalRes => {
+            if (!externalRes.ok) {
+                console.log(`wl-auth returned ${externalRes.status} listing ${site.slug} users`)
+                res.sendStatus(externalRes.status)
+                return;
+            }
+            // Send JSON response w/ site's users to the client
+            return externalRes.json().then(json => {
+                res.json(json);
+            })
+        }).catch(error => {
+            // Something went wrong in our fetch— send a 404
+            console.log(error)
+            res.sendStatus(404)
+        })
     }).catch(error => {
         // We were not authenticated!
         console.log(error)
@@ -133,40 +144,28 @@ app.get("/external-users", (req, res) => {
 app.post("/external-users", (req, res) => {
     // First, we verify that theis POST request is coming from an authenticated user
     auth.verifyIdToken(req.body.accessToken).then(decodedToken => {
-        // We made it through!
-        let secret = null;
-        let url = null;
-        // Get the right URL and KEY from env
-        switch (req.body.siteId) {
-            case "BTB":
-                secret = process.env.BTBUSERKEY;
-                url = "https://www.beyondthebelleducation.com"
-                break;
-            case "YCD":
-                secret = process.env.YCDUSERKEY;
-                url = "https://www.youcandoitgardening.com"
-                break;
-            default:
-                break;
-        }
-        const userEmail = decodedToken.email;
+        const site = AUTH_SITES[req.body.siteId];
         // TODO: Before this fetch, scrape AvailableSites to make sure this user has access to the requested user deck
-        // Build the post body and send it to the correct /site-auth endpoint
+        if (!site) {
+            res.sendStatus(404)
+            return;
+        }
+        // Build the post body and send it to wl-auth's /site-auth endpoint
         const postBody = {
-            key: secret,
+            key: process.env[site.keyEnv],
             email: req.body.email,
             field: req.body.field,
             value: req.body.value,
             isAdmin: req.body.isAdmin,
           }
-        fetch(`${url}/site-auth`, {
+        siteAuthFetch(site, "", {
             method: "POST",
             headers: {
               "Content-Type": "application/json"
             },
             body: JSON.stringify(postBody)
           }).then((response) => {
-            // Response from WL server received— forward status to the client
+            // Response from wl-auth received— forward status to the client
             res.sendStatus(response.status)
           }).catch((error) => {
             // Something went wrong in our fetch— send a 404
