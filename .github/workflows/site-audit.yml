@@ -1,0 +1,27 @@
+name: Site audit (read-only)
+
+# Deeper than liveness.yml: checks each live site's homepage, bundle, runtime
+# config and whether wl-cms / wl-auth / wl-forms / site-mail actually serve it.
+# See scripts/audit/site-audit.mjs.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/crm-database-issues-jb5sby]
+    paths:
+      - scripts/audit/**
+      - .github/workflows/site-audit.yml
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: node scripts/audit/site-audit.mjs
