@@ -13,6 +13,29 @@ import { CurrentSignInContext } from '../App';
 import { AuthenticationManager } from '../libraries/Web-Legos/api/auth.ts';
 import { AnalyticsManager } from '../libraries/Web-Legos/api/analytics.ts';
 
+/**
+ * Group resources by category, keeping their existing order within each group.
+ * Categories appear in the order of their first resource; ones that differ only by
+ * case or surrounding spaces are the same group. Resources with no category go last,
+ * under "Other" (or with no heading at all if nothing is categorized yet).
+ */
+function groupByCategory(resources) {
+  const groups = new Map();
+  let uncategorized = [];
+  for (const r of resources) {
+    const name = (r.category || "").trim();
+    if (!name) { uncategorized.push(r); continue; }
+    const key = name.toLowerCase();
+    if (!groups.has(key)) { groups.set(key, { title: name, items: [] }); }
+    groups.get(key).items.push(r);
+  }
+  const list = [...groups.values()];
+  if (uncategorized.length) {
+    list.push({ title: list.length ? "Other" : null, items: uncategorized });
+  }
+  return list;
+}
+
 export default function Resources() {
 
   const {currentSignIn} = useContext(CurrentSignInContext);
@@ -74,9 +97,17 @@ export default function Resources() {
       <WLHeader firestoreId="resources-header" editable={userCanEditText}/>
       <WLText firestoreId="resources-description" editable={userCanEditText}/>
       <div className="container">
-        <div className="row  d-flex align-items-start justify-content-center">
-          {resources.map((r, i) => <ExternalResourceCard resource={r} key={i}/>)}
-        </div>
+        {groupByCategory(resources).map((group) => (
+          <div className="row d-flex align-items-start justify-content-center mt-4" key={group.title || "uncategorized"}>
+            {group.title && (
+              <div className="col-12 px-2 text-start">
+                <Text h3 className="mb-0">{group.title}</Text>
+                <Divider />
+              </div>
+            )}
+            {group.items.map((r) => <ExternalResourceCard resource={r} key={r.id}/>)}
+          </div>
+        ))}
       </div>
       <AddModelButton userCanEdit={userCanEditResources} model={ExternalResource} setEditModalOpen={setModelEditModalOpen} setCurrentModel={setCurrentModel} />
     </section>

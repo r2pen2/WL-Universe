@@ -425,12 +425,15 @@ export class ExternalResource extends SiteModel {
   shortStrings = {
     title: "",
     link: "",
+    /** Heading this resource is grouped under on the Resources page. */
+    category: "",
   }
   longStrings = {
     description: "",
   }
 
   fillConstantExampleData(alternate?: boolean) {
+    this.shortStrings.category = alternate ? "Music" : "Videos";
     this.shortStrings.title = alternate ? "Avenged Sevenfold Signed CD" : "Reviewbrah's Big Iron Cover";
     this.shortStrings.link = alternate ? "https://www.reddit.com/r/avengedsevenfold/comments/15cthzm/whats_your_guys_opinion_is_this_legit/" : "https://www.youtube.com/watch?v=SvVvmyzgWvY&ab_channel=TheXMiles";
     this.longStrings.description = alternate ? `"I can take it just for 3$, it's my best price. I don't know if someone wants to buy it, do you understand?" 🤣` : "Reviewbrah has gotten into music recently.";
@@ -448,6 +451,7 @@ export class ExternalResource extends SiteModel {
     er.numbers.order = data.order;
     er.shortStrings.title = data.title;
     er.shortStrings.link = data.link;
+    er.shortStrings.category = data.category || "";
     er.longStrings.description = data.description;
     return er;
   }
