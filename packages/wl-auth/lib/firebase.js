@@ -6,8 +6,11 @@ const logger = require("./logger");
 
 const dbBySlug = new Map();
 
-function getDbForSite(slug) {
-  if (dbBySlug.has(slug)) return dbBySlug.get(slug);
+const appBySlug = new Map();
+
+/** The firebase-admin app for a site's Firebase project (Firestore users + Auth ID tokens). */
+function getAppForSite(slug) {
+  if (appBySlug.has(slug)) return appBySlug.get(slug);
   const site = getSite(slug);
   if (!site) throw new Error(`Unknown site '${slug}'`);
   if (!site.serviceAccountPath) {
@@ -21,10 +24,16 @@ function getDbForSite(slug) {
   const app =
     existing ||
     initializeApp({ credential: cert(serviceAccount) }, appName);
-  const db = getFirestore(app);
+  appBySlug.set(slug, app);
+  return app;
+}
+
+function getDbForSite(slug) {
+  if (dbBySlug.has(slug)) return dbBySlug.get(slug);
+  const db = getFirestore(getAppForSite(slug));
   dbBySlug.set(slug, db);
-  logger.info("firebase_app_ready", { site: slug, app: appName });
+  logger.info("firebase_app_ready", { site: slug, app: `wl-auth-${slug}` });
   return db;
 }
 
-module.exports = { getDbForSite };
+module.exports = { getDbForSite, getAppForSite };

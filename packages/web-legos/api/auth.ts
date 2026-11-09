@@ -87,6 +87,57 @@ export class AuthenticationManager {
       })
     })
   }
+
+  /**
+   * All of a user's permissions on this site (every one is true for an operator).
+   * Resolves to {} when signed out, unknown to wl-auth, or wl-auth can't be reached.
+   */
+  async getPermissions(currentSignIn: {uid: string}): Promise<{[key: string]: boolean}> {
+    if (!currentSignIn || !currentSignIn.uid) { return {}; }
+    try {
+      const res = await getAuthClient().fetch(`/site-auth?id=${encodeURIComponent(currentSignIn.uid)}`);
+      if (!res.ok) { return {}; }
+      const json = await res.json();
+      return json && typeof json === "object" ? json : {};
+    } catch (err) {
+      console.warn("AuthenticationManager: couldn't load permissions", err);
+      return {};
+    }
+  }
+
+  /**
+   * File a content change request as the signed-in admin. wl-auth turns it into a Plane ticket labelled
+   * with this site. Resolves to { identifier: "WL-12", url }; rejects with a readable message.
+   */
+  async requestContentChange(fields: {title: string, description?: string, pageUrl?: string}): Promise<{identifier: string, url: string}> {
+    const user = this.auth && this.auth.currentUser;
+    if (!user) { throw new Error("Sign in first."); }
+    const idToken = await user.getIdToken();
+    let res: Response;
+    try {
+      res = await getAuthClient().fetch(`/change-requests`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Firebase-Auth": `Bearer ${idToken}`,
+        },
+        body: JSON.stringify(fields),
+      });
+    } catch (err) {
+      throw new Error("Couldn't reach the server. Please try again.");
+    }
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok || !json.ticket) {
+      throw new Error(json.error || `Request failed (${res.status}).`);
+    }
+    return json.ticket;
+  }
+
+  /** Whether the user holds any permission on this site, i.e. is one of its admins. */
+  async isSiteAdmin(currentSignIn: {uid: string}): Promise<boolean> {
+    const permissions = await this.getPermissions(currentSignIn);
+    return Object.values(permissions).some((value) => value === true);
+  }
 }
 
 export class WLPermissionsConfig {

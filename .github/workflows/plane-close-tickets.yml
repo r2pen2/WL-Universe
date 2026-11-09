@@ -1,0 +1,36 @@
+name: Close Plane tickets
+
+# When a PR merges, move the Plane tickets it mentions (WL-<n> in the branch name, title or body,
+# e.g. branch `wl-12-update-hero-text`) to Done and comment on each with a link to the PR.
+# See scripts/plane/close-tickets.mjs.
+
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  contents: read
+
+jobs:
+  close:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: scripts/plane
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Move mentioned tickets to Done
+        env:
+          PLANE_API_KEY: ${{ secrets.PLANE_API_KEY }}
+          PLANE_WORKSPACE_SLUG: ${{ secrets.PLANE_WORKSPACE_SLUG }}
+          PLANE_PROJECTS: WL
+          PR_REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          PR_BRANCH: ${{ github.event.pull_request.head.ref }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: node scripts/plane/close-tickets.mjs
