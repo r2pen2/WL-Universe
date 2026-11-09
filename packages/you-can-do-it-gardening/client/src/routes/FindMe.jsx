@@ -21,6 +21,7 @@ import { ContactModal } from '../components/Modals';
 import { mailingListLink } from '../api/links';
 import { AnalyticsManager } from '../libraries/Web-Legos/api/analytics.ts';
 import { AuthenticationManager } from '../libraries/Web-Legos/api/auth.ts';
+import { cmsAssetUrl } from '../libraries/Web-Legos/api/cms.ts';
 
 export default function FindMe() {
 
@@ -106,7 +107,7 @@ export default function FindMe() {
           onPress={() => window.open(mediaAppearance.link, "_blank")}
         >
           <Card.Image 
-            src={mediaAppearance.imageSource}
+            src={cmsAssetUrl(mediaAppearance.imageSource)}
             height={200}
             width="100%"
             objectFit='cover'
