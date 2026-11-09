@@ -1,5 +1,6 @@
 const express = require("express");
 const logger = require("../lib/logger");
+const { effectivePermissionsFor } = require("../lib/sso");
 
 // Every handler reads Firestore directly. These used to be served from a
 // cache kept warm by collection(...).onSnapshot(...), but that long-lived
@@ -8,23 +9,13 @@ const logger = require("../lib/logger");
 // all users, and find-by-email to change a permission -- always came back
 // empty / 404. One-shot reads were never affected.
 
-/** A user's permissions, with every one switched on if they're an operator. */
-function effectivePermissions(data) {
-  const permissions = { ...((data && data.permissions) || {}) };
-  if (permissions.op) {
-    for (const k of Object.keys(permissions)) {
-      permissions[k] = true;
-    }
-  }
-  return permissions;
-}
-
 function fail(req, res, error) {
   logger.error("site_auth_error", { site: req.wlSite.slug, error: error.message });
   return res.sendStatus(500);
 }
 
-function createAuthRouter() {
+/** @param {object} deps - injectable for tests (passed to effectivePermissionsFor) */
+function createAuthRouter(deps = {}) {
   const router = express.Router();
 
   router.get("/", async (req, res) => {
@@ -46,9 +37,12 @@ function createAuthRouter() {
       if (!req.query.id) {
         return res.sendStatus(400);
       }
-      const doc = await collection.doc(String(req.query.id)).get();
-      if (!doc.exists) return res.sendStatus(404);
-      return res.json(effectivePermissions(doc.data()));
+      const uid = String(req.query.id);
+      const doc = await collection.doc(uid).get();
+      // SSO admins of the site (Lumos) are operators even before they have a users doc.
+      const permissions = await effectivePermissionsFor(req.wlSite.slug, uid, doc.exists ? doc.data() : null, deps);
+      if (!doc.exists && !permissions.op) return res.sendStatus(404);
+      return res.json(permissions);
     } catch (error) {
       return fail(req, res, error);
     }
@@ -114,4 +108,4 @@ function createAuthRouter() {
   return router;
 }
 
-module.exports = { createAuthRouter, effectivePermissions };
+module.exports = { createAuthRouter };

@@ -82,7 +82,9 @@ export class AuthenticationManager {
     return new Promise((resolve, reject) => {
       getAuthClient().fetch(`/site-auth?id=${currentSignIn.uid}`).then((res) => {
         res.json().then((json) => {
-          resolve(json[perm]);
+          // Operators (including joed.dev SSO admins) can do everything, even permissions
+          // their users doc doesn't list yet.
+          resolve(json.op === true ? true : json[perm]);
         })
       })
     })

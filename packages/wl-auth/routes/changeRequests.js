@@ -3,6 +3,7 @@ const { getAuth } = require("firebase-admin/auth");
 const logger = require("../lib/logger");
 const { getAppForSite } = require("../lib/firebase");
 const { planeConfig, createPlaneClient } = require("../lib/plane");
+const { effectivePermissionsFor } = require("../lib/sso");
 
 // POST /change-requests: a site admin files a content change request; it becomes a Plane ticket in the
 // Web Legos project, labelled with the site's slug. The wl-auth API key ships to every browser, so the
@@ -81,7 +82,7 @@ function createChangeRequestsRouter(deps = {}) {
 
     try {
       const doc = await req.wlCtx.db.collection(req.wlSite.usersCollection).doc(user.uid).get();
-      const permissions = (doc.exists && doc.data().permissions) || {};
+      const permissions = await effectivePermissionsFor(site, user.uid, doc.exists ? doc.data() : null, deps);
       if (!Object.values(permissions).some((v) => v === true)) {
         return res.status(403).json({ ok: false, error: "Only site admins can request changes" });
       }
