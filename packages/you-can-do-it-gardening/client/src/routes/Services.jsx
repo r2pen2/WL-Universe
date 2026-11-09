@@ -18,6 +18,7 @@ import { ContactModal } from '../components/Modals';
 import { useContext } from 'react';
 import { CurrentSignInContext } from '../App';
 import { AuthenticationManager } from '../libraries/Web-Legos/api/auth.ts';
+import { cmsAssetUrl } from '../libraries/Web-Legos/api/cms.ts';
 import { AnalyticsManager } from '../libraries/Web-Legos/api/analytics.ts';
 import { WLAliceCarousel, createCarouselBreakpoints } from '../libraries/Web-Legos/components/Content.jsx';
 
@@ -115,7 +116,7 @@ export default function Services() {
     return (
       <div className="p-2 gap-2 d-flex flex-column align-items-center justify-content-center" style={{height: '100%', userSelect: "none"}}>
         <ModelEditButton model={model} data={item} userCanEdit={userCanEditGalleryPictures} setCurrentModel={setCurrentModel} setEditModalOpen={setEditModalOpen}/>
-        <img className="no-select img-shadow" src={item.imageSource} alt="slideshow-item" style={{borderRadius: "1rem", width: '100%', maxHeight: 500, height: '100%', objectFit: "cover"}}/>
+        <img className="no-select img-shadow" src={cmsAssetUrl(item.imageSource)} alt="slideshow-item" style={{borderRadius: "1rem", width: '100%', maxHeight: 500, height: '100%', objectFit: "cover"}}/>
       </div>
     )
   }

@@ -28,6 +28,7 @@ import { WaveBottom, WaveTop } from '../libraries/Web-Legos/components/Waves';
 import { useContext } from 'react';
 import { CurrentSignInContext } from '../App';
 import { AuthenticationManager } from '../libraries/Web-Legos/api/auth.ts';
+import { cmsAssetUrl } from '../libraries/Web-Legos/api/cms.ts';
 import { AnalyticsManager } from '../libraries/Web-Legos/api/analytics.ts';
 import { mailingListLink } from '../api/links.js';
 
@@ -163,16 +164,16 @@ export default function HomePage() {
         <Divider/>
         <div className="row w-100 py-2">
           <div className="p-2 col-6 d-none d-xl-flex flex-column align-items-end justify-content-start">
-            <img src={beforeAndAfter.beforeSource} draggable={false} className="no-select" alt="before-pic" style={{maxHeight: 500, maxWidth: 750, width: "100%", height: "auto", objectFit: "contain"}} />
+            <img src={cmsAssetUrl(beforeAndAfter.beforeSource)} draggable={false} className="no-select" alt="before-pic" style={{maxHeight: 500, maxWidth: 750, width: "100%", height: "auto", objectFit: "contain"}} />
           </div>
           <div className="p-2 col-6 d-none d-xl-flex flex-column align-items-start justify-content-start">
-            <img src={beforeAndAfter.afterSource} draggable={false} className="no-select" alt="after-pic" style={{maxHeight: 500, maxWidth: 750, width: "100%", height: "auto", objectFit: "contain"}} />
+            <img src={cmsAssetUrl(beforeAndAfter.afterSource)} draggable={false} className="no-select" alt="after-pic" style={{maxHeight: 500, maxWidth: 750, width: "100%", height: "auto", objectFit: "contain"}} />
           </div>
           <div className="p-2 col-12 d-flex d-xl-none flex-column align-items-center justify-content-start">
-            <img src={beforeAndAfter.beforeSource} draggable={false} className="no-select" alt="before-pic" style={{maxHeight: 500, maxWidth: 750, width: "100%", height: "auto", objectFit: "contain"}} />
+            <img src={cmsAssetUrl(beforeAndAfter.beforeSource)} draggable={false} className="no-select" alt="before-pic" style={{maxHeight: 500, maxWidth: 750, width: "100%", height: "auto", objectFit: "contain"}} />
           </div>
           <div className="p-2 col-12 d-flex d-xl-none flex-column align-items-center justify-content-start">
-            <img src={beforeAndAfter.afterSource} draggable={false} className="no-select" alt="after-pic" style={{maxHeight: 500, maxWidth: 750, width: "100%", height: "auto", objectFit: "contain"}} />
+            <img src={cmsAssetUrl(beforeAndAfter.afterSource)} draggable={false} className="no-select" alt="after-pic" style={{maxHeight: 500, maxWidth: 750, width: "100%", height: "auto", objectFit: "contain"}} />
           </div>
         </div>
       </div>
