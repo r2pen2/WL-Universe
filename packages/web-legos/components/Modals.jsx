@@ -8,7 +8,7 @@ import { SiteModel, createModel, deleteModel, sendModelData } from "../api/model
 import "../assets/style/modals.css";
 import { getFileNameByCurrentTime, openFileBrowser } from "../api/files";
 import { UploadImageCard } from "./Images";
-import { IconButton, TextField } from "@mui/material";
+import { Autocomplete, IconButton, TextField } from "@mui/material";
 import DeleteForeverTwoToneIcon from '@mui/icons-material/DeleteForeverTwoTone';
 import FavoriteTwoToneIcon from '@mui/icons-material/FavoriteTwoTone';
 import { ImageCompressor } from "../api/images";
@@ -170,7 +170,7 @@ export function ModelEditModal({open, setOpen, model}) {
     if (Object.keys(model.shortStrings).length === 0) { return; }
     return Object.keys(model.shortStrings).map((stringKey, index) => {
       return (
-        <EditableTextField textState={textState} editedText={editedText} setTextState={setTextState} setEditedText={setEditedText} stringKey={stringKey} key={index}/>
+        <EditableTextField textState={textState} editedText={editedText} setTextState={setTextState} setEditedText={setEditedText} stringKey={stringKey} options={model.shortStringOptions?.[stringKey]} key={index}/>
       )
     })
   }
@@ -369,34 +369,48 @@ export function ModelEditModal({open, setOpen, model}) {
   )
 }
 
-function EditableTextField({setTextState, setEditedText, stringKey, textState, editedText}) {
+/**
+ * A one-line text field for a model's short string, as an Autocomplete over `options`
+ * (the model's `shortStringOptions[stringKey]`, or none). New values are always allowed;
+ * typing one that matches an option apart from case or surrounding spaces saves the
+ * option's spelling.
+ */
+function EditableTextField({setTextState, setEditedText, stringKey, textState, editedText, options = []}) {
 
   const [currentText, setCurrentText] = useState(textState.shortStrings[stringKey] ? textState.shortStrings[stringKey] : "");
 
-  function handleTextChange(e) {
-    setCurrentText(e.target.value);
+  function normalize(value) {
+    const trimmed = (value || "").trim();
+    const match = options.find(o => o.toLowerCase() === trimmed.toLowerCase());
+    return match !== undefined ? match : value;
   }
 
-  function saveChanges() {
+  function saveChanges(value = currentText) {
+    const text = normalize(value);
+    setCurrentText(text);
     const newTextState = {...textState};
-    newTextState.shortStrings[stringKey] = currentText;
+    newTextState.shortStrings[stringKey] = text;
     const newEditedText = {...editedText};
-    newEditedText.shortStrings[stringKey] = currentText;
+    newEditedText.shortStrings[stringKey] = text;
     setTextState(newTextState);
     setEditedText(newEditedText);
-  }
-
-  function checkEnter(e) {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      saveChanges();
-    }
   }
 
   return (
     <div className="py-2 d-flex flex-column align-items-center justify-content-center col-lg-4 col-md-6 col-sm-12">
       <Text h5>{stringKey}</Text>
-      <TextField aria-label="text-edit" style={{width: "100%"}} value={currentText} onChange={handleTextChange} onBlur={saveChanges} onKeyDown={checkEnter}/>
+      <Autocomplete
+        freeSolo
+        openOnFocus
+        options={options}
+        style={{width: "100%"}}
+        inputValue={currentText}
+        onInputChange={(e, value) => setCurrentText(value)}
+        onChange={(e, value) => saveChanges(value || "")}
+        onBlur={() => saveChanges()}
+        componentsProps={{popper: {style: {zIndex: 10000}}}}
+        renderInput={(params) => <TextField {...params} aria-label="text-edit" />}
+      />
     </div>
   )
 }

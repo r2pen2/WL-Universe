@@ -36,6 +36,33 @@ function groupByCategory(resources) {
   return list;
 }
 
+/** Distinct category names in first-use order, for the edit modal's category pull-down. */
+function categoryNames(resources) {
+  return groupByCategory(resources).map(g => g.title).filter(t => t && t !== "Other");
+}
+
+/** Thin, symmetric baroque scroll drawn between category sections. */
+function Flourish() {
+  const half = (
+    <>
+      <path d="M126 12 C150 12, 165 17, 185 13 C200 10, 212 12, 226 12" />
+      <path d="M128 11 C134 4, 144 2, 149 6 C153 9.5, 149 13.5, 145.5 11.5 C143 10, 144 7, 146.5 7.5" />
+      <path d="M140 13.5 C146 18, 156 20, 160 16.5 C162.5 14, 159.5 11.5, 157.5 13.5" />
+      <path d="M190 12.2 C196 8, 203 7.5, 206 9.5 C208 11, 206.5 13, 204.5 12" />
+      <circle cx="231" cy="12" r="1.3" fill="#a67fcf" stroke="none" />
+    </>
+  );
+  return (
+    <div className="col-12 d-flex justify-content-center my-3" aria-hidden="true">
+      <svg viewBox="0 0 240 24" width="260" height="26" fill="none" stroke="#a67fcf" strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round">
+        {half}
+        <g transform="translate(240 0) scale(-1 1)">{half}</g>
+        <path d="M120 7.5 L124 12 L120 16.5 L116 12 Z" fill="#a67fcf" stroke="none" />
+      </svg>
+    </div>
+  );
+}
+
 export default function Resources() {
 
   const {currentSignIn} = useContext(CurrentSignInContext);
@@ -61,6 +88,12 @@ export default function Resources() {
     ExternalResource.getAndSet(setResources);
   }, [])
 
+  // Open the edit modal with the existing categories offered as a pull-down.
+  function openResourceModel(model) {
+    model.shortStringOptions = { category: categoryNames(resources) };
+    setCurrentModel(model);
+  }
+
   function ExternalResourceCard({resource}) {
     return (
       <div className="p-2 col-12">
@@ -84,7 +117,7 @@ export default function Resources() {
             <Text style={{fontSize: "1rem"}}>{resource.description}</Text>
           </div>
         </Card>
-        <ModelEditButton small userCanEdit={userCanEditResources} data={resource} model={ExternalResource} setEditModalOpen={setModelEditModalOpen} setCurrentModel={setCurrentModel}/>
+        <ModelEditButton small userCanEdit={userCanEditResources} data={resource} model={ExternalResource} setEditModalOpen={setModelEditModalOpen} setCurrentModel={openResourceModel}/>
       </div>
     )
   }
@@ -97,8 +130,9 @@ export default function Resources() {
       <WLHeader firestoreId="resources-header" editable={userCanEditText}/>
       <WLText firestoreId="resources-description" editable={userCanEditText}/>
       <div className="container">
-        {groupByCategory(resources).map((group) => (
-          <div className="row d-flex align-items-start justify-content-center mt-4" key={group.title || "uncategorized"}>
+        {groupByCategory(resources).map((group, index) => (
+          <div className={`row d-flex align-items-start justify-content-center ${index > 0 ? "mt-1" : "mt-4"}`} key={group.title || "uncategorized"}>
+            {index > 0 && <Flourish />}
             {group.title && (
               <div className="col-12 px-2 text-start">
                 <Text h3 className="mb-0">{group.title}</Text>
@@ -109,7 +143,7 @@ export default function Resources() {
           </div>
         ))}
       </div>
-      <AddModelButton userCanEdit={userCanEditResources} model={ExternalResource} setEditModalOpen={setModelEditModalOpen} setCurrentModel={setCurrentModel} />
+      <AddModelButton userCanEdit={userCanEditResources} model={ExternalResource} setEditModalOpen={setModelEditModalOpen} setCurrentModel={openResourceModel} />
     </section>
     </div>
   )
