@@ -1,6 +1,17 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { findTicketIds, pickDoneState, closeTickets } from "./close-tickets.mjs";
+import { findTicketIds, ticketsClosedByPr, pickDoneState, closeTickets } from "./close-tickets.mjs";
+
+test("PR body only counts after a closing keyword", () => {
+  // The PR that shipped this workflow: ticket numbers quoted as examples/test notes must not close anything.
+  const body = "Name the branch e.g. `wl-12-update-hours`.\nLive dry run: WL-4 → would move to Done; WL-1 → already done.";
+  assert.deepEqual(ticketsClosedByPr({ branch: "claude/request-content-changes", title: "feat: change requests", body }), []);
+  assert.deepEqual(
+    ticketsClosedByPr({ branch: "x", title: "y", body: "Closes WL-3.\nfixes wl-5, WL-6 and WL-7\nResolved: WL-8\nMentions WL-9" }),
+    ["WL-3", "WL-5", "WL-6", "WL-7", "WL-8"],
+  );
+  assert.deepEqual(ticketsClosedByPr({ branch: "wl-2-hours", title: "WL-10: hours", body: "" }), ["WL-2", "WL-10"]);
+});
 
 test("finds tickets in branch, title and body, deduped and normalized", () => {
   assert.deepEqual(
