@@ -7,6 +7,7 @@ const { requireApiKey } = require("./lib/auth");
 const { listConfiguredSites, listSites } = require("./lib/sites");
 const { resolveSiteMiddleware } = require("./lib/context");
 const { createAuthRouter } = require("./routes/auth");
+const { createChangeRequestsRouter } = require("./routes/changeRequests");
 const logger = require("./lib/logger");
 
 dotenv.config({ path: path.join(__dirname, ".env") });
@@ -41,6 +42,7 @@ app.get("/liveness", (_req, res) => {
 app.use(requireApiKey);
 app.use(resolveSiteMiddleware);
 app.use("/site-auth", createAuthRouter());
+app.use("/change-requests", createChangeRequestsRouter());
 
 app.use((_req, res) => {
   res.status(404).json({ ok: false, error: "Not found" });

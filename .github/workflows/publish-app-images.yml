@@ -285,6 +285,24 @@ jobs:
       - name: Log in to GHCR
         run: echo "${{ secrets.GITHUB_TOKEN }}" | sudo docker login ghcr.io -u "${{ github.actor }}" --password-stdin
 
+      # wl-auth files content change requests as Plane tickets (routes/changeRequests.js).
+      # Merges the Plane secrets into its env file; other lines are kept, values are never printed.
+      - name: Plane env for wl-auth
+        if: matrix.app == 'wl-auth'
+        env:
+          PLANE_API_KEY: ${{ secrets.PLANE_API_KEY }}
+          PLANE_WORKSPACE_SLUG: ${{ secrets.PLANE_WORKSPACE_SLUG }}
+        run: |
+          set -euo pipefail
+          ENV=/opt/services/data/app-env/wl-auth.env
+          [ -n "$PLANE_API_KEY" ] || { echo "::error::PLANE_API_KEY secret is missing"; exit 1; }
+          sudo test -f "$ENV" || { echo "::error::$ENV missing"; exit 1; }
+          { sudo grep -vE '^(PLANE_API_KEY|PLANE_WORKSPACE_SLUG)=' "$ENV" || true
+            printf 'PLANE_API_KEY=%s\nPLANE_WORKSPACE_SLUG=%s\n' "$PLANE_API_KEY" "${PLANE_WORKSPACE_SLUG:-main}"
+          } | sudo sh -c "umask 077; cat > '$ENV.new'"
+          sudo mv "$ENV.new" "$ENV"
+          echo "Plane settings written to $ENV"
+
       - name: Deploy compose app
         run: |
           set -euo pipefail
