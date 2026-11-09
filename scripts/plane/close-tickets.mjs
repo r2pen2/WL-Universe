@@ -3,8 +3,9 @@
  * Move the Plane tickets a merged PR mentions to their project's "completed" state (Done) and leave a
  * comment on each linking the PR. Run by .github/workflows/plane-close-tickets.yml.
  *
- * Tickets are found as <PROJECT>-<number> (case-insensitive) in the PR's branch name, title and body,
- * e.g. branch `wl-12-update-hero-text` or title `WL-12: update hero text`. Only PLANE_PROJECTS count.
+ * Tickets are found as <PROJECT>-<number> (case-insensitive) in the PR's branch name or title, e.g.
+ * branch `wl-12-update-hero-text` or title `WL-12: update hero text`, or in the body after a closing
+ * keyword ("Closes WL-12"). Only PLANE_PROJECTS count.
  *
  * Env: PLANE_API_KEY, PLANE_WORKSPACE_SLUG, PLANE_URL (default https://plane.joed.dev),
  *      PLANE_PROJECTS (default "WL"), PR_BRANCH, PR_TITLE, PR_BODY, PR_URL, PR_NUMBER, PR_REPO,
@@ -21,6 +22,16 @@ export function findTicketIds(texts, projects = ["WL"]) {
     for (const m of String(text || "").matchAll(re)) found.add(`${m[1].toUpperCase()}-${Number(m[2])}`);
   }
   return [...found];
+}
+
+/**
+ * Tickets a PR closes: any in the branch name or title, but in the body only after a closing keyword
+ * ("Closes WL-12", "fixes wl-3, WL-4"), so ticket numbers quoted in notes or examples don't count.
+ */
+export function ticketsClosedByPr({ branch, title, body }, projects = ["WL"]) {
+  const keyword = /\b(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?)\b:?\s+((?:[A-Za-z]+-\d+(?:\s*(?:,|and)\s*)?)+)/gi;
+  const closingPhrases = [...String(body || "").matchAll(keyword)].map((m) => m[1]);
+  return findTicketIds([branch, title, ...closingPhrases], projects);
 }
 
 export function pickDoneState(states) {
@@ -81,9 +92,9 @@ export function planeApi({ baseUrl, workspace, apiKey, fetchImpl = fetch }) {
 
 async function main() {
   const env = process.env;
-  const ids = findTicketIds([env.PR_BRANCH, env.PR_TITLE, env.PR_BODY], (env.PLANE_PROJECTS || "WL").split(","));
+  const ids = ticketsClosedByPr({ branch: env.PR_BRANCH, title: env.PR_TITLE, body: env.PR_BODY }, (env.PLANE_PROJECTS || "WL").split(","));
   if (!ids.length) {
-    console.log("No Plane tickets mentioned in the branch, title or body.");
+    console.log("No Plane tickets in the branch name, title, or a closing keyword in the body.");
     return;
   }
   for (const k of ["PLANE_API_KEY", "PLANE_WORKSPACE_SLUG"]) if (!env[k]) throw new Error(`${k} is not set`);
