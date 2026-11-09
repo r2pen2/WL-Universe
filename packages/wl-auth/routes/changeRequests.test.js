@@ -34,6 +34,8 @@ async function withServer(deps, fn) {
   }
 }
 
+const noSso = { verifiedEmail: async () => "" };
+
 const verifyIdToken = async (slug, token) => {
   assert.equal(slug, "nicole-levin");
   if (!(token in users)) throw new Error("bad token");
@@ -60,7 +62,7 @@ const post = (url, token, body) =>
 
 test("an admin's request becomes a labelled ticket", async () => {
   const plane = fakePlane();
-  await withServer({ verifyIdToken, plane }, async (url) => {
+  await withServer({ verifyIdToken, plane, ...noSso }, async (url) => {
     const res = await post(url, "admin", {
       title: "Update hero text",
       description: "Change it to <b>Spring</b>.\n\nThanks",
@@ -80,14 +82,14 @@ test("an admin's request becomes a labelled ticket", async () => {
 
 test("operators count as admins", async () => {
   const plane = fakePlane();
-  await withServer({ verifyIdToken, plane }, async (url) => {
+  await withServer({ verifyIdToken, plane, ...noSso }, async (url) => {
     assert.equal((await post(url, "op", { title: "x" })).status, 201);
   });
 });
 
 test("refuses missing/bad tokens, non-admins, bad input, and odd page URLs", async () => {
   const plane = fakePlane();
-  await withServer({ verifyIdToken, plane }, async (url) => {
+  await withServer({ verifyIdToken, plane, ...noSso }, async (url) => {
     assert.equal((await post(url, null, { title: "x" })).status, 401);
     assert.equal((await post(url, "forged", { title: "x" })).status, 401);
     assert.equal((await post(url, "visitor", { title: "x" })).status, 403);
@@ -102,7 +104,7 @@ test("refuses missing/bad tokens, non-admins, bad input, and odd page URLs", asy
 
 test("rate limits each admin to 10 an hour", async () => {
   const plane = fakePlane();
-  await withServer({ verifyIdToken, plane }, async (url) => {
+  await withServer({ verifyIdToken, plane, ...noSso }, async (url) => {
     for (let i = 0; i < 10; i++) assert.equal((await post(url, "admin", { title: `t${i}` })).status, 201);
     assert.equal((await post(url, "admin", { title: "one too many" })).status, 429);
     assert.equal((await post(url, "op", { title: "someone else" })).status, 201);
@@ -111,7 +113,7 @@ test("rate limits each admin to 10 an hour", async () => {
 
 test("Plane failures surface as 502 without creating anything twice", async () => {
   const plane = { createWorkItem: async () => { throw new Error("Plane POST -> 500"); } };
-  await withServer({ verifyIdToken, plane }, async (url) => {
+  await withServer({ verifyIdToken, plane, ...noSso }, async (url) => {
     const res = await post(url, "admin", { title: "x" });
     assert.equal(res.status, 502);
   });
@@ -145,4 +147,13 @@ test("Plane client reuses an existing label (any case), creates a missing one on
   await plane.createWorkItem({ name: "c", descriptionHtml: "", label: "boston-mixtape" });
   assert.equal(calls.filter((c) => c[0] === "POST" && c[1] === "/labels/").length, 1, "label created once");
   assert.equal(calls.filter((c) => c[1] === "/").length, 1, "project identifier fetched once");
+});
+
+test("SSO admins of the site can file requests without any users-collection permission", async () => {
+  const plane = fakePlane();
+  const sso = { verifiedEmail: async (_s, uid) => (uid === "visitor" ? "joe@x.com" : ""), lumosGrants: async () => true };
+  require("../lib/sso")._cache.clear();
+  await withServer({ verifyIdToken, plane, ...sso }, async (url) => {
+    assert.equal((await post(url, "visitor", { title: "x" })).status, 201);
+  });
 });
