@@ -315,3 +315,52 @@ test("host compose enforcer dry-run reacts to composeDesired", async () => {
     assert.equal(payload.results[0].dryRun, true);
   });
 });
+
+test("billedWith: the CRM shares a-new-day-coaching's payment", async () => {
+  await withTempEnv(async ({ tmp }) => {
+    // The real catalog links them.
+    const real = JSON.parse(fs.readFileSync(path.join(repoRoot, "deploy/billing/sites.json"), "utf8"));
+    assert.equal(real.sites.find((s) => s.id === "a-new-day-coaching-crm").billedWith, "a-new-day-coaching");
+
+    // Only the parent is configured; the CRM inherits its ids and flags.
+    useCatalogOverrides(tmp, {
+      "a-new-day-coaching": { billingRequired: true, stripeCustomerId: "cus_andc", stripeSubscriptionId: "sub_andc" },
+    });
+    const { getSite, getSitesBySubscriptionId } = require("../lib/catalog.js");
+    const crm = getSite("a-new-day-coaching-crm");
+    assert.equal(crm.stripeCustomerId, "cus_andc");
+    assert.equal(crm.stripeSubscriptionId, "sub_andc");
+    assert.equal(crm.billingRequired, true);
+    assert.deepEqual(getSitesBySubscriptionId("sub_andc").map((s) => s.id).sort(), ["a-new-day-coaching", "a-new-day-coaching-crm"]);
+
+    const { handleStripeEvent } = require("../lib/webhooks.js");
+    const { readState } = require("../lib/entitlement.js");
+    const failed = await handleStripeEvent({
+      type: "invoice.payment_failed",
+      data: { object: { id: "in_andc_1", customer: "cus_andc", subscription: "sub_andc" } },
+    });
+    assert.deepEqual([...failed.sites].sort(), ["a-new-day-coaching", "a-new-day-coaching-crm"]);
+    assert.equal(readState().sites["a-new-day-coaching-crm"].entitlement, "grace");
+    assert.equal(readState().sites["boston-mixtape"].entitlement, "active", "other sites untouched");
+
+    await handleStripeEvent({
+      type: "invoice.paid",
+      data: { object: { id: "in_andc_2", customer: "cus_andc", subscription: "sub_andc" } },
+    });
+    assert.equal(readState().sites["a-new-day-coaching-crm"].entitlement, "active");
+    assert.equal(readState().sites["a-new-day-coaching"].entitlement, "active");
+  });
+});
+
+test("billedWith: unknown, self and chained links are rejected", () => {
+  const { resolveBilledWith } = require("../lib/catalog.js");
+  const a = { id: "a", stripeCustomerId: "cus_a" };
+  assert.throws(() => resolveBilledWith([a, { id: "b", billedWith: "nope" }], "x"), /unknown site 'nope'/);
+  assert.throws(() => resolveBilledWith([a, { id: "b", billedWith: "b" }], "x"), /unknown site 'b'/);
+  assert.throws(
+    () => resolveBilledWith([a, { id: "b", billedWith: "a" }, { id: "c", billedWith: "b" }], "x"),
+    /itself billedWith 'a'/,
+  );
+  const [, b] = resolveBilledWith([a, { id: "b", billedWith: "a", stripeCustomerId: "cus_own" }], "x");
+  assert.equal(b.stripeCustomerId, "cus_a", "parent's ids win over any of the rider's own");
+});

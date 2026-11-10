@@ -8,7 +8,7 @@
     "stripeProductId": null,
     "stripePriceId": null
   },
-  "notes": "One shared Stripe product for all clients. Change product.monthlyRetainerUsd and redeploy to reprice everyone. Only beyond-the-bell has billingRequired=true.",
+  "notes": "One shared Stripe product for all clients. Change product.monthlyRetainerUsd and redeploy to reprice everyone. Only beyond-the-bell has billingRequired=true. A site with billedWith shares that site's payment (Stripe customer, subscription, billingRequired, exempt) instead of having its own: a-new-day-coaching-crm is billed with a-new-day-coaching.",
   "sites": [
     {
       "id": "nicole-levin",
@@ -86,6 +86,7 @@
       "composeApp": "a-new-day-coaching-crm",
       "label": "Bluprint CRM",
       "hosts": ["bluprint.anewdaycoaching.com", "www.bluprint.anewdaycoaching.com"],
+      "billedWith": "a-new-day-coaching",
       "billingRequired": false,
       "exempt": false,
       "stripeCustomerId": null,

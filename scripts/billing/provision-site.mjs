@@ -33,6 +33,10 @@
  * listed site's host, and the Stripe Customer name defaults to PLAN_LABEL
  * (or the sites' labels joined together if that's not given).
  *
+ * A site with `billedWith: "<id>"` in sites.json is never provisioned on its own (that errors): it rides
+ * on <id>'s customer and subscription, so provisioning <id> covers it too. It's named in the Stripe
+ * metadata, but its own Stripe ids stay null; packages/site-billing/lib/catalog.js copies <id>'s.
+ *
  * Env:
  *   STRIPE_SECRET_KEY   (required) — Stripe secret key
  *   SITE_ID             one catalog id — mutually exclusive with SITE_IDS
@@ -225,10 +229,23 @@ async function main() {
         `Unknown site id '${id}'. Known ids: ${(catalog.sites || []).map((s) => s.id).join(", ")}`,
       );
     }
+    if (site.billedWith) {
+      throw new Error(
+        `'${id}' is billed with '${site.billedWith}' (billedWith in sites.json); provision '${site.billedWith}' instead and it covers both.`,
+      );
+    }
     return site;
   });
+  // Sites billed with a provisioned site ride on its customer/subscription: they're named on the
+  // Checkout session, but keep no Stripe ids of their own (the catalog loader copies the parent's).
+  const riders = (catalog.sites || []).filter(
+    (s) => s.billedWith && sites.some((p) => p.id === s.billedWith),
+  );
+  if (riders.length) {
+    console.log(`Also covers (billedWith): ${riders.map((s) => s.id).join(", ")}`);
+  }
   const label =
-    PLAN_LABEL || sites.map((s) => s.label).join(" + ");
+    PLAN_LABEL || [...sites, ...riders].map((s) => s.label).join(" + ");
 
   const alreadyConfigured = sites.filter((s) => s.stripeSubscriptionId);
   if (alreadyConfigured.length && !FORCE) {
@@ -242,8 +259,8 @@ async function main() {
 
   const productId = await ensureProduct(catalog);
   const priceId = await ensurePrice(productId, unitAmount);
-  const customerId = await ensureCustomer(sites, label, CUSTOMER_EMAIL);
-  const session = await createCheckoutSession(sites, customerId, priceId);
+  const customerId = await ensureCustomer([...sites, ...riders], label, CUSTOMER_EMAIL);
+  const session = await createCheckoutSession([...sites, ...riders], customerId, priceId);
 
   for (const site of sites) {
     site.stripeCustomerId = DRY_RUN ? site.stripeCustomerId : customerId;

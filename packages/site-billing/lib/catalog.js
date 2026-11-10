@@ -13,6 +13,28 @@ function catalogPath() {
   return process.env.SITE_BILLING_CATALOG_PATH || defaultCatalogPath();
 }
 
+// Fields a site with `billedWith: "<other id>"` takes from that site, so the two are one payment: the
+// same Stripe customer and subscription, entitled together, paused together.
+const BILLED_WITH_FIELDS = ["stripeCustomerId", "stripeSubscriptionId", "billingRequired", "exempt"];
+
+/** Resolve `billedWith` links (one level, to a site that isn't itself billed with another). */
+function resolveBilledWith(sites, file) {
+  const byId = new Map(sites.map((s) => [s.id, s]));
+  return sites.map((site) => {
+    if (!site.billedWith) return site;
+    const parent = byId.get(site.billedWith);
+    if (!parent || parent.id === site.id) {
+      throw new Error(`Invalid billing catalog at ${file}: '${site.id}' is billedWith unknown site '${site.billedWith}'`);
+    }
+    if (parent.billedWith) {
+      throw new Error(`Invalid billing catalog at ${file}: '${site.id}' is billedWith '${parent.id}', which is itself billedWith '${parent.billedWith}'`);
+    }
+    const resolved = { ...site };
+    for (const field of BILLED_WITH_FIELDS) resolved[field] = parent[field] ?? null;
+    return resolved;
+  });
+}
+
 function loadCatalog() {
   const file = catalogPath();
   const raw = fs.readFileSync(file, "utf8");
@@ -20,6 +42,7 @@ function loadCatalog() {
   if (!Array.isArray(data.sites)) {
     throw new Error(`Invalid billing catalog at ${file}: missing sites[]`);
   }
+  const sites = resolveBilledWith(data.sites, file);
   return {
     graceDays: Number(data.graceDays) || 7,
     hardStopAfterDays: Number(data.hardStopAfterDays) || 14,
@@ -35,7 +58,7 @@ function loadCatalog() {
     },
     stripePriceId: data.product?.stripePriceId || data.stripePriceId || null,
     stripeProductId: data.product?.stripeProductId || null,
-    sites: data.sites,
+    sites,
   };
 }
 
@@ -76,6 +99,7 @@ function policy() {
 }
 
 module.exports = {
+  resolveBilledWith,
   catalogPath,
   loadCatalog,
   listSites,
