@@ -111,7 +111,7 @@ export class AuthenticationManager {
    * File a content change request as the signed-in admin. wl-auth turns it into a Plane ticket labelled
    * with this site. Resolves to { identifier: "WL-12", url }; rejects with a readable message.
    */
-  async requestContentChange(fields: {title: string, description?: string, pageUrl?: string}): Promise<{identifier: string, url: string}> {
+  async requestContentChange(fields: {description: string, pageUrl?: string}): Promise<{identifier: string, url: string}> {
     const user = this.auth && this.auth.currentUser;
     if (!user) { throw new Error("Sign in first."); }
     const idToken = await user.getIdToken();

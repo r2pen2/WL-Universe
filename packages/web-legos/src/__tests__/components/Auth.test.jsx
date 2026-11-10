@@ -46,17 +46,17 @@ describe("FooterAuthButton: request content changes", () => {
     render(<FooterAuthButton link color="#8C8C8C" authManager={authManager} currentSignIn={admin} setCurrentSignIn={() => {}} />)
     fireEvent.click(await screen.findByLabelText("request-content-changes-button"))
 
-    // A summary is required.
+    // No separate subject: just the details, which are required.
+    expect(screen.queryByLabelText("request-changes-summary")).toBeNull()
     fireEvent.click(await screen.findByLabelText("request-changes-submit"))
-    expect(await screen.findByLabelText("request-changes-error")).toHaveTextContent("summary")
+    expect(await screen.findByLabelText("request-changes-error")).toHaveTextContent("describe the change")
     expect(authManager.requestContentChange).not.toHaveBeenCalled()
 
-    fireEvent.change(screen.getByLabelText("request-changes-summary"), { target: { value: "  New hours  " } })
-    fireEvent.change(screen.getByLabelText("request-changes-details"), { target: { value: "Mon-Fri 9-5" } })
+    fireEvent.change(screen.getByLabelText("request-changes-details"), { target: { value: "  Mon-Fri 9-5  " } })
     fireEvent.click(screen.getByLabelText("request-changes-submit"))
 
     expect(await screen.findByLabelText("request-changes-confirmation")).toHaveTextContent("WL-12")
-    expect(authManager.requestContentChange).toHaveBeenCalledWith({ title: "New hours", description: "Mon-Fri 9-5", pageUrl: window.location.href })
+    expect(authManager.requestContentChange).toHaveBeenCalledWith({ description: "Mon-Fri 9-5", pageUrl: window.location.href })
     const link = screen.getByLabelText("request-changes-ticket-link")
     expect(link).toHaveAttribute("href", "https://plane.joed.dev/main/browse/WL-12/")
     expect(link).toHaveAttribute("target", "_blank")
@@ -67,10 +67,10 @@ describe("FooterAuthButton: request content changes", () => {
     authManager.requestContentChange = jest.fn(() => Promise.reject(new Error("Only site admins can request changes")))
     render(<FooterAuthButton authManager={authManager} currentSignIn={admin} setCurrentSignIn={() => {}} />)
     fireEvent.click(await screen.findByLabelText("request-content-changes-button"))
-    fireEvent.change(await screen.findByLabelText("request-changes-summary"), { target: { value: "x" } })
+    fireEvent.change(await screen.findByLabelText("request-changes-details"), { target: { value: "x" } })
     fireEvent.click(screen.getByLabelText("request-changes-submit"))
     expect(await screen.findByLabelText("request-changes-error")).toHaveTextContent("Only site admins")
-    expect(screen.getByLabelText("request-changes-summary")).toHaveValue("x")
+    expect(screen.getByLabelText("request-changes-details")).toHaveValue("x")
   })
 })
 
