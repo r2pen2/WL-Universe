@@ -7,6 +7,7 @@ const { applyStripeStatus, readState, writeState } = require("./entitlement");
 const { enforceAll } = require("./enforcer");
 const { getStripe } = require("./stripe-client");
 const logger = require("./logger");
+const { completeScheduledSignup } = require("./join");
 
 // A shared-plan customer/subscription (e.g. one family paying for several
 // sites) resolves to more than one catalog site — always returns an array,
@@ -103,6 +104,18 @@ async function handleStripeEvent(event) {
       sites = resolveSitesFromInvoice(invoice);
       stripeStatus = "past_due";
       break;
+    }
+    case "checkout.session.completed": {
+      // Paid-ahead sign-ups (lib/join.js) save a card; schedule their subscription. Others need nothing
+      // here: their subscription's own events link it to the site.
+      const session = event.data.object;
+      if (session.mode !== "setup" || !session.metadata?.wlStartsAt) {
+        logger.info("stripe_event_ignored", { type, mode: session.mode });
+        return { ok: true, ignored: true, type };
+      }
+      const result = await completeScheduledSignup(session);
+      logger.info("scheduled_signup", { site: session.metadata.wlSiteId, ...result });
+      return { ok: true, type, site: session.metadata.wlSiteId, ...result };
     }
     default:
       logger.info("stripe_event_ignored", { type });

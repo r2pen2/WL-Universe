@@ -66,32 +66,105 @@ async function startJoin(siteId, token, { stripe = getStripe(), now = Date.now()
     throw err;
   }
 
-  const existing = await stripe.subscriptions.list({ customer: site.stripeCustomerId, status: "all", limit: 20 });
-  const current = existing.data.find(
-    (s) => ACTIVE_STATUSES.has(s.status) && !s.cancel_at_period_end && s.items.data.some((i) => i.price.id === price),
-  );
-  if (current) {
+  if (await alreadySignedUp(stripe, site, price)) {
     return { page: "already", site };
   }
 
   const riders = catalog.listSites().filter((s) => s.billedWith === site.id).map((s) => s.id);
   const siteIds = [site.id, ...riders].join(",");
   const host = (site.hosts && site.hosts[0]) || "joed.dev";
-  const end = trialEnd(site, now);
+  const startsAt = trialEnd(site, now);
+  const returnUrls = {
+    success_url: `https://${host}/?billing=success`,
+    cancel_url: `https://${host}/?billing=cancelled`,
+  };
+
+  if (startsAt) {
+    // Paid ahead: no trial and no $0 subscription. Save their card now (the page states the plan and its
+    // start date); the checkout.session.completed webhook then creates a real $N/month subscription
+    // scheduled to start on that date (completeScheduledSignup).
+    const amount = catalog.loadCatalog().product.monthlyRetainerUsd;
+    const session = await stripe.checkout.sessions.create({
+      mode: "setup",
+      customer: site.stripeCustomerId,
+      currency: "usd",
+      payment_method_types: ["card"],
+      custom_text: {
+        submit: {
+          message: `Your $${amount}/month hosting plan starts on ${formatDate(startsAt)}. You won't be charged before then.`,
+        },
+      },
+      setup_intent_data: { metadata: { wlSiteId: site.id, site_ids: siteIds } },
+      metadata: { wlSiteId: site.id, site_ids: siteIds, wlStartsAt: String(startsAt), wlPriceId: price },
+      ...returnUrls,
+    });
+    return { redirect: session.url, site };
+  }
+
   const session = await stripe.checkout.sessions.create({
     mode: "subscription",
     customer: site.stripeCustomerId,
     line_items: [{ price, quantity: 1 }],
     payment_method_collection: "always",
-    subscription_data: {
-      metadata: { wlSiteId: site.id, site_ids: siteIds },
-      ...(end ? { trial_end: end } : {}),
-    },
+    subscription_data: { metadata: { wlSiteId: site.id, site_ids: siteIds } },
     metadata: { wlSiteId: site.id, site_ids: siteIds },
-    success_url: `https://${host}/?billing=success`,
-    cancel_url: `https://${host}/?billing=cancelled`,
+    ...returnUrls,
   });
   return { redirect: session.url, site };
+}
+
+const formatDate = (unix) =>
+  new Date(unix * 1000).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" });
+
+/** On the plan already: a live subscription at this price, or a schedule for this site that hasn't ended. */
+async function alreadySignedUp(stripe, site, price) {
+  const subs = await stripe.subscriptions.list({ customer: site.stripeCustomerId, status: "all", limit: 20 });
+  if (subs.data.some((s) => ACTIVE_STATUSES.has(s.status) && !s.cancel_at_period_end && s.items.data.some((i) => i.price.id === price))) {
+    return true;
+  }
+  const schedules = await stripe.subscriptionSchedules.list({ customer: site.stripeCustomerId, limit: 20 });
+  return schedules.data.some(
+    (s) => (s.status === "not_started" || s.status === "active") && s.metadata && s.metadata.wlSiteId === site.id,
+  );
+}
+
+/**
+ * Webhook side of a paid-ahead sign-up (checkout.session.completed, mode=setup, metadata.wlStartsAt):
+ * make the saved card the customer's default and schedule the $N/month subscription to start on that date.
+ * Idempotent per checkout session (Stripe idempotency key + an existing-schedule check).
+ */
+async function completeScheduledSignup(session, { stripe = getStripe() } = {}) {
+  const meta = session.metadata || {};
+  const startsAt = Number(meta.wlStartsAt);
+  if (session.mode !== "setup" || !startsAt || !meta.wlSiteId || !meta.wlPriceId) return { skipped: true };
+  const customer = typeof session.customer === "string" ? session.customer : session.customer?.id;
+
+  const existing = await stripe.subscriptionSchedules.list({ customer, limit: 20 });
+  const already = existing.data.find(
+    (s) => (s.status === "not_started" || s.status === "active") && s.metadata && s.metadata.wlSiteId === meta.wlSiteId,
+  );
+  if (already) return { scheduleId: already.id, existing: true };
+
+  const setupIntentId = typeof session.setup_intent === "string" ? session.setup_intent : session.setup_intent?.id;
+  const setupIntent = await stripe.setupIntents.retrieve(setupIntentId);
+  const paymentMethod =
+    typeof setupIntent.payment_method === "string" ? setupIntent.payment_method : setupIntent.payment_method?.id;
+  await stripe.customers.update(customer, { invoice_settings: { default_payment_method: paymentMethod } });
+
+  const siteMeta = { wlSiteId: meta.wlSiteId, site_ids: meta.site_ids || meta.wlSiteId };
+  const schedule = await stripe.subscriptionSchedules.create(
+    {
+      customer,
+      start_date: startsAt,
+      end_behavior: "release",
+      default_settings: { default_payment_method: paymentMethod, collection_method: "charge_automatically" },
+      // One cycle under the schedule, then it's released as an ordinary ongoing monthly subscription.
+      phases: [{ items: [{ price: meta.wlPriceId, quantity: 1 }], iterations: 1, metadata: siteMeta }],
+      metadata: { ...siteMeta, wlCheckoutSession: session.id },
+    },
+    { idempotencyKey: `wl-schedule-${session.id}` },
+  );
+  return { scheduleId: schedule.id, startsAt };
 }
 
 function page(title, body) {
@@ -120,4 +193,4 @@ function attachJoinRoutes(app, deps = {}) {
   });
 }
 
-module.exports = { joinToken, joinUrl, validToken, trialEnd, startJoin, attachJoinRoutes };
+module.exports = { joinToken, joinUrl, validToken, trialEnd, startJoin, completeScheduledSignup, attachJoinRoutes };
