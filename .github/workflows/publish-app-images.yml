@@ -309,6 +309,9 @@ jobs:
           echo "Plane and mail settings written to $ENV"
 
       - name: Deploy compose app
+        env:
+          # Private per-client billing details (scripts/billing/merge-private-clients.mjs); only read for site-billing.
+          SITE_BILLING_CLIENTS_JSON: ${{ matrix.app == 'site-billing' && secrets.SITE_BILLING_CLIENTS_JSON || '' }}
         run: |
           set -euo pipefail
           app="${{ matrix.app }}"
@@ -323,6 +326,8 @@ jobs:
             sudo mkdir -p /opt/services/data/app-assets/site-billing
             sudo mkdir -p /opt/services/infra/traefik/dynamic
             sudo cp deploy/billing/sites.json "${app_dir}/catalog/sites.json"
+            # Client billing details aren't in this public repo; merge them in from the secret.
+            printf '%s' "${SITE_BILLING_CLIENTS_JSON}" | sudo node scripts/billing/merge-private-clients.mjs "${app_dir}/catalog/sites.json"
             sudo cp scripts/billing/enforce-compose.mjs /opt/services/bin/wl-billing-enforce-compose.mjs
             sudo chmod +x /opt/services/bin/wl-billing-enforce-compose.mjs
             sudo cp deploy/cron/wl-billing.cron /etc/cron.d/wl-billing
