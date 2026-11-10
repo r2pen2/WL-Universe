@@ -8,7 +8,7 @@
     "stripeProductId": null,
     "stripePriceId": null
   },
-  "notes": "One shared Stripe product for all clients. Change product.monthlyRetainerUsd and redeploy to reprice everyone. Only beyond-the-bell has billingRequired=true. A site with billedWith shares that site's payment (Stripe customer, subscription, billingRequired, exempt) instead of having its own: a-new-day-coaching-crm is billed with a-new-day-coaching.",
+  "notes": "One shared Stripe product for all clients. Change product.monthlyRetainerUsd and redeploy to reprice everyone. Only beyond-the-bell has billingRequired=true. A site with billedWith shares that site's payment (Stripe customer, subscription, billingRequired, exempt) instead of having its own: a-new-day-coaching-crm is billed with a-new-day-coaching. Client billing details (stripeCustomerId, subscriptionStartsAt) are private: the deploy merges them in on glados from the SITE_BILLING_CLIENTS_JSON secret (scripts/billing/merge-private-clients.mjs). Clients sign up at their billing.joed.dev/join link. billingRequired stays false (no pausing) until clients get late-payment warning emails.",
   "sites": [
     {
       "id": "nicole-levin",

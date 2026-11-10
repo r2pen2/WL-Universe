@@ -43,7 +43,10 @@ function parseArgs(argv) {
     writeCatalog: null,
     writeRepo: false,
     writeEnv: false,
-    site: process.env.SITE_BILLING_BOOTSTRAP_SITE || "beyond-the-bell",
+    // Per-site customer/subscription creation is opt-in (--site or SITE_BILLING_BOOTSTRAP_SITE). By
+    // default every deploy only ensures the shared product, price and webhook: clients sign up through
+    // their own link (packages/site-billing/lib/join.js) on their own Stripe customer.
+    site: process.env.SITE_BILLING_BOOTSTRAP_SITE || null,
   };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
@@ -372,9 +375,9 @@ async function main() {
   const bakedCatalog = path.join(repoRoot, "packages/site-billing/data/sites.json");
   const catalogPath = args.writeCatalog || repoCatalog;
   const catalog = readCatalog(catalogPath);
-  const site = catalog.sites.find((s) => s.id === args.site);
-  if (!site) throw new Error(`Unknown site '${args.site}'`);
-  if (site.billedWith) {
+  const site = args.site ? catalog.sites.find((s) => s.id === args.site) : null;
+  if (args.site && !site) throw new Error(`Unknown site '${args.site}'`);
+  if (site && site.billedWith) {
     throw new Error(
       `'${site.id}' is billed with '${site.billedWith}' (billedWith in sites.json); bootstrap '${site.billedWith}' instead and it covers both.`,
     );
@@ -389,7 +392,7 @@ async function main() {
         skipped: "stripe",
         reason:
           "STRIPE_SECRET_KEY is missing or still a stub. Put a real sk_test_/sk_live_ key in the env file and re-run.",
-        site: site.id,
+        site: site ? site.id : null,
         apiKey: apiKey.action,
       }),
     );
@@ -411,24 +414,24 @@ async function main() {
   const product = await ensureProduct(catalog);
   const price = await ensurePrice(product.id, amountUsd);
   const migrated = await migrateSubscriptionsToPrice(catalog, price.id);
-  const customer = await ensureCustomer(site, email);
-  const subscription = await ensureSubscription(site, customer.id, price.id);
+  const customer = site ? await ensureCustomer(site, email) : null;
+  const subscription = site ? await ensureSubscription(site, customer.id, price.id) : null;
   const webhook = await ensureWebhook(webhookUrl);
 
   const ids = {
     stripeProductId: product.id,
     stripePriceId: price.id,
-    stripeCustomerId: customer.id,
-    stripeSubscriptionId: subscription.id,
+    stripeCustomerId: customer ? customer.id : null,
+    stripeSubscriptionId: subscription ? subscription.id : null,
   };
 
   if (!dryRun) {
     const next = patchCatalog(catalog, {
       productId: product.id,
       priceId: price.id,
-      siteId: site.id,
-      customerId: customer.id,
-      subscriptionId: subscription.id,
+      siteId: site ? site.id : null,
+      customerId: customer ? customer.id : null,
+      subscriptionId: subscription ? subscription.id : null,
     });
     writeCatalog(catalogPath, next);
     if (args.writeRepo) {
@@ -461,9 +464,9 @@ async function main() {
         product: product.name || DEFAULT_PRODUCT_NAME,
         amountUsd,
         migrated,
-        site: site.id,
+        site: site ? site.id : null,
         ...ids,
-        subscriptionStatus: subscription.status,
+        subscriptionStatus: subscription ? subscription.status : null,
         webhookId: webhook.endpoint?.id,
         webhookCreated: webhook.created,
         catalog: catalogPath,

@@ -11,6 +11,7 @@ const { statusSummary } = require("./lib/entitlement");
 const { constructEvent, handleStripeEvent, applyStatusForSite } = require("./lib/webhooks");
 const { createPortalSession, createSubscription } = require("./lib/portal");
 const { reconcileFromStripe } = require("./lib/reconcile");
+const { attachJoinRoutes } = require("./lib/join");
 const { enforceAll } = require("./lib/enforcer");
 const logger = require("./lib/logger");
 
@@ -56,6 +57,9 @@ const opsLimiter = rateLimit({
   legacyHeaders: false,
   message: { ok: false, error: "Too many requests" },
 });
+
+// Public, permanent client sign-up links (lib/join.js).
+attachJoinRoutes(app);
 
 app.get("/health", (_req, res) => {
   res.status(200).json({
