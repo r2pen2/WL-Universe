@@ -374,6 +374,11 @@ async function main() {
   const catalog = readCatalog(catalogPath);
   const site = catalog.sites.find((s) => s.id === args.site);
   if (!site) throw new Error(`Unknown site '${args.site}'`);
+  if (site.billedWith) {
+    throw new Error(
+      `'${site.id}' is billed with '${site.billedWith}' (billedWith in sites.json); bootstrap '${site.billedWith}' instead and it covers both.`,
+    );
+  }
 
   const apiKey = ensureApiKey(args.envFile, args.writeEnv);
 
