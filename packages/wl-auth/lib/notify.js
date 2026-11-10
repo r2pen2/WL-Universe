@@ -14,13 +14,11 @@ const SUBJECT_PREFIX = "[Change request]";
 const escapeHtml = (s) =>
   String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 
-function buildChangeRequestEmail({ ticket, site, title, description, user, pageUrl }) {
+function buildChangeRequestEmail({ ticket, site, description, user, pageUrl }) {
   const who = user.name ? `${user.name} <${user.email}>` : user.email;
-  const subject = `${SUBJECT_PREFIX} ${ticket.identifier} · ${site}: ${title}`.slice(0, 250);
+  const subject = `${SUBJECT_PREFIX} ${ticket.identifier} · ${site}`;
   const text = [
     `${who} requested a content change on ${site}.`,
-    "",
-    title,
     "",
     description || "(no details)",
     "",
@@ -29,7 +27,6 @@ function buildChangeRequestEmail({ ticket, site, title, description, user, pageU
   ].filter((l) => l !== null).join("\n");
   const html =
     `<p><b>${escapeHtml(who)}</b> requested a content change on <b>${escapeHtml(site)}</b>.</p>` +
-    `<h3>${escapeHtml(title)}</h3>` +
     `<p>${escapeHtml(description || "(no details)").replace(/\n/g, "<br />")}</p>` +
     (pageUrl ? `<p>Page: <a href="${escapeHtml(pageUrl)}">${escapeHtml(pageUrl)}</a></p>` : "") +
     `<p><a href="${escapeHtml(ticket.url)}">Open ${escapeHtml(ticket.identifier)} in Plane</a></p>`;

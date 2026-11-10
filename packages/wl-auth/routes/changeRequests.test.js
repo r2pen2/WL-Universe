@@ -1,7 +1,7 @@
 const { test } = require("node:test");
 const assert = require("node:assert/strict");
 const express = require("express");
-const { createChangeRequestsRouter } = require("./changeRequests");
+const { createChangeRequestsRouter, ticketName } = require("./changeRequests");
 const { createPlaneClient } = require("../lib/plane");
 
 const users = {
@@ -65,7 +65,6 @@ test("an admin's request becomes a labelled ticket", async () => {
   const plane = fakePlane();
   await withServer({ verifyIdToken, plane, ...noSso }, async (url) => {
     const res = await post(url, "admin", {
-      title: "Update hero text",
       description: "Change it to <b>Spring</b>.\n\nThanks",
       pageUrl: "https://nicolelevin.org/about",
     });
@@ -78,7 +77,7 @@ test("an admin's request becomes a labelled ticket", async () => {
     assert.equal(mail.site, "nicole-levin");
     assert.equal(mail.user.email, "admin@example.com");
     assert.equal(mail.pageUrl, "https://nicolelevin.org/about");
-    assert.equal(item.name, "Update hero text");
+    assert.equal(item.name, "Change it to <b>Spring</b>.");
     assert.equal(item.label, "nicole-levin");
     assert.match(item.descriptionHtml, /<p>Change it to &lt;b&gt;Spring&lt;\/b&gt;\.<\/p><p>Thanks<\/p>/);
     assert.match(item.descriptionHtml, /Requested by: Pat &lt;Admin&gt; &lt;admin@example.com&gt;/);
@@ -89,22 +88,22 @@ test("an admin's request becomes a labelled ticket", async () => {
 test("operators count as admins", async () => {
   const plane = fakePlane();
   await withServer({ verifyIdToken, plane, ...noSso }, async (url) => {
-    assert.equal((await post(url, "op", { title: "x" })).status, 201);
+    assert.equal((await post(url, "op", { description: "x" })).status, 201);
   });
 });
 
 test("refuses missing/bad tokens, non-admins, bad input, and odd page URLs", async () => {
   const plane = fakePlane();
   await withServer({ verifyIdToken, plane, ...noSso }, async (url) => {
-    assert.equal((await post(url, null, { title: "x" })).status, 401);
-    assert.equal((await post(url, "forged", { title: "x" })).status, 401);
-    assert.equal((await post(url, "visitor", { title: "x" })).status, 403);
-    assert.equal((await post(url, "admin", { title: "  " })).status, 400);
-    assert.equal((await post(url, "admin", { title: "x".repeat(201) })).status, 400);
-    assert.equal((await post(url, "admin", { title: "x", description: "y".repeat(5001) })).status, 400);
+    assert.equal((await post(url, null, { description: "x" })).status, 401);
+    assert.equal((await post(url, "forged", { description: "x" })).status, 401);
+    assert.equal((await post(url, "visitor", { description: "x" })).status, 403);
+    assert.equal((await post(url, "admin", { description: "  " })).status, 400);
+    assert.equal((await post(url, "admin", {})).status, 400);
+    assert.equal((await post(url, "admin", { description: "y".repeat(5001) })).status, 400);
     assert.equal(plane.created.length, 0);
     const before = notified.length;
-    assert.equal((await post(url, "admin", { title: "x", pageUrl: "javascript:alert(1)" })).status, 201);
+    assert.equal((await post(url, "admin", { description: "x", pageUrl: "javascript:alert(1)" })).status, 201);
     assert.doesNotMatch(plane.created[0].descriptionHtml, /javascript:|Page:/);
     assert.equal(notified.length, before + 1, "one email per ticket, none for refused requests");
   });
@@ -114,8 +113,8 @@ test("rate limits each admin to 10 an hour", async () => {
   const plane = fakePlane();
   await withServer({ verifyIdToken, plane, ...noSso }, async (url) => {
     for (let i = 0; i < 10; i++) assert.equal((await post(url, "admin", { title: `t${i}` })).status, 201);
-    assert.equal((await post(url, "admin", { title: "one too many" })).status, 429);
-    assert.equal((await post(url, "op", { title: "someone else" })).status, 201);
+    assert.equal((await post(url, "admin", { description: "one too many" })).status, 429);
+    assert.equal((await post(url, "op", { description: "someone else" })).status, 201);
   });
 });
 
@@ -123,7 +122,7 @@ test("Plane failures surface as 502 without creating anything twice", async () =
   const plane = { createWorkItem: async () => { throw new Error("Plane POST -> 500"); } };
   const before = notified.length;
   await withServer({ verifyIdToken, plane, ...noSso }, async (url) => {
-    const res = await post(url, "admin", { title: "x" });
+    const res = await post(url, "admin", { description: "x" });
     assert.equal(res.status, 502);
   });
   assert.equal(notified.length, before, "no email when no ticket");
@@ -164,6 +163,22 @@ test("SSO admins of the site can file requests without any users-collection perm
   const sso = { verifiedEmail: async (_s, uid) => (uid === "visitor" ? "joe@x.com" : ""), lumosGrants: async () => true, notify: () => {} };
   require("../lib/sso")._cache.clear();
   await withServer({ verifyIdToken, plane, ...sso }, async (url) => {
-    assert.equal((await post(url, "visitor", { title: "x" })).status, 201);
+    assert.equal((await post(url, "visitor", { description: "x" })).status, 201);
   });
+});
+
+test("older site builds that still send a title get it folded into the details", async () => {
+  const plane = fakePlane();
+  await withServer({ verifyIdToken, plane, ...noSso }, async (url) => {
+    assert.equal((await post(url, "admin", { title: "New hours", description: "Mon-Fri 9-5" })).status, 201);
+    assert.equal(plane.created[0].name, "New hours");
+    assert.match(plane.created[0].descriptionHtml, /<p>New hours<\/p><p>Mon-Fri 9-5<\/p>/);
+  });
+});
+
+test("ticket names come from the first line of the details, cut at a word", () => {
+  assert.equal(ticketName("\n  Fix the hours  \nmore", "s"), "Fix the hours");
+  assert.equal(ticketName("", "nicole-levin"), "Content change on nicole-levin");
+  const long = ticketName("word ".repeat(40), "s");
+  assert.ok(long.length <= 80 && long.endsWith("word…"), long);
 });

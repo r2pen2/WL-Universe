@@ -10,8 +10,8 @@ const { notifyChangeRequest } = require("../lib/notify");
 // Web Legos project, labelled with the site's slug. The wl-auth API key ships to every browser, so the
 // caller must also prove who they are with their Firebase ID token, and hold a permission on the site.
 
-const MAX_TITLE = 200;
 const MAX_DESCRIPTION = 5000;
+const NAME_LENGTH = 80;
 const LIMIT_PER_HOUR = 10;
 
 const escapeHtml = (s) =>
@@ -27,6 +27,19 @@ function describe({ description, pageUrl, user, site }) {
   const who = user.name ? `${escapeHtml(user.name)} &lt;${escapeHtml(user.email)}&gt;` : escapeHtml(user.email);
   const page = pageUrl ? `<li>Page: <a href="${escapeHtml(pageUrl)}">${escapeHtml(pageUrl)}</a></li>` : "";
   return `${paragraphs || "<p>(no description)</p>"}<hr /><ul><li>Site: ${escapeHtml(site)}</li><li>Requested by: ${who}</li>${page}</ul>`;
+}
+
+/**
+ * Plane needs a name for the work item, but requesters only write the details (the ticket number is what
+ * they track). Use the first line of the details, cut at a word boundary.
+ */
+function ticketName(description, site) {
+  const line = String(description || "").split("\n").map((l) => l.trim()).find(Boolean) || "";
+  if (!line) return `Content change on ${site}`;
+  if (line.length <= NAME_LENGTH) return line;
+  const cut = line.slice(0, NAME_LENGTH - 1);
+  const space = cut.lastIndexOf(" ");
+  return `${(space > NAME_LENGTH / 2 ? cut.slice(0, space) : cut).trimEnd()}…`;
 }
 
 function validPageUrl(value) {
@@ -60,10 +73,12 @@ function createChangeRequestsRouter(deps = {}) {
       return res.status(503).json({ ok: false, error: "Change requests are not configured (PLANE_API_KEY)" });
     }
 
-    const title = String((req.body && req.body.title) || "").trim();
-    const description = String((req.body && req.body.description) || "").trim();
-    if (!title || title.length > MAX_TITLE) {
-      return res.status(400).json({ ok: false, error: `Title is required (at most ${MAX_TITLE} characters)` });
+    // Older site builds still send a separate title; fold it into the details.
+    const legacyTitle = String((req.body && req.body.title) || "").trim();
+    const details = String((req.body && req.body.description) || "").trim();
+    const description = [legacyTitle, details].filter(Boolean).join("\n\n");
+    if (!description) {
+      return res.status(400).json({ ok: false, error: "Please describe the change" });
     }
     if (description.length > MAX_DESCRIPTION) {
       return res.status(400).json({ ok: false, error: `Description is at most ${MAX_DESCRIPTION} characters` });
@@ -102,12 +117,12 @@ function createChangeRequestsRouter(deps = {}) {
     try {
       const pageUrl = validPageUrl(req.body.pageUrl);
       const ticket = await plane.createWorkItem({
-        name: title,
+        name: ticketName(description, site),
         descriptionHtml: describe({ description, pageUrl, user, site }),
         label: site,
       });
       // Email Joe; doesn't hold up (or fail) the response.
-      notify({ ticket, site, title, description, user, pageUrl });
+      notify({ ticket, site, description, user, pageUrl });
       recent.set(user.uid, [...times, now]);
       logger.info("change_request_created", { site, ticket: ticket.identifier, uid: user.uid });
       return res.status(201).json({ ok: true, ticket });
@@ -120,4 +135,4 @@ function createChangeRequestsRouter(deps = {}) {
   return router;
 }
 
-module.exports = { createChangeRequestsRouter, describe };
+module.exports = { createChangeRequestsRouter, describe, ticketName };

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import { AuthenticationManager } from "../api/auth.ts";
 import { signOut } from "firebase/auth";
-import { Button, Input, Link, Loading, Modal, Text, Textarea } from "@nextui-org/react";
+import { Button, Link, Loading, Modal, Text, Textarea } from "@nextui-org/react";
 
 /** Where content change requests are tracked: the Web Legos project in Plane (joed.dev SSO). */
 export const CHANGE_REQUESTS_URL = "https://plane.joed.dev/main/projects/6ca472a9-89a5-406f-9b6c-ff3039d6ffb2/issues/";
@@ -37,7 +37,6 @@ export function useIsSiteAdmin(authManager, currentSignIn) {
  * @param {Function} onClose - called to close it
  */
 export function RequestChangesModal({authManager, open, onClose}) {
-  const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
@@ -48,7 +47,6 @@ export function RequestChangesModal({authManager, open, onClose}) {
     onClose();
     // Start fresh next time once a ticket was filed; keep a draft otherwise.
     if (ticket) {
-      setTitle("");
       setDescription("");
       setTicket(null);
     }
@@ -56,15 +54,14 @@ export function RequestChangesModal({authManager, open, onClose}) {
   }
 
   async function submit() {
-    if (!title.trim()) {
-      setError("Please add a short summary.");
+    if (!description.trim()) {
+      setError("Please describe the change.");
       return;
     }
     setSending(true);
     setError("");
     try {
       setTicket(await authManager.requestContentChange({
-        title: title.trim(),
         description: description.trim(),
         pageUrl: window.location.href,
       }));
@@ -91,20 +88,10 @@ export function RequestChangesModal({authManager, open, onClose}) {
         </Modal.Body>
       ) : (
         <Modal.Body>
-          <Input
-            aria-label="request-changes-summary"
-            label="Summary"
-            placeholder="e.g. Update the hours on the contact page"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            maxLength={200}
-            fullWidth
-            bordered
-          />
           <Textarea
             aria-label="request-changes-details"
-            label="Details"
-            placeholder="What should change, and where? Paste any new text here."
+            label="What should change?"
+            placeholder="Describe the change and where it goes. Paste any new text here."
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             maxLength={5000}

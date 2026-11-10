@@ -5,20 +5,18 @@ const { notifyChangeRequest, buildChangeRequestEmail } = require("./notify");
 const details = {
   ticket: { identifier: "WL-5", url: "https://plane.joed.dev/main/browse/WL-5/" },
   site: "you-can-do-it-gardening",
-  title: "New <hours>",
-  description: "Mon-Fri\n9-5",
+  description: "New <hours>\nMon-Fri 9-5",
   user: { email: "client@example.com", name: "Pat" },
   pageUrl: "https://youcandoitgardening.com/contact",
 };
 
 test("email: filterable subject, reply goes to the requester, content escaped", () => {
   const m = buildChangeRequestEmail(details);
-  assert.equal(m.subject, "[Change request] WL-5 · you-can-do-it-gardening: New <hours>");
+  assert.equal(m.subject, "[Change request] WL-5 · you-can-do-it-gardening");
   assert.equal(m.replyTo, "client@example.com");
   assert.match(m.text, /Pat <client@example.com> requested a content change on you-can-do-it-gardening/);
   assert.match(m.text, /Ticket: WL-5 https:\/\/plane.joed.dev\/main\/browse\/WL-5\//);
-  assert.match(m.html, /<h3>New &lt;hours&gt;<\/h3>/);
-  assert.match(m.html, /Mon-Fri<br \/>9-5/);
+  assert.match(m.html, /New &lt;hours&gt;<br \/>Mon-Fri 9-5/);
   assert.match(m.html, /href="https:\/\/plane.joed.dev\/main\/browse\/WL-5\/"/);
 });
 
