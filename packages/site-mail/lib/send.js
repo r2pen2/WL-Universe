@@ -41,7 +41,7 @@ function buildTransport(profile) {
  * Send an email using a resolved site profile.
  * @returns {Promise<{ messageId: string, response: string }>}
  */
-async function sendMail(profile, { to, subject, text, html }) {
+async function sendMail(profile, { to, subject, text, html, replyTo, priority }) {
   const transporter = buildTransport(profile);
   const mailOptions = {
     from: profile.from,
@@ -49,6 +49,9 @@ async function sendMail(profile, { to, subject, text, html }) {
     subject,
     text: text || undefined,
     html: html || undefined,
+    // Optional: where replies go, and "high" sets X-Priority/Importance so mail clients flag it.
+    replyTo: replyTo || undefined,
+    priority: priority || undefined,
   };
 
   try {

@@ -34,7 +34,8 @@ async function withServer(deps, fn) {
   }
 }
 
-const noSso = { verifiedEmail: async () => "" };
+const notified = [];
+const noSso = { verifiedEmail: async () => "", notify: (d) => notified.push(d) };
 
 const verifyIdToken = async (slug, token) => {
   assert.equal(slug, "nicole-levin");
@@ -72,6 +73,11 @@ test("an admin's request becomes a labelled ticket", async () => {
     const json = await res.json();
     assert.deepEqual(json.ticket, { identifier: "WL-11", url: "https://plane.joed.dev/main/browse/WL-11/" });
     const [item] = plane.created;
+    const mail = notified.at(-1);
+    assert.equal(mail.ticket.identifier, "WL-11");
+    assert.equal(mail.site, "nicole-levin");
+    assert.equal(mail.user.email, "admin@example.com");
+    assert.equal(mail.pageUrl, "https://nicolelevin.org/about");
     assert.equal(item.name, "Update hero text");
     assert.equal(item.label, "nicole-levin");
     assert.match(item.descriptionHtml, /<p>Change it to &lt;b&gt;Spring&lt;\/b&gt;\.<\/p><p>Thanks<\/p>/);
@@ -97,8 +103,10 @@ test("refuses missing/bad tokens, non-admins, bad input, and odd page URLs", asy
     assert.equal((await post(url, "admin", { title: "x".repeat(201) })).status, 400);
     assert.equal((await post(url, "admin", { title: "x", description: "y".repeat(5001) })).status, 400);
     assert.equal(plane.created.length, 0);
+    const before = notified.length;
     assert.equal((await post(url, "admin", { title: "x", pageUrl: "javascript:alert(1)" })).status, 201);
     assert.doesNotMatch(plane.created[0].descriptionHtml, /javascript:|Page:/);
+    assert.equal(notified.length, before + 1, "one email per ticket, none for refused requests");
   });
 });
 
@@ -113,10 +121,12 @@ test("rate limits each admin to 10 an hour", async () => {
 
 test("Plane failures surface as 502 without creating anything twice", async () => {
   const plane = { createWorkItem: async () => { throw new Error("Plane POST -> 500"); } };
+  const before = notified.length;
   await withServer({ verifyIdToken, plane, ...noSso }, async (url) => {
     const res = await post(url, "admin", { title: "x" });
     assert.equal(res.status, 502);
   });
+  assert.equal(notified.length, before, "no email when no ticket");
 });
 
 test("Plane client reuses an existing label (any case), creates a missing one once, builds the browse URL", async () => {
@@ -151,7 +161,7 @@ test("Plane client reuses an existing label (any case), creates a missing one on
 
 test("SSO admins of the site can file requests without any users-collection permission", async () => {
   const plane = fakePlane();
-  const sso = { verifiedEmail: async (_s, uid) => (uid === "visitor" ? "joe@x.com" : ""), lumosGrants: async () => true };
+  const sso = { verifiedEmail: async (_s, uid) => (uid === "visitor" ? "joe@x.com" : ""), lumosGrants: async () => true, notify: () => {} };
   require("../lib/sso")._cache.clear();
   await withServer({ verifyIdToken, plane, ...sso }, async (url) => {
     assert.equal((await post(url, "visitor", { title: "x" })).status, 201);

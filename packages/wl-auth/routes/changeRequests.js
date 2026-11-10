@@ -4,6 +4,7 @@ const logger = require("../lib/logger");
 const { getAppForSite } = require("../lib/firebase");
 const { planeConfig, createPlaneClient } = require("../lib/plane");
 const { effectivePermissionsFor } = require("../lib/sso");
+const { notifyChangeRequest } = require("../lib/notify");
 
 // POST /change-requests: a site admin files a content change request; it becomes a Plane ticket in the
 // Web Legos project, labelled with the site's slug. The wl-auth API key ships to every browser, so the
@@ -48,6 +49,7 @@ function createChangeRequestsRouter(deps = {}) {
     deps.verifyIdToken || ((slug, idToken) => getAuth(getAppForSite(slug)).verifyIdToken(idToken));
   const config = planeConfig();
   const plane = deps.plane || (config.apiKey ? createPlaneClient(config) : null);
+  const notify = deps.notify || notifyChangeRequest;
   const recent = new Map(); // uid -> timestamps (ms) of requests in the last hour
 
   const router = express.Router();
@@ -98,11 +100,14 @@ function createChangeRequestsRouter(deps = {}) {
     }
 
     try {
+      const pageUrl = validPageUrl(req.body.pageUrl);
       const ticket = await plane.createWorkItem({
         name: title,
-        descriptionHtml: describe({ description, pageUrl: validPageUrl(req.body.pageUrl), user, site }),
+        descriptionHtml: describe({ description, pageUrl, user, site }),
         label: site,
       });
+      // Email Joe; doesn't hold up (or fail) the response.
+      notify({ ticket, site, title, description, user, pageUrl });
       recent.set(user.uid, [...times, now]);
       logger.info("change_request_created", { site, ticket: ticket.identifier, uid: user.uid });
       return res.status(201).json({ ok: true, ticket });
