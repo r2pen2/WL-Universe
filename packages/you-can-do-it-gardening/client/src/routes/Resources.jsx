@@ -12,6 +12,10 @@ import { useContext } from 'react';
 import { CurrentSignInContext } from '../App';
 import { AuthenticationManager } from '../libraries/Web-Legos/api/auth.ts';
 import { AnalyticsManager } from '../libraries/Web-Legos/api/analytics.ts';
+import { IconExternalLink } from '@tabler/icons-react';
+
+/** Outline for resource cards: the block-header purple, softened. */
+const resourceOutline = "rgba(127,74,199,0.35)";
 
 /**
  * Group resources by category, keeping their existing order within each group.
@@ -95,6 +99,7 @@ export default function Resources() {
   }
 
   function ExternalResourceCard({resource}) {
+    const hasDescription = Boolean(resource.description && String(resource.description).trim());
     return (
       <div className="p-2 col-12">
         <Card
@@ -102,7 +107,8 @@ export default function Resources() {
             width: "100%",
             alignItems: "start",
             justifyContent: "space-between",
-            minHeight: "100%"
+            minHeight: "100%",
+            border: `1px solid ${resourceOutline}`,
           }}
           className="d-flex flex-column"
           isPressable
@@ -110,11 +116,17 @@ export default function Resources() {
           onPress={() => window.open(resource.link, "_blank")}
         >
           <div style={{flex: 1}} className="d-flex p-2 flex-column w-100 align-items-start text-start">
-            <div className="w-100 mb-1">
+            <div className="w-100 d-flex flex-row align-items-center gap-2">
+              <IconExternalLink aria-hidden="true" size={18} stroke={1.75} color={blockHeaderFill} style={{flexShrink: 0}} />
               <Text b>{resource.title}</Text>
-              <Divider />
             </div>
-            <Text style={{fontSize: "1rem"}}>{resource.description}</Text>
+            {/* Only resources with a description get the divider and text, so cards without one stay compact. */}
+            {hasDescription && (
+              <div className="w-100">
+                <Divider className="my-1" />
+                <Text style={{fontSize: "1rem", marginBottom: 0}}>{resource.description}</Text>
+              </div>
+            )}
           </div>
         </Card>
         <ModelEditButton small userCanEdit={userCanEditResources} data={resource} model={ExternalResource} setEditModalOpen={setModelEditModalOpen} setCurrentModel={openResourceModel}/>
