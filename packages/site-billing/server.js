@@ -13,6 +13,7 @@ const { createPortalSession, createSubscription } = require("./lib/portal");
 const { reconcileFromStripe } = require("./lib/reconcile");
 const { attachJoinRoutes } = require("./lib/join");
 const { enforceAll } = require("./lib/enforcer");
+const taxReport = require("./lib/taxReport");
 const logger = require("./lib/logger");
 
 dotenv.config({ path: path.join(__dirname, ".env") });
@@ -131,6 +132,23 @@ app.post("/v1/enforce", opsLimiter, requireApiKey, (_req, res) => {
   res.status(200).json({ ok: true, ...result });
 });
 
+/**
+ * Monthly tax set-aside report (lib/taxReport.js). Body: { month: "2026-10", send?: true }.
+ * Without send it only returns the figures and the email it would send; with send it emails it now
+ * (doesn't mark the month as sent, so the scheduled email on the 1st still goes out).
+ */
+app.post("/v1/tax-report", opsLimiter, requireApiKey, async (req, res) => {
+  try {
+    const target = taxReport.parseMonthKey((req.body || {}).month || taxReport.monthKey(taxReport.previousMonth(taxReport.localNow())));
+    const report = await taxReport.buildReport(target);
+    const email = taxReport.buildEmail(report);
+    if ((req.body || {}).send === true) await taxReport.sendEmail(email);
+    return res.status(200).json({ ok: true, sent: (req.body || {}).send === true, report, email });
+  } catch (error) {
+    return res.status(400).json({ ok: false, error: error.message });
+  }
+});
+
 /** Test/ops helper: set Stripe-like status without a live webhook. */
 app.post("/v1/debug/set-status", opsLimiter, requireApiKey, (req, res) => {
   if (process.env.SITE_BILLING_ALLOW_DEBUG !== "true") {
@@ -183,6 +201,14 @@ function startBackgroundJobs() {
         logger.error("reconcile_tick_failed", { error: error.message });
       });
     }, RECONCILE_MS).unref?.();
+
+    // Monthly "set aside for taxes" email; sends once, early in the month (lib/taxReport.js).
+    const taxTick = () =>
+      taxReport.maybeSendMonthlyReport().catch((error) => {
+        logger.error("tax_report_failed", { error: error.message });
+      });
+    taxTick();
+    setInterval(taxTick, 3600 * 1000).unref?.();
   }
 }
 

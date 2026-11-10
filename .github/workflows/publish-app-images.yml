@@ -308,6 +308,23 @@ jobs:
           sudo mv "$ENV.new" "$ENV"
           echo "Plane and mail settings written to $ENV"
 
+      # site-billing emails Joe a monthly "set aside for taxes" report (lib/taxReport.js) through
+      # site-mail. Copies site-mail's API key into site-billing.env; other lines are kept, the value is
+      # never printed.
+      - name: Mail env for site-billing
+        if: matrix.app == 'site-billing'
+        run: |
+          set -euo pipefail
+          ENV=/opt/services/data/app-env/site-billing.env
+          sudo test -f "$ENV" || { echo "::warning::$ENV missing; skipping mail key"; exit 0; }
+          MAIL_KEY=$(sudo sed -n 's/^SITE_MAIL_API_KEY=//p' /opt/services/data/app-env/site-mail.env 2>/dev/null | head -1 || true)
+          if [ -z "$MAIL_KEY" ]; then echo "::warning::No SITE_MAIL_API_KEY in site-mail.env; tax report emails are off"; exit 0; fi
+          { sudo grep -vE '^SITE_MAIL_API_KEY=' "$ENV" || true
+            printf 'SITE_MAIL_API_KEY=%s\n' "$MAIL_KEY"
+          } | sudo sh -c "umask 077; cat > '$ENV.new'"
+          sudo mv "$ENV.new" "$ENV"
+          echo "Mail settings written to $ENV"
+
       - name: Deploy compose app
         env:
           # Private per-client billing details (scripts/billing/merge-private-clients.mjs); only read for site-billing.
