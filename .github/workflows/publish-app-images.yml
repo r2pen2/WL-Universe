@@ -285,9 +285,11 @@ jobs:
       - name: Log in to GHCR
         run: echo "${{ secrets.GITHUB_TOKEN }}" | sudo docker login ghcr.io -u "${{ github.actor }}" --password-stdin
 
-      # wl-auth files content change requests as Plane tickets (routes/changeRequests.js).
-      # Merges the Plane secrets into its env file; other lines are kept, values are never printed.
-      - name: Plane env for wl-auth
+      # wl-auth files content change requests as Plane tickets (routes/changeRequests.js) and emails
+      # Joe about each one through site-mail (lib/notify.js). Merges the Plane secrets and site-mail's
+      # API key (read from site-mail.env on glados) into its env file; other lines are kept, values are
+      # never printed.
+      - name: Plane and mail env for wl-auth
         if: matrix.app == 'wl-auth'
         env:
           PLANE_API_KEY: ${{ secrets.PLANE_API_KEY }}
@@ -297,11 +299,14 @@ jobs:
           ENV=/opt/services/data/app-env/wl-auth.env
           [ -n "$PLANE_API_KEY" ] || { echo "::error::PLANE_API_KEY secret is missing"; exit 1; }
           sudo test -f "$ENV" || { echo "::error::$ENV missing"; exit 1; }
-          { sudo grep -vE '^(PLANE_API_KEY|PLANE_WORKSPACE_SLUG)=' "$ENV" || true
+          MAIL_KEY=$(sudo sed -n 's/^SITE_MAIL_API_KEY=//p' /opt/services/data/app-env/site-mail.env 2>/dev/null | head -1 || true)
+          [ -n "$MAIL_KEY" ] || echo "::warning::No SITE_MAIL_API_KEY in site-mail.env; change request emails are off"
+          { sudo grep -vE '^(PLANE_API_KEY|PLANE_WORKSPACE_SLUG|SITE_MAIL_API_KEY)=' "$ENV" || true
             printf 'PLANE_API_KEY=%s\nPLANE_WORKSPACE_SLUG=%s\n' "$PLANE_API_KEY" "${PLANE_WORKSPACE_SLUG:-main}"
+            [ -z "$MAIL_KEY" ] || printf 'SITE_MAIL_API_KEY=%s\n' "$MAIL_KEY"
           } | sudo sh -c "umask 077; cat > '$ENV.new'"
           sudo mv "$ENV.new" "$ENV"
-          echo "Plane settings written to $ENV"
+          echo "Plane and mail settings written to $ENV"
 
       - name: Deploy compose app
         run: |

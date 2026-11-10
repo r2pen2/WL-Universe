@@ -60,7 +60,7 @@ app.get("/liveness", (_req, res) => {
 });
 
 app.post("/v1/send", sendLimiter, requireApiKey, async (req, res) => {
-  const { site, to, subject, text, html } = req.body || {};
+  const { site, to, subject, text, html, replyTo, priority } = req.body || {};
 
   if (!site || typeof site !== "string") {
     return res.status(400).json({ ok: false, error: "Missing or invalid 'site'" });
@@ -78,6 +78,13 @@ app.post("/v1/send", sendLimiter, requireApiKey, async (req, res) => {
     });
   }
 
+  if (priority != null && !["high", "normal", "low"].includes(priority)) {
+    return res.status(400).json({ ok: false, error: "'priority' must be high, normal or low" });
+  }
+  if (replyTo != null && (typeof replyTo !== "string" || !/^[^\s@<>]+@[^\s@<>]+$/.test(replyTo))) {
+    return res.status(400).json({ ok: false, error: "'replyTo' must be a single email address" });
+  }
+
   const profile = getSiteProfile(site);
   if (!profile) {
     logger.warn("unknown_site", { site });
@@ -88,7 +95,7 @@ app.post("/v1/send", sendLimiter, requireApiKey, async (req, res) => {
   }
 
   try {
-    const info = await sendMail(profile, { to, subject, text, html });
+    const info = await sendMail(profile, { to, subject, text, html, replyTo, priority });
     appendSendLog({
       site: profile.site,
       to,
