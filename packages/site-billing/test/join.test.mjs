@@ -25,18 +25,31 @@ const tmpCatalog = path.join(fs.mkdtempSync(path.join(os.tmpdir(), "join-")), "s
 fs.writeFileSync(tmpCatalog, JSON.stringify(merged));
 process.env.SITE_BILLING_CATALOG_PATH = tmpCatalog;
 process.env.SITE_BILLING_API_KEY = "test-key";
-const { joinToken, joinUrl, startJoin, trialEnd } = require("../lib/join.js");
+const { joinToken, joinUrl, startJoin, trialEnd, completeScheduledSignup } = require("../lib/join.js");
 const catalog = require("../lib/catalog.js");
 
 // The real catalog has no price id (bootstrap writes it on glados); stub it for these tests.
 catalog.sharedPriceId = () => "price_20";
 const PRICE = "price_20";
 
-function fakeStripe(subsByCustomer = {}) {
+function fakeStripe(subsByCustomer = {}, schedulesByCustomer = {}) {
   const created = [];
+  const calls = [];
   return {
     created,
+    calls,
     subscriptions: { list: async ({ customer }) => ({ data: subsByCustomer[customer] || [] }) },
+    subscriptionSchedules: {
+      list: async ({ customer }) => ({ data: schedulesByCustomer[customer] || [] }),
+      create: async (params, opts) => {
+        calls.push(["schedule", params, opts]);
+        const sched = { id: "sub_sched_1", status: "not_started", metadata: params.metadata };
+        (schedulesByCustomer[params.customer] ||= []).push(sched);
+        return sched;
+      },
+    },
+    setupIntents: { retrieve: async (id) => ({ id, payment_method: "pm_card_1" }) },
+    customers: { update: async (id, params) => { calls.push(["customer", id, params]); return {}; } },
     checkout: { sessions: { create: async (params) => { created.push(params); return { url: "https://checkout.stripe.com/c/pay/x" }; } } },
   };
 }
@@ -67,12 +80,58 @@ test("Rachel's link covers the CRM; Behzad and Nancy aren't charged until their 
   assert.equal(stripe.created[0].customer, "cus_TESTandc");
   assert.equal(stripe.created[0].subscription_data.metadata.site_ids, "a-new-day-coaching,a-new-day-coaching-crm");
 
+  // Paid ahead: no trial, no $0 subscription. A card-saving page that states the plan and start date.
   await startJoin("boston-mixtape", joinToken("boston-mixtape"), { stripe, now: NOW });
-  assert.equal(stripe.created[1].subscription_data.trial_end, Date.parse("2027-10-01") / 1000);
+  const bbm = stripe.created[1];
+  assert.equal(bbm.mode, "setup");
+  assert.equal(bbm.subscription_data, undefined);
+  assert.equal(bbm.line_items, undefined);
+  assert.equal(bbm.custom_text.submit.message, "Your $20/month hosting plan starts on October 1, 2027. You won't be charged before then.");
+  assert.equal(bbm.metadata.wlStartsAt, String(Date.parse("2027-10-01") / 1000));
+  assert.equal(bbm.metadata.wlPriceId, PRICE);
 
   await startJoin("beyond-the-bell", joinToken("beyond-the-bell"), { stripe, now: NOW });
   assert.equal(stripe.created[2].customer, "cus_TESTbtb");
-  assert.equal(stripe.created[2].subscription_data.trial_end, Date.parse("2026-12-09") / 1000);
+  assert.equal(stripe.created[2].mode, "setup");
+  assert.match(stripe.created[2].custom_text.submit.message, /starts on December 9, 2026/);
+
+  // Nobody gets a trial anywhere.
+  assert.ok(stripe.created.every((p) => !p.subscription_data?.trial_end));
+});
+
+test("finishing a paid-ahead sign-up schedules a real $20/month subscription from the start date, once", async () => {
+  const stripe = fakeStripe();
+  const session = {
+    id: "cs_1", mode: "setup", customer: "cus_TESTbbm", setup_intent: "seti_1",
+    metadata: { wlSiteId: "boston-mixtape", site_ids: "boston-mixtape", wlStartsAt: String(Date.parse("2027-10-01") / 1000), wlPriceId: PRICE },
+  };
+  const r = await completeScheduledSignup(session, { stripe });
+  assert.equal(r.scheduleId, "sub_sched_1");
+  const [, params, opts] = stripe.calls.find((c) => c[0] === "schedule");
+  assert.equal(params.customer, "cus_TESTbbm");
+  assert.equal(params.start_date, Date.parse("2027-10-01") / 1000);
+  assert.equal(params.end_behavior, "release");
+  assert.deepEqual(params.phases[0].items, [{ price: PRICE, quantity: 1 }]);
+  assert.equal(params.phases[0].trial, undefined);
+  assert.equal(params.phases[0].metadata.wlSiteId, "boston-mixtape");
+  assert.equal(params.default_settings.default_payment_method, "pm_card_1");
+  assert.equal(opts.idempotencyKey, "wl-schedule-cs_1");
+  assert.deepEqual(stripe.calls.find((c) => c[0] === "customer").slice(1), ["cus_TESTbbm", { invoice_settings: { default_payment_method: "pm_card_1" } }]);
+
+  // Webhook delivered again: no second schedule.
+  const again = await completeScheduledSignup(session, { stripe });
+  assert.equal(again.existing, true);
+  assert.equal(stripe.calls.filter((c) => c[0] === "schedule").length, 1);
+
+  // And the link now says "already signed up".
+  assert.equal((await startJoin("boston-mixtape", joinToken("boston-mixtape"), { stripe, now: NOW })).page, "already");
+});
+
+test("ordinary sign-ups and other checkouts are left to the subscription events", async () => {
+  const stripe = fakeStripe();
+  assert.deepEqual(await completeScheduledSignup({ mode: "subscription", metadata: { wlSiteId: "nicole-levin" } }, { stripe }), { skipped: true });
+  assert.deepEqual(await completeScheduledSignup({ mode: "setup", metadata: {} }, { stripe }), { skipped: true });
+  assert.equal(stripe.calls.length, 0);
 });
 
 test("start dates in the past (or within two days) just start now", () => {
