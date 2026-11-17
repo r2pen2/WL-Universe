@@ -8,4 +8,4 @@ export default {
   parameters: { site: "boston-mixtape", fullSite: true, route: "/" },
 };
 
-export const Home = { render: () => <FullSite load={load} /> };
+export const Default = { name: "Boston Mixtape", render: () => <FullSite load={load} /> };

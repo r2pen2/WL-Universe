@@ -8,4 +8,4 @@ export default {
   parameters: { site: "boston-mixtape", fullSite: true, route: "/" },
 };
 
-export const Current = { render: () => <FullSite load={load} scrollTo={'footer'} /> };
+export const Default = { name: "Boston Mixtape", render: () => <FullSite load={load} scrollTo={'footer'} /> };

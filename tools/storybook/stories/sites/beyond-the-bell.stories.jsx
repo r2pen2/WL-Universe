@@ -8,4 +8,4 @@ export default {
   parameters: { site: "beyond-the-bell", fullSite: true, route: "/" },
 };
 
-export const Home = { render: () => <FullSite load={load} /> };
+export const Default = { name: "Beyond the Bell", render: () => <FullSite load={load} /> };

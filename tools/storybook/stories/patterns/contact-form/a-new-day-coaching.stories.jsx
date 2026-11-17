@@ -8,4 +8,4 @@ export default {
   parameters: { site: "a-new-day-coaching", fullSite: true, route: "/" },
 };
 
-export const Current = { render: () => <FullSite load={load} scrollTo={'#contact'} /> };
+export const Default = { name: "A New Day Coaching", render: () => <FullSite load={load} scrollTo={'#contact'} /> };

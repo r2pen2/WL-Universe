@@ -15,14 +15,16 @@ const defaultIconSize = "40px";
  * Brand hex colors for all supported icons
  */
 export const iconColors = {
-  calendar: "#000000",
+  // Contact icons (calendar, location, mail, phone) take the surrounding text color unless a
+  // color is passed; they used to default to white and vanished on light backgrounds.
+  calendar: "currentColor",
   faceblock: "#1877F2",
   facebook: "#1877F2",
   instagram: "#E4405F",
   linkedin: "#0A66C2",
-  location: "#FFFFFF",
-  mail: "#FFFFFF",
-  phone: "#FFFFFF",
+  location: "currentColor",
+  mail: "currentColor",
+  phone: "currentColor",
   tiktok: "#15CBC5",
   youtube: "#FF0000",
 }
@@ -48,6 +50,11 @@ const iconTitles = {
  * @enum {string}
  * Svg path strings for all supported icons
  */
+/** Icons drawn on a canvas other than 24x24 (the calendar is a Material Symbols path). */
+const iconViewBoxes = {
+  calendar: "0 -960 960 960",
+};
+
 const iconSvgPaths = {
   calendar: "M700-80v-120H580v-60h120v-120h60v120h120v60H760v120h-60Zm-520-80q-24 0-42-18t-18-42v-540q0-24 18-42t42-18h65v-60h65v60h260v-60h65v60h65q24 0 42 18t18 42v302q-15-2-30-2t-30 2v-112H180v350h320q0 15 3 30t8 30H180Zm0-470h520v-130H180v130Zm0 0v-130 130Z",
   faceblock: "M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2m13 2h-2.5A3.5 3.5 0 0 0 12 8.5V11h-2v3h2v7h3v-7h3v-3h-3V9a1 1 0 0 1 1-1h2V5z",
@@ -99,7 +106,7 @@ export function SocialIcon({platformKey, size, color}) {
   return (
     <svg
       role="img"
-      viewBox="0 0 24 24"
+      viewBox={iconViewBoxes[platformKey] || "0 0 24 24"}
       xmlns="http://www.w3.org/2000/svg"
       className={iconClasses + `web-legos-${platformKey}`}
       style={{

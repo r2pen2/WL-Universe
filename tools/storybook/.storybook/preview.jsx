@@ -101,7 +101,7 @@ export default {
     layout: "fullscreen",
     viewport: { options: VIEWPORTS },
     options: {
-      storySort: { order: ["Introduction", "Web-Legos", "Patterns", "Sites"] },
+      storySort: { order: ["Introduction", "Foundations", "UI elements", "Admin menus", "Layouts", "CMS elements", "Patterns", ["Footer", "Contact form"], "Sites"] },
     },
   },
 };
