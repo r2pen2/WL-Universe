@@ -58,7 +58,7 @@ for (const site of ready ? (slugs.length ? slugs : Object.keys(all)) : []) {
     const order = {};
     for (const { id, ...contact } of contacts) {
       order[contact.type] = (order[contact.type] ?? -1) + 1;
-      const documentData = { label: "", ...contact, order: order[contact.type] };
+      const documentData = { ...contact, order: order[contact.type] };
       if (dryRun) {
         console.log(`${site}: would write ${id} ${JSON.stringify(documentData)}`);
         continue;

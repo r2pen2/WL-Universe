@@ -36,15 +36,6 @@
   gap: 0.25rem;
 }
 
-.wl-contact-list__label {
-  margin-right: 0.35em;
-}
-
-.wl-contact-list--block .wl-contact-list__label {
-  display: block;
-  margin-right: 0;
-}
-
 /* Site settings modal */
 .wl-site-settings__group {
   display: flex;
@@ -59,7 +50,7 @@
 
 .wl-site-settings__row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 8rem auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   gap: 0.5rem;
   align-items: start;
   padding: 0.5rem;

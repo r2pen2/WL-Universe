@@ -5,7 +5,7 @@ import { CmsManager } from "./cms.ts";
  * Site contact info (email addresses, phone numbers, street addresses), kept in the CMS so a site
  * can list any number of each. Stored with the site models (wl-cms `/site-models`), collection
  * `siteContacts` (`siteContacts-<siteKey>` on v2 sites). One document per contact:
- *   { type: "email" | "phone" | "address", value: string, label?: string, order: number }
+ *   { type: "email" | "phone" | "address", value: string, order: number }
  *
  * WLEmailAddress / WLPhoneNumber / WLStreetAddress (components/Contacts.jsx) render them as links and
  * build the href (mailto: / tel: / Google Maps) automatically. Admins edit them in Site settings.
@@ -17,7 +17,6 @@ export type SiteContact = {
   id: string;
   type: ContactType;
   value: string;
-  label?: string;
   order?: number;
 };
 
@@ -97,7 +96,7 @@ type State = {
   canEdit: boolean;
   settings: SettingsState;
   /** Values the page renders while the CMS has none of that type, offered as drafts in Site settings. */
-  fallbacks: { [type: string]: Array<{ value: string; label: string }> };
+  fallbacks: { [type: string]: string[] };
 };
 
 let state: State = {
@@ -135,7 +134,7 @@ function normalize(raw: any[]): SiteContact[] {
   return sortContacts(
     raw
       .filter((doc) => doc && CONTACT_TYPES.includes(doc.type) && typeof doc.value === "string" && doc.value.trim())
-      .map((doc) => ({ id: String(doc.id), type: doc.type, value: doc.value, label: doc.label || "", order: Number(doc.order) || 0 })),
+      .map((doc) => ({ id: String(doc.id), type: doc.type, value: doc.value, order: Number(doc.order) || 0 })),
   );
 }
 
@@ -183,7 +182,6 @@ export async function saveContacts(next: Array<Omit<SiteContact, "id"> & { id?: 
       id: contact.id || newContactId(contact.type),
       type: contact.type,
       value: contact.value.trim(),
-      label: (contact.label || "").trim(),
       order,
     };
   });
@@ -213,10 +211,10 @@ export function closeSiteSettings() {
   setState({ settings: { ...state.settings, open: false } });
 }
 
-export function registerContactFallback(type: ContactType, value: string, label = "") {
+export function registerContactFallback(type: ContactType, value: string) {
   const current = state.fallbacks[type] || [];
-  if (!value || current.some((fallback) => fallback.value === value)) return;
-  setState({ fallbacks: { ...state.fallbacks, [type]: [...current, { value, label }] } });
+  if (!value || current.includes(value)) return;
+  setState({ fallbacks: { ...state.fallbacks, [type]: [...current, value] } });
 }
 
 /** Test hook: forget everything loaded. */

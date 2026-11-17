@@ -119,12 +119,8 @@ export function App(props) {
                 </WLFooterSocials>
                 <Spacer y={1} />
                   <WLTextV2 firestoreId="contact-name" />
-                  <WLEmailAddress fallback="rachel.newday@gmail.com">
-                    {({display}) => <Text css={{textDecoration:"underline"}}>{display}</Text>}
-                  </WLEmailAddress>
-                  <WLPhoneNumber fallback="(202) 798-ADHD">
-                    {({display}) => <Text css={{textDecoration:"underline"}}>{display}</Text>}
-                  </WLPhoneNumber>
+                  <WLEmailAddress fallback="rachel.newday@gmail.com" />
+                  <WLPhoneNumber fallback="(202) 798-ADHD" />
                 </div>
                 <div className="d-lg-flex w-100 d-none flex-row gap-2 align-items-end justify-content-around">
                   <Link href="https://www.joed.dev">

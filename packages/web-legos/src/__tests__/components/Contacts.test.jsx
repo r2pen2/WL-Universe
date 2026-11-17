@@ -62,13 +62,17 @@ describe("WL contact links", () => {
     expect(screen.getByLabelText("address-line")).toHaveTextContent("38 Church St, 2nd Floor, Winchester, MA")
   })
 
-  test("render function for custom markup; nothing rendered with no value", async () => {
+  test("only style and className customize it; nothing rendered with no value", async () => {
     mockCms([])
     const { container } = render(<>
-      <WLEmailAddress fallback="x@y.com">{({ value }) => <b data-testid="custom">{value}</b>}</WLEmailAddress>
+      <WLEmailAddress fallback="x@y.com" ariaLabel="styled" className="site-email" style={{ color: "rgb(1, 2, 3)" }} />
       <WLPhoneNumber ariaLabel="none" />
     </>)
-    expect(screen.getByTestId("custom").closest("a")).toHaveAttribute("href", "mailto:x@y.com")
+    const link = screen.getByLabelText("styled")
+    expect(link).toHaveAttribute("href", "mailto:x@y.com")
+    expect(link).toHaveTextContent("x@y.com")
+    expect(link).toHaveClass("wl-contact", "site-email")
+    expect(link).toHaveStyle({ color: "rgb(1, 2, 3)" })
     await waitFor(() => expect(global.fetch).toHaveBeenCalled())
     expect(screen.queryByLabelText("none")).toBeNull()
     expect(container.querySelectorAll("a")).toHaveLength(1)

@@ -123,13 +123,9 @@ export function App(props) {
     <div className="col-lg-6 d-none d-lg-flex flex-column aligh-items-center justify-content-center">
       <WLHeaderV2 size="$4xl" color="white" align="left">Nicole Levin LCSW CYT</WLHeaderV2>
       <div className="d-flex flex-row gap-2 align-items-center justify-content-start">
-        <WLEmailAddress fallback="nicolelevinlcsw@gmail.com">
-          {({display}) => <Text color="#8C8C8C" size="$lg" css={{textDecoration:"underline"}}>{display}</Text>}
-        </WLEmailAddress>
+        <WLEmailAddress fallback="nicolelevinlcsw@gmail.com" style={{color: "#8C8C8C", fontSize: "1.125rem"}} />
         <Text color="#8C8C8C">・</Text>
-        <WLPhoneNumber fallback="(215) 668-7277">
-          {({display}) => <Text color="#8C8C8C" size="$lg" css={{textDecoration:"underline"}}>{display}</Text>}
-        </WLPhoneNumber>
+        <WLPhoneNumber fallback="(215) 668-7277" style={{color: "#8C8C8C", fontSize: "1.125rem"}} />
       </div>
       <div className="d-flex flex-row gap-2 align-items-center justify-content-start">
         <Link href="https://www.nicolelevin.org">
@@ -146,23 +142,15 @@ export function App(props) {
   const FooterLeftCentered = () => (
     <div className="d-flex flex-column align-items-center d-lg-none" style={{maxWidth: 600}}>
       <div className="d-md-flex flex-row d-none gap-2 align-items-center justify-content-start">
-        <WLEmailAddress fallback="nicolelevinlcsw@gmail.com">
-          {({display}) => <Text color="#8C8C8C" size="$lg" css={{textDecoration:"underline"}}>{display}</Text>}
-        </WLEmailAddress>
+        <WLEmailAddress fallback="nicolelevinlcsw@gmail.com" style={{color: "#8C8C8C", fontSize: "1.125rem"}} />
         <Text color="#8C8C8C">・</Text>
-        <WLPhoneNumber fallback="(215) 668-7277">
-          {({display}) => <Text color="#8C8C8C" size="$lg" css={{textDecoration:"underline"}}>{display}</Text>}
-        </WLPhoneNumber>
+        <WLPhoneNumber fallback="(215) 668-7277" style={{color: "#8C8C8C", fontSize: "1.125rem"}} />
       </div>
       <div className="d-flex flex-row d-md-none gap-2 align-items-center justify-content-start">
-        <WLEmailAddress fallback="nicolelevinlcsw@gmail.com">
-          {({display}) => <Text color="#8C8C8C" size="$lg" css={{textDecoration:"underline"}}>{display}</Text>}
-        </WLEmailAddress>
+        <WLEmailAddress fallback="nicolelevinlcsw@gmail.com" style={{color: "#8C8C8C", fontSize: "1.125rem"}} />
       </div>
       <div className="d-flex flex-row d-md-none gap-2 align-items-center justify-content-start">
-        <WLPhoneNumber fallback="(215) 668-7277">
-          {({display}) => <Text color="#8C8C8C" size="$lg" css={{textDecoration:"underline"}}>{display}</Text>}
-        </WLPhoneNumber>
+        <WLPhoneNumber fallback="(215) 668-7277" style={{color: "#8C8C8C", fontSize: "1.125rem"}} />
       </div>
       <div className="d-md-flex d-none flex-row gap-2 align-items-center justify-content-start">
         <Link href="https://www.nicolelevin.org">

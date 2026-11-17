@@ -106,12 +106,8 @@ export function App(props) {
                 <div className="d-flex flex-column align-items-center justify-content-center">
                   <WLTextV2 className="gibbons-regular" firestoreId="contact-name" />
                   <img src={logo} alt="Boston Mixtape Logo" style={{width: 300}}  />
-                  <WLEmailAddress fallback="bbmbostonsbestmusic@gmail.com" style={{textDecoration: "none"}}>
-                    {() => <Text css={{textDecoration:"underline"}}>Click Here to Email Us</Text>}
-                  </WLEmailAddress>
-                  <WLPhoneNumber fallback="(617) 877-3206" style={{textDecoration: "none"}}>
-                    {() => <Text css={{textDecoration:"underline"}}>Click Here to Call</Text>}
-                  </WLPhoneNumber>
+                  <WLEmailAddress fallback="bbmbostonsbestmusic@gmail.com" />
+                  <WLPhoneNumber fallback="(617) 877-3206" />
                 <WLFooterSocials>
                   <WLFooterSocials.Button color="#b3324a" size="42" platformKey="facebook" href="https://www.facebook.com/berachorchestra/" />
                 </WLFooterSocials>

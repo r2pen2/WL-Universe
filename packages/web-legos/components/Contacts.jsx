@@ -14,41 +14,31 @@ const PLACEHOLDER = {
   address: "Add a street address",
 };
 
-function fallbackText(fallback, children) {
-  if (typeof fallback === "string") return fallback;
-  if (typeof children === "string") return children;
-  return "";
-}
-
 /**
  * A site contact (email address, phone number or street address) from the CMS, rendered as a link
- * whose href is built from the value (mailto: / tel: / Google Maps). For admins (signed in through
- * FooterAuthButton) clicking it opens Site settings at that contact instead of following the link.
+ * whose href is built from the value (mailto: / tel: / Google Maps). The link text is always the
+ * value itself; sites only change how it looks. For admins (signed in through FooterAuthButton)
+ * clicking it opens Site settings at that contact instead of following the link.
  *
- * Shared props of WLEmailAddress / WLPhoneNumber / WLStreetAddress:
+ * Props of WLEmailAddress / WLPhoneNumber / WLStreetAddress:
  * @param {string} id - which contact (its CMS id); without it, the `index`th of its type
  * @param {number} index - position among the site's contacts of this type (default 0)
- * @param {string} fallback - value shown until the CMS has one (a string child works too)
- * @param {string} fallbackLabel - label offered with the fallback when an admin first saves contacts
- * @param {Function} children - optional render function ({value, href, label, contact}) => node,
- *   for custom markup inside the link (e.g. a NextUI <Text>)
- * @param {string} className - classes for the <a>
- * @param {object} style - style for the <a>
- * @param {boolean} editable - override whether clicking opens Site settings (default: signed-in admin)
- * @param {boolean} newTab - open the link in a new tab (default only for street addresses)
+ * @param {string} fallback - value shown until the CMS has one
+ * @param {string} className - classes for the link
+ * @param {object} style - inline style for the link
+ * @param {boolean} singleLine - street addresses only: join the lines with commas
  * @param {string} ariaLabel - aria-label for the link
  */
-function WLContactLink({ type, id, index = 0, fallback, fallbackLabel = "", children, className, style, editable, newTab, ariaLabel, singleLine, linkProps }) {
+function WLContactLink({ type, id, index = 0, fallback = "", className, style, singleLine, ariaLabel, editable }) {
   const store = useContactsStore();
   const ofType = store.contacts.filter((contact) => contact.type === type);
   const contact = (id && ofType.find((c) => c.id === id)) || ofType[index];
-  const fallbackValue = fallbackText(fallback, children);
-  const value = contact ? contact.value : fallbackValue;
+  const value = contact ? contact.value : fallback;
   const canEdit = editable ?? store.canEdit;
 
   useEffect(() => {
-    if (fallbackValue) registerContactFallback(type, fallbackValue, fallbackLabel);
-  }, [type, fallbackValue, fallbackLabel]);
+    if (fallback) registerContactFallback(type, fallback);
+  }, [type, fallback]);
 
   if (!value && !canEdit) return null;
 
@@ -60,10 +50,7 @@ function WLContactLink({ type, id, index = 0, fallback, fallbackLabel = "", chil
       : type === "address"
         ? addressOneLine(value)
         : value;
-  const content = typeof children === "function"
-    ? children({ value, href, label: contact ? contact.label : "", contact, display })
-    : display;
-  const opensNewTab = newTab ?? type === "address";
+  const newTab = type === "address" && !canEdit;
 
   function edit(e) {
     e.preventDefault();
@@ -72,18 +59,17 @@ function WLContactLink({ type, id, index = 0, fallback, fallbackLabel = "", chil
 
   return (
     <a
-      {...linkProps}
       href={href || undefined}
       className={["wl-contact", `wl-contact--${type}`, canEdit ? "wl-contact--editable" : "", className].filter(Boolean).join(" ")}
       style={style}
       aria-label={ariaLabel}
       data-wl-contact={type}
-      target={opensNewTab && !canEdit ? "_blank" : undefined}
-      rel={opensNewTab && !canEdit ? "noopener noreferrer" : undefined}
+      target={newTab ? "_blank" : undefined}
+      rel={newTab ? "noopener noreferrer" : undefined}
       title={canEdit ? "Edit in Site settings" : undefined}
-      onClick={canEdit ? edit : linkProps && linkProps.onClick}
+      onClick={canEdit ? edit : undefined}
     >
-      {content}
+      {display}
     </a>
   );
 }
@@ -119,36 +105,27 @@ export function WLStreetAddress(props) {
 const BY_TYPE = { email: WLEmailAddress, phone: WLPhoneNumber, address: WLStreetAddress };
 
 /**
- * Every contact of one type, each as its WL contact link (for "any number of" emails/phones/addresses).
+ * Every contact of one type, each as its WL contact link (sites can have any number of each).
  * @param {string} type - "email" | "phone" | "address"
- * @param {Array<string|{value: string, label: string}>} fallback - shown until the CMS has any
- * @param {boolean} showLabels - put each contact's label before its link ("Media inquiries: ...")
+ * @param {string[]} fallback - values shown until the CMS has any
  * @param {boolean} block - one contact per line
- * @param {React.ReactNode} separator - between items (default: none)
  * @param {string} className - classes for the wrapper
- * @param {object} itemProps - props passed to each link
+ * @param {object} style - inline style for the wrapper
+ * @param {string} itemClassName - classes for each link
+ * @param {object} itemStyle - inline style for each link
  */
-export function WLContactList({ type, fallback = [], showLabels, block, separator = null, className, itemProps = {} }) {
+export function WLContactList({ type, fallback = [], block, className, style, itemClassName, itemStyle }) {
   const { contacts } = useContactsStore();
   const ofType = contacts.filter((contact) => contact.type === type);
   const Item = BY_TYPE[type];
-  const entries = ofType.length
-    ? ofType.map((contact) => ({ key: contact.id, label: contact.label, props: { id: contact.id } }))
-    : fallback.map((entry, i) => {
-        const { value, label = "" } = typeof entry === "string" ? { value: entry } : entry;
-        return { key: value, label, props: { index: i, fallback: value, fallbackLabel: label } };
-      });
+  const items = ofType.length
+    ? ofType.map((contact) => ({ key: contact.id, props: { id: contact.id } }))
+    : fallback.map((value, i) => ({ key: value, props: { index: i, fallback: value } }));
   const Wrapper = block ? "div" : "span";
   return (
-    <Wrapper className={["wl-contact-list", block ? "wl-contact-list--block" : "", className].filter(Boolean).join(" ")}>
-      {entries.map((entry, i) => (
-        <Fragment key={entry.key}>
-          {i > 0 && separator}
-          <span className="wl-contact-list__item">
-            {showLabels && entry.label && <span className="wl-contact-list__label">{entry.label}</span>}
-            <Item {...entry.props} {...itemProps} />
-          </span>
-        </Fragment>
+    <Wrapper className={["wl-contact-list", block ? "wl-contact-list--block" : "", className].filter(Boolean).join(" ")} style={style}>
+      {items.map((item) => (
+        <Item key={item.key} {...item.props} className={itemClassName} style={itemStyle} />
       ))}
     </Wrapper>
   );

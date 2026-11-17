@@ -68,7 +68,7 @@ function NewFooterContent() {
       <div className="col-lg-12 col-xl-3 d-flex flex-column align-items-center">
         <WLFooterLogo source={logo} />
         <div className="text-center ycd-footer-contacts">
-          <WLContactList type="email" block showLabels fallback={EMAIL_FALLBACKS} />
+          <WLContactList type="email" block fallback={EMAIL_FALLBACKS} />
         </div>
       </div>
       <div className="col-lg-12 col-xl-4 d-flex flex-column align-items-center">

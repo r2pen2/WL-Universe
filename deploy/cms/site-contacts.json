@@ -27,7 +27,7 @@
     { "id": "phone-1", "type": "phone", "value": "(617) 299-1792" }
   ],
   "you-can-do-it-gardening": [
-    { "id": "email-1", "type": "email", "value": "youcandoitgardening@jakerosenentertainment.com", "label": "Collaboration inquiries:" },
-    { "id": "email-2", "type": "email", "value": "jess@youcandoitgardening.com", "label": "Speaking engagements & media inquiries:" }
+    { "id": "email-1", "type": "email", "value": "youcandoitgardening@jakerosenentertainment.com" },
+    { "id": "email-2", "type": "email", "value": "jess@youcandoitgardening.com" }
   ]
 }

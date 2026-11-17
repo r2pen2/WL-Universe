@@ -834,13 +834,9 @@ function Footer() {
           <Text color="#8C8C8C" css={{textDecoration:"underline"}}>www.joed.dev</Text>
         </Link>
         <Text color="#8C8C8C" className="d-none d-md-inline">・</Text>
-        <WLEmailAddress fallback="hire@joed.dev">
-          {({display}) => <Text color="#8C8C8C" css={{textDecoration:"underline"}}>{display}</Text>}
-        </WLEmailAddress>
+        <WLEmailAddress fallback="hire@joed.dev" style={{color: "#8C8C8C"}} />
         <Text color="#8C8C8C" className="d-none d-md-inline">・</Text>
-        <WLPhoneNumber fallback="(781) 879-9058">
-          {({display}) => <Text color="#8C8C8C" css={{textDecoration:"underline"}}>{display}</Text>}
-        </WLPhoneNumber>
+        <WLPhoneNumber fallback="(781) 879-9058" style={{color: "#8C8C8C"}} />
       </div>
     </footer>
   )

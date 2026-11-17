@@ -110,13 +110,9 @@ export function App(props) {
               <footer className="p-5 flex-column align-items-center justify-content-center">
                 <div id="contact" className="d-flex flex-column align-items-center justfy-content-center">
                   <div className="flex-column d-flex gap-2 align-items-center justify-content-start">
-                    <WLEmailAddress fallback="talkaboutdreams@yahoo.com">
-                      {({display}) => <Text size="$lg" css={{textDecoration:"underline"}}>{display}</Text>}
-                    </WLEmailAddress>
+                    <WLEmailAddress fallback="talkaboutdreams@yahoo.com" style={{fontSize: "1.125rem"}} />
                     <Text>・</Text>
-                    <WLPhoneNumber fallback="(617) 299-1792">
-                      {({display}) => <Text size="$lg" css={{textDecoration:"underline"}}>{display}</Text>}
-                    </WLPhoneNumber>
+                    <WLPhoneNumber fallback="(617) 299-1792" style={{fontSize: "1.125rem"}} />
                   </div>
                 </div>
                 <Spacer y={1}/>

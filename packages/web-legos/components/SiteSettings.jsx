@@ -25,10 +25,10 @@ function initialRows(contacts, fallbacks) {
   for (const type of CONTACT_TYPES) {
     const saved = contacts.filter((contact) => contact.type === type);
     if (saved.length) {
-      saved.forEach((contact) => rows.push({ key: rowKey(), id: contact.id, type, value: contact.value, label: contact.label || "" }));
+      saved.forEach((contact) => rows.push({ key: rowKey(), id: contact.id, type, value: contact.value }));
     } else {
       // Nothing saved yet: offer what the page currently shows, so saving keeps it.
-      (fallbacks[type] || []).forEach(({ value, label }) => rows.push({ key: rowKey(), type, value, label, draft: true }));
+      (fallbacks[type] || []).forEach((value) => rows.push({ key: rowKey(), type, value, draft: true }));
     }
   }
   return rows;
@@ -63,7 +63,7 @@ export function SiteSettingsModal() {
       if (!focus && focusType) {
         focus = next.find((row) => row.type === focusType);
         if (!focus) {
-          focus = { key: rowKey(), type: focusType, value: "", label: "" };
+          focus = { key: rowKey(), type: focusType, value: "" };
           next.push(focus);
         }
       }
@@ -107,7 +107,7 @@ export function SiteSettingsModal() {
   }
 
   function add(type) {
-    const row = { key: rowKey(), type, value: "", label: "" };
+    const row = { key: rowKey(), type, value: "" };
     setRows((current) => [...current, row]);
     setFocusKey(row.key);
   }
@@ -125,7 +125,7 @@ export function SiteSettingsModal() {
     setSaveError("");
     try {
       const ordered = CONTACT_TYPES.flatMap((type) => keep.filter((row) => row.type === type));
-      await saveContacts(ordered.map(({ id, type, value, label }) => ({ id, type, value, label })));
+      await saveContacts(ordered.map(({ id, type, value }) => ({ id, type, value })));
       closeSiteSettings();
     } catch (err) {
       setSaveError(err.message || "Couldn't save. Please try again.");
@@ -172,12 +172,6 @@ export function SiteSettingsModal() {
                     className={["wl-site-settings__row", focused ? "wl-site-settings__row--focused" : "", row.draft ? "wl-site-settings__row--draft" : ""].filter(Boolean).join(" ")}
                   >
                     {type === "address" ? <textarea rows={2} {...fieldProps} /> : <input type={type === "email" ? "email" : type === "phone" ? "tel" : "text"} {...fieldProps} />}
-                    <input
-                      value={row.label}
-                      placeholder="Label (optional)"
-                      aria-label={`${group.title} ${i + 1} label`}
-                      onChange={(e) => update(row.key, { label: e.target.value })}
-                    />
                     <div className="wl-site-settings__actions">
                       <button type="button" aria-label="Move up" disabled={i === 0} onClick={() => move(row.key, -1)}>↑</button>
                       <button type="button" aria-label="Move down" disabled={i === list.length - 1} onClick={() => move(row.key, 1)}>↓</button>

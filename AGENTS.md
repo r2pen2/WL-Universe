@@ -11,7 +11,7 @@ Every email address, phone number and street address on a site is rendered with 
 | Email address | `WLEmailAddress` | `mailto:` |
 | Phone number | `WLPhoneNumber` | `tel:+1…` (handles any format, vanity letters, extensions) |
 | Street address | `WLStreetAddress` | Google Maps search (`singleLine` joins the lines with commas) |
-| All of one type | `WLContactList type="email"` | one link each (`showLabels`, `block`) |
+| All of one type | `WLContactList type="email"` | one link each (`block` for one per line) |
 
 ```jsx
 import { WLEmailAddress, WLPhoneNumber, WLStreetAddress } from "../libraries/Web-Legos/components/Contacts.jsx";
@@ -19,10 +19,11 @@ import { WLEmailAddress, WLPhoneNumber, WLStreetAddress } from "../libraries/Web
 <WLEmailAddress fallback="info@example.com" />
 <WLPhoneNumber fallback="(617) 555-0123" className="site-contact__value" />
 <WLStreetAddress fallback={"38 Church St, 2nd Floor\nWinchester, MA 01890"} />
-// Keep a site's NextUI styling with a render function:
-<WLEmailAddress fallback="info@example.com">{({ display }) => <Text css={{ textDecoration: "underline" }}>{display}</Text>}</WLEmailAddress>
+<WLEmailAddress fallback="info@example.com" style={{ color: "#8C8C8C", fontSize: "1.125rem" }} />
 ```
 
+- **No contact text around them.** Footers and contact sections show only these components. Don't add a WL text block or hand-written copy that repeats the address, phone or email, or labels like "Click here to email us" or "Media inquiries:". The link text is always the value itself.
+- **Styling.** Customize only with `style` and `className`. There are no render props or wrappers.
 - **Where the values live.** They are stored in the CMS (wl-cms model collection `siteContacts`, one per siteKey). A site can have any number of each type. Pick one with `id` or `index`; with neither, you get the first of its type.
 - **Fallbacks.** `fallback` is the value shown until the CMS has one. Put a site's fallbacks in one place (e.g. `CONTACTS` in `content.js`).
 - **Seeding.** Add the site's starting contacts to [deploy/cms/site-contacts.json](deploy/cms/site-contacts.json). The deploy workflow seeds a site from that file only while its CMS has none.
