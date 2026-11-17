@@ -4,7 +4,8 @@ import { WLFooterSocials } from "../libraries/Web-Legos/components/Footer.jsx";
 import { FooterAuthButton } from "../libraries/Web-Legos/components/Auth.jsx";
 import { AuthenticationManager } from "../libraries/Web-Legos/api/auth.ts";
 import { CurrentSignInContext } from "../App.jsx";
-import { SOCIALS } from "../content.js";
+import { CONTACTS, SOCIALS } from "../content.js";
+import { WLStreetAddress } from "../libraries/Web-Legos/components/Contacts.jsx";
 import { Header, Text } from "./Wl.jsx";
 
 import logo from "../assets/images/logo.png";
@@ -32,7 +33,7 @@ export function SiteFooter() {
 
         <div className="r01-footer__col">
           <Header id="footer-contact-header" level={6} className="r01-footer__heading" />
-          <Text id="footer-contact-text" className="r01-footer__small" />
+          <WLStreetAddress fallback={CONTACTS.address} singleLine className="r01-footer__small r01-footer__address" />
         </div>
 
         <div className="r01-footer__col">

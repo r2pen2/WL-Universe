@@ -1,0 +1,131 @@
+/* WLEmailAddress / WLPhoneNumber / WLStreetAddress: links that look like the text around them. */
+.wl-contact {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+  text-decoration-thickness: from-font;
+  overflow-wrap: anywhere;
+}
+
+.wl-contact:hover {
+  opacity: 0.8;
+}
+
+.wl-contact--editable {
+  cursor: pointer;
+  outline: 1px dashed currentColor;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.wl-contact--editable:hover {
+  background-color: rgba(0, 0, 0, 0.12);
+  opacity: 1;
+}
+
+.wl-contact-list {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.75rem;
+}
+
+.wl-contact-list--block {
+  display: flex;
+  flex-direction: column;
+  align-items: inherit;
+  gap: 0.25rem;
+}
+
+/* Site settings modal */
+.wl-site-settings__group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.wl-site-settings__group h5 {
+  margin: 0;
+}
+
+.wl-site-settings__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.5rem;
+  align-items: start;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid transparent;
+}
+
+.wl-site-settings__row--focused {
+  border-color: #0072f5;
+  background: rgba(0, 114, 245, 0.06);
+}
+
+.wl-site-settings__row--draft {
+  border-style: dashed;
+  border-color: #889096;
+}
+
+.wl-site-settings__row input,
+.wl-site-settings__row textarea {
+  width: 100%;
+  box-sizing: border-box;
+  font: inherit;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid #c1c8cd;
+  border-radius: 0.4rem;
+  background: #fff;
+  color: #11181c;
+}
+
+.wl-site-settings__row textarea {
+  resize: vertical;
+  min-height: 3.6rem;
+}
+
+.wl-site-settings__actions {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.wl-site-settings__actions button,
+.wl-site-settings__add {
+  font: inherit;
+  font-size: 0.85rem;
+  border: 1px solid #c1c8cd;
+  background: #fff;
+  color: #11181c;
+  border-radius: 0.4rem;
+  padding: 0.35rem 0.55rem;
+  cursor: pointer;
+}
+
+.wl-site-settings__actions button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.wl-site-settings__add {
+  align-self: flex-start;
+}
+
+.wl-site-settings__hint {
+  grid-column: 1 / -1;
+  font-size: 0.8rem;
+  color: #687076;
+  overflow-wrap: anywhere;
+}
+
+.wl-site-settings__error {
+  grid-column: 1 / -1;
+  font-size: 0.8rem;
+  color: #f31260;
+}
+
+@media (max-width: 600px) {
+  .wl-site-settings__row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { AuthenticationManager } from "../api/auth.ts";
 import { signOut } from "firebase/auth";
 import { Button, Link, Loading, Modal, Text, Textarea } from "@nextui-org/react";
+import { openSiteSettings, setContactsEditable } from "../api/contacts.ts";
+import { SiteSettingsModal } from "./SiteSettings.jsx";
 
 /** Where content change requests are tracked: the Web Legos project in Plane (joed.dev SSO). */
 export const CHANGE_REQUESTS_URL = "https://plane.joed.dev/main/projects/6ca472a9-89a5-406f-9b6c-ff3039d6ffb2/issues/";
@@ -147,8 +149,29 @@ export function RequestChangesButton({authManager, link, color}) {
 }
 
 /**
+ * Opens Site settings (contact info: emails, phones, street addresses). FooterAuthButton shows it
+ * for admins and mounts the SiteSettingsModal it opens.
+ * @param {boolean} link - whether to display as link
+ * @param {string} color - link color
+ */
+export function SiteSettingsButton({link, color}) {
+  const buttonText = "Site settings";
+  const open = () => openSiteSettings({ section: "contacts" });
+  return link ? (
+    <Text aria-label="site-settings-button" role="button" tabIndex={0} onClick={open} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { open(); } }} color={color} css={{cursor: "pointer", textDecoration: "underline"}}>
+      {buttonText}
+    </Text>
+  ) : (
+    <Button aria-label="site-settings-button" light onClick={open}>
+      {buttonText}
+    </Button>
+  );
+}
+
+/**
  * Admin sign-in/sign-out control for site footers. When an admin of the site is signed in, a
- * RequestChangesButton appears directly under it.
+ * RequestChangesButton and a SiteSettingsButton appear directly under it, and WL contact
+ * components (WLEmailAddress etc.) become editable through Site settings.
  * @param {AuthenticationManager} authManager - AuthenticationManager instance for this site
  * @param {FirebaseAuthentication} currentSignIn - currently signed in user state
  * @param {Function} setCurrentSignIn - currently signed in user state setter function
@@ -165,6 +188,11 @@ export function FooterAuthButton({authManager, currentSignIn, setCurrentSignIn, 
   }, [authManager, setCurrentSignIn])
 
   const isAdmin = useIsSiteAdmin(authManager, currentSignIn);
+
+  // Lets every WL contact component on the page open Site settings for admins.
+  useEffect(() => {
+    setContactsEditable(isAdmin);
+  }, [isAdmin]);
 
   function handleSignInClick() {
     if (authManager.auth.currentUser) {
@@ -208,6 +236,8 @@ export function FooterAuthButton({authManager, currentSignIn, setCurrentSignIn, 
     <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
       {authControl}
       <RequestChangesButton authManager={authManager} link={link} color={color} />
+      <SiteSettingsButton link={link} color={color} />
+      <SiteSettingsModal />
     </div>
   )
 }

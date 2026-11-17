@@ -4,7 +4,8 @@ import { Navbar as NextUINavbar, Button, Text, Image, Link } from "@nextui-org/r
 
 import { iconFills } from './Icons';
 
-import { callLink, facebookLink, mapsLink, mailLink } from '../api/links';
+import { facebookLink } from '../api/links';
+import { useContactLinks } from '../api/contacts';
 
 import { iconColors, MailIcon } from "../libraries/Web-Legos/components/Icons";
 
@@ -79,6 +80,8 @@ export function NavbarPages() {
 }
 
 export function Navbar() {
+
+  const { callLink, mailLink, mapsLink } = useContactLinks();
 
   const collapseItems = [
     {

@@ -2,6 +2,7 @@ import React from 'react'
 import {GlyphSectionTwoItemsNoActions} from "../libraries/Web-Legos/Layouts/Sections/GlyphSection"
 import { WLHeaderV2, WLTextV2 } from "../libraries/Web-Legos/components/Text"
 import { WLImageV2 } from "../libraries/Web-Legos/components/Images"
+import { useContactHref } from "../libraries/Web-Legos/api/contacts.ts"
 
 import bridge from "../assets/images/bridge.svg";
 import flower from "../assets/images/leaf.png";
@@ -16,6 +17,7 @@ import { Paper } from '@mantine/core';
 import moonLogo from "../assets/images/moonLogo.png";
 
 export default function HomepageV2({userCanEditText, userCanEditImages}) {
+  const emailHref = useContactHref("email", { fallback: "talkaboutdreams@yahoo.com" });
 
   const Splash = () => (
     <section className="splash d-flex flex-column align-items-center justify-content-center px-2">
@@ -31,7 +33,7 @@ export default function HomepageV2({userCanEditText, userCanEditImages}) {
           <WLHeaderV2 editable={userCanEditText} firestoreId="brand-label" align="left" size={32} color="#1e1e1e"/>
           <WLTextV2 editable={userCanEditText} firestoreId="brand-info" size={18} color="#525252" />
           <div className="wl-spacer-1" />
-          <ButtonRounded color="#5738B3" size="lg" onClick={() => window.open("mailto:talkaboutdreams@yahoo.com")}>
+          <ButtonRounded color="#5738B3" size="lg" onClick={() => window.open(emailHref)}>
             Speak With Me
           </ButtonRounded>
         </div>

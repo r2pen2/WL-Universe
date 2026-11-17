@@ -12,6 +12,7 @@ import { Text } from '@nextui-org/react';
 import { createContext, useEffect, useState } from 'react';
 
 import {FooterAuthButton} from "./libraries/Web-Legos/components/Auth"
+import { WLEmailAddress, WLPhoneNumber } from "./libraries/Web-Legos/components/Contacts.jsx";
 
 import {LineButton} from "./libraries/Web-Legos/components/Buttons"
 
@@ -122,13 +123,9 @@ export function App(props) {
     <div className="col-lg-6 d-none d-lg-flex flex-column aligh-items-center justify-content-center">
       <WLHeaderV2 size="$4xl" color="white" align="left">Nicole Levin LCSW CYT</WLHeaderV2>
       <div className="d-flex flex-row gap-2 align-items-center justify-content-start">
-        <Link href="mailto:nicolelevinlcsw@gmail.com">
-          <Text color="#8C8C8C" size="$lg" css={{textDecoration:"underline"}}>nicolelevinlcsw@gmail.com</Text>
-        </Link>
+        <WLEmailAddress fallback="nicolelevinlcsw@gmail.com" style={{color: "#8C8C8C", fontSize: "1.125rem"}} />
         <Text color="#8C8C8C">・</Text>
-        <Link href="callto:2156687277">
-          <Text color="#8C8C8C" size="$lg" css={{textDecoration:"underline"}}>(215) 668-7277</Text>
-        </Link>
+        <WLPhoneNumber fallback="(215) 668-7277" style={{color: "#8C8C8C", fontSize: "1.125rem"}} />
       </div>
       <div className="d-flex flex-row gap-2 align-items-center justify-content-start">
         <Link href="https://www.nicolelevin.org">
@@ -145,23 +142,15 @@ export function App(props) {
   const FooterLeftCentered = () => (
     <div className="d-flex flex-column align-items-center d-lg-none" style={{maxWidth: 600}}>
       <div className="d-md-flex flex-row d-none gap-2 align-items-center justify-content-start">
-        <Link href="mailto:nicolelevinlcsw@gmail.com">
-          <Text color="#8C8C8C" size="$lg" css={{textDecoration:"underline"}}>nicolelevinlcsw@gmail.com</Text>
-        </Link>
+        <WLEmailAddress fallback="nicolelevinlcsw@gmail.com" style={{color: "#8C8C8C", fontSize: "1.125rem"}} />
         <Text color="#8C8C8C">・</Text>
-        <Link href="callto:2156687277">
-          <Text color="#8C8C8C" size="$lg" css={{textDecoration:"underline"}}>(215) 668-7277</Text>
-        </Link>
+        <WLPhoneNumber fallback="(215) 668-7277" style={{color: "#8C8C8C", fontSize: "1.125rem"}} />
       </div>
       <div className="d-flex flex-row d-md-none gap-2 align-items-center justify-content-start">
-        <Link href="mailto:nicolelevinlcsw@gmail.com">
-          <Text color="#8C8C8C" size="$lg" css={{textDecoration:"underline"}}>nicolelevinlcsw@gmail.com</Text>
-        </Link>
+        <WLEmailAddress fallback="nicolelevinlcsw@gmail.com" style={{color: "#8C8C8C", fontSize: "1.125rem"}} />
       </div>
       <div className="d-flex flex-row d-md-none gap-2 align-items-center justify-content-start">
-        <Link href="callto:2156687277">
-          <Text color="#8C8C8C" size="$lg" css={{textDecoration:"underline"}}>(215) 668-7277</Text>
-        </Link>
+        <WLPhoneNumber fallback="(215) 668-7277" style={{color: "#8C8C8C", fontSize: "1.125rem"}} />
       </div>
       <div className="d-md-flex d-none flex-row gap-2 align-items-center justify-content-start">
         <Link href="https://www.nicolelevin.org">

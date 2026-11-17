@@ -21,7 +21,7 @@ Default port **3021**. Auth: `Authorization: Bearer <WL_CMS_API_KEY>`. Site: `X-
 ## Endpoints
 
 - `GET /health`, `GET /liveness`
-- `GET|POST /site-text`, `/site-images`, `/site-models`
+- `GET|POST /site-text`, `/site-images`, `/site-models` (site contacts are the `siteContacts` model collection, always per siteKey)
 - `GET /site-rules/max-upload`
 - `GET|POST /images/*`, `POST /delete-img`
 - `GET /assets/:site/...` (public image files)

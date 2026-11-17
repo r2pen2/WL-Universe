@@ -8,6 +8,7 @@ import { createContext, useEffect, useState } from 'react';
 import { createTheme as createMantineTheme, MantineProvider } from "@mantine/core"
 import {WLThemeProvider, createWLTheme} from "./libraries/Web-Legos/Layouts/WLThemes"
 import {FooterAuthButton} from "./libraries/Web-Legos/components/Auth"
+import { WLEmailAddress, WLPhoneNumber } from "./libraries/Web-Legos/components/Contacts.jsx";
 
 // API Imports
 import { firebaseConfig } from './api/firebase.ts'
@@ -109,13 +110,9 @@ export function App(props) {
               <footer className="p-5 flex-column align-items-center justify-content-center">
                 <div id="contact" className="d-flex flex-column align-items-center justfy-content-center">
                   <div className="flex-column d-flex gap-2 align-items-center justify-content-start">
-                    <Link href="mailto:talkaboutdreams@yahoo.com">
-                      <Text size="$lg" css={{textDecoration:"underline"}}>talkaboutdreams@yahoo.com</Text>
-                    </Link>
+                    <WLEmailAddress fallback="talkaboutdreams@yahoo.com" style={{fontSize: "1.125rem"}} />
                     <Text>・</Text>
-                    <Link href="callto:6172991792">
-                      <Text size="$lg" css={{textDecoration:"underline"}}>(617) 299-1792</Text>
-                    </Link>
+                    <WLPhoneNumber fallback="(617) 299-1792" style={{fontSize: "1.125rem"}} />
                   </div>
                 </div>
                 <Spacer y={1}/>

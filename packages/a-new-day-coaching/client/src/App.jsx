@@ -25,6 +25,7 @@ import { WLHeader, WLHeaderV2, WLTextV2 } from './libraries/Web-Legos/components
 import { Link, Spacer, Text } from '@nextui-org/react';
 
 import  {FooterAuthButton} from "./libraries/Web-Legos/components/Auth.jsx"
+import { WLEmailAddress, WLPhoneNumber } from "./libraries/Web-Legos/components/Contacts.jsx";
 
 import {MailManager} from "./libraries/Web-Legos/api/mail.ts"
 import { CmsManager } from "./libraries/Web-Legos/api/cms.ts"
@@ -118,12 +119,8 @@ export function App(props) {
                 </WLFooterSocials>
                 <Spacer y={1} />
                   <WLTextV2 firestoreId="contact-name" />
-                  <Link href="mailto:rachel.newday@gmail.com">
-                    <Text css={{textDecoration:"underline"}}>rachel.newday@gmail.com</Text>
-                  </Link>
-                  <Link href="callto:2027982343">
-                    <Text css={{textDecoration:"underline"}}>(202) 798-ADHD</Text>
-                  </Link>
+                  <WLEmailAddress fallback="rachel.newday@gmail.com" />
+                  <WLPhoneNumber fallback="(202) 798-ADHD" />
                 </div>
                 <div className="d-lg-flex w-100 d-none flex-row gap-2 align-items-end justify-content-around">
                   <Link href="https://www.joed.dev">

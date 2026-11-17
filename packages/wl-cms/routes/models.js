@@ -1,8 +1,12 @@
 const express = require("express");
 const { cmsCollection } = require("../lib/cmsCollections");
 
+// Collections that are always per-site when the site has a siteKey, even on v1-model sites (ANDC
+// shares the wladminportal project, so an unscoped "siteContacts" there would be shared).
+const ALWAYS_SCOPED = new Set(["siteContacts"]);
+
 function modelCollectionName(site, logicalName) {
-  if (site.modelsStack === "v2") {
+  if (site.modelsStack === "v2" || (site.siteKey && ALWAYS_SCOPED.has(logicalName))) {
     return cmsCollection(`${logicalName}-${site.siteKey}`);
   }
   return cmsCollection(logicalName);
