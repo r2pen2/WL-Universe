@@ -15,21 +15,6 @@ function safeJoinImages(imagesDir, relativePath) {
 }
 
 /**
- * Read-only fallback for image files missing from this instance's own assets: QA previews
- * (pr-<N>-wl-cms) start with an empty assets dir but copy prod's image metadata, so they read
- * prod's files from WL_CMS_ASSETS_FALLBACK_DIR (<root>/<slug>/images, mounted :ro). Uploads and
- * deletes only ever touch the instance's own dir.
- */
-function findImageFile(site, imagesDir, rel) {
-  const own = safeJoinImages(imagesDir, rel);
-  if (own && fs.existsSync(own)) return own;
-  const fallbackRoot = process.env.WL_CMS_ASSETS_FALLBACK_DIR;
-  if (!fallbackRoot) return null;
-  const fallback = safeJoinImages(path.join(fallbackRoot, site.slug, "images"), rel);
-  return fallback && fs.existsSync(fallback) ? fallback : null;
-}
-
-/**
  * Mount at /assets — public image blobs (no Bearer).
  * GET /assets/:site/images/...
  */
@@ -44,8 +29,8 @@ function attachPublicAssets(app) {
     }
     try {
       const ctx = getOrCreateContext(site);
-      const filePath = findImageFile(site, ctx.imagesDir, rel);
-      if (!filePath) {
+      const filePath = safeJoinImages(ctx.imagesDir, rel);
+      if (!filePath || !fs.existsSync(filePath)) {
         // No explicit Cache-Control here previously let browsers (per RFC 9111
         // 4.2.2, 404 is heuristically cacheable) cache a transient "missing
         // asset" 404 on disk and keep replaying it after the file showed up,
@@ -67,8 +52,8 @@ function attachPublicAssets(app) {
 function attachLegacyImageFs(app) {
   app.get(/^\/images\/(.+)$/, (req, res) => {
     const rel = req.params[0];
-    const filePath = findImageFile(req.wlSite, req.wlCtx.imagesDir, rel);
-    if (!filePath) {
+    const filePath = safeJoinImages(req.wlCtx.imagesDir, rel);
+    if (!filePath || !fs.existsSync(filePath)) {
       return res.sendStatus(404);
     }
     return res.sendFile(filePath);
@@ -111,5 +96,4 @@ module.exports = {
   attachPublicAssets,
   attachLegacyImageFs,
   safeJoinImages,
-  findImageFile,
 };
