@@ -79,7 +79,13 @@ active.json + PR comments
 ### Safety (non-negotiable)
 
 - **No real mail / Stripe:** QA `SITE_MAIL_*` must point at a sink (`SITE_MAIL_DISABLE_SEND=1`) — never prod Gmail/GoDaddy.
-- **CMS QA:** seed `qa-pr-<n>-*` Firestore collections from prod; set `CMS_COLLECTION_PREFIX`; mount prod images/static **:ro** and prod Firebase SA **:ro**. Cleanup deletes the prefixed collections on PR close.
+- **CMS QA (a clone of prod per PR):**
+  - **Firestore.** Every deploy copies prod's collections into `qa-pr-<n>-*`, and the PR's services read them through `CMS_COLLECTION_PREFIX`.
+  - **CMS files.** The PR's `wl-cms` gets its own copy of prod's files (site images) in `app-assets/qa/pr-<n>/wl-cms`.
+    - Later deploys add images prod gained since the last one and keep the preview's own uploads.
+    - These are real copies, never mounts or links of prod's files.
+  - **Credentials.** Only the Firebase service account is shared, read-only.
+  - **Cleanup on PR close.** It deletes the prefixed collections and `pr-<n>/`, then sweeps the same for any other PR that isn't open (leftovers of earlier cleanups that failed).
 - Non-CMS SPAs: placeholder SA + empty per-PR asset dirs under `/opt/services/data/app-assets/qa/pr-<n>/<app>/`.
 - QA containers must not collide with prod `container_name`s (`beyond-the-bell`, etc.).
 
@@ -139,7 +145,7 @@ If API surface for tunnel hostname is awkward, acceptable fallback: one document
 | Workflow | Trigger | Runner | Action |
 |----------|---------|--------|--------|
 | `qa-preview.yml` | `pull_request` synchronize/open/reopen | ubuntu-latest → then glados | build/push `pr-<n>` tags; deploy compose; comment URLs; update `active.json` |
-| `qa-preview-cleanup.yml` | `pull_request` closed | glados | compose down; update `active.json` |
+| `qa-preview-cleanup.yml` | `pull_request` closed | glados | compose down; delete the PR's cloned data; sweep closed PRs' leftovers; update `active.json` |
 | `qa-wildcard-bootstrap.yml` | `workflow_dispatch` | ubuntu-latest | ensure `*.qa.joed.dev` DNS + tunnel ingress |
 
 Reuse Dockerfile(s) from `deploy/docker/*`. Do **not** run QA deploy on `push` to `main` (prod path stays `publish-app-images.yml`).

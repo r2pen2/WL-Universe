@@ -22,13 +22,26 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Compose down + registry remove
+      # Tears down the PR's containers, deletes its clone of prod data (qa-pr-<n>- Firestore
+      # collections and its copy of the CMS files under app-assets/qa/pr-<n>), then sweeps the
+      # same for any other closed PR whose cleanup didn't finish.
+      - name: Compose down, delete cloned data, sweep closed PRs
         env:
           PR: ${{ github.event.pull_request.number }}
           OWNER: ${{ github.repository_owner }}
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
-          node scripts/qa/cleanup-pr.mjs --pr "$PR" --owner "$OWNER" --prune-images
+          # Open PRs keep their previews. If GitHub can't be asked, skip the sweep rather than
+          # treat every PR as closed.
+          if open=$(curl -fsS -H "Authorization: Bearer $GH_TOKEN"                 "https://api.github.com/repos/$REPO/pulls?state=open&per_page=100"               | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>console.log(JSON.parse(s).map(p=>p.number).join(",")))'); then
+            echo "open PRs: ${open:-none}"
+            node scripts/qa/cleanup-pr.mjs --pr "$PR" --owner "$OWNER" --prune-images --sweep --open "$open"
+          else
+            echo "::warning::Couldn't list open PRs; cleaning up PR $PR only"
+            node scripts/qa/cleanup-pr.mjs --pr "$PR" --owner "$OWNER" --prune-images
+          fi
 
   comment:
     name: clear QA comment
