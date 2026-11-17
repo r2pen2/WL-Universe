@@ -55,7 +55,25 @@ When asked to rebuild an existing site, the first pass should include all of thi
 - **Registration.** Register the site everywhere a new site goes: `wl-cms`, `wl-auth` and `wl-forms` `lib/sites.js`; `scripts/dev/catalog.mjs`; `scripts/qa/apps.mjs` (with `provision`); `deploy/compose/<slug>.yml` and its env examples; liveness; site audit; fleet inventory; Umami.
 - **Deploy.** Deploy at `<slug>.joed.dev` through the normal pipeline. After merging, note the manual steps (Firebase authorized domain, Umami provisioning).
 
-## 4. General
+## 4. The lint enforces these rules
+
+`npm run lint:wl` checks every site's `client/src` with the rules in [tools/wl-lint](tools/wl-lint). It runs on every PR as **WL lint**, and new violations fail it.
+
+| Rule | Catches | Use instead |
+| --- | --- | --- |
+| `wl/contact-links` | `mailto:` / `tel:` / `callto:` strings | `WLEmailAddress` / `WLPhoneNumber`, `useContactHref()` |
+| `wl/no-contact-text` | Emails and phone numbers written into JSX | WL contact components |
+| `wl/wl-text` | `<h1>`–`<h6>` / `<p>` with hard-coded copy | `WLHeaderV2` / `WLLayoutHeader`, `WLTextV2` / `WLLayoutText` |
+| `wl/wl-images` | `<img>` whose `src` isn't an imported asset or `cmsAssetUrl()` | `WLImageV2` |
+| `wl/wl-forms` | `firebase/firestore`, EmailJS, `<form action>` | `FormResponse` (wl-forms) and `MailManager` (site-mail) |
+
+- **Where the rules don't apply.** web-legos (and its synced copy in `libraries/`) is where raw primitives may live. Sites import the WL component instead.
+- **The baseline.** Violations that existed when the lint was added are listed in `tools/wl-lint/eslint-suppressions.json`.
+  - Fixing one requires pruning it from that file in the same PR: `npm run lint:wl -- --prune-suppressions`. CI checks this, so the baseline only shrinks.
+  - **Never** run `--suppress-all` to get a new violation through; fix it.
+- **Installing.** `npm ci --prefix tools/wl-lint`. It is kept out of the workspaces on purpose: it uses ESLint 10, and the CRA builds use ESLint 8.
+
+## 5. General
 
 - **Where things go.** Only WL services and sites belong in this repo. Other infrastructure lives in its own repo. Admin access goes through joed.dev SSO.
 - **Privacy.** Don't put clients' private details in this public repo (billing details come from secrets). Contact info that is already published on a client's site is fine.

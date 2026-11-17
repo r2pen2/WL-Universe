@@ -1,0 +1,47 @@
+name: WL lint
+
+# House rules from AGENTS.md, enforced on every site (tools/wl-lint): contact info through WL
+# contact components, copy through WL text, photos through WLImageV2, forms through wl-forms.
+# Violations that predate the lint are baselined in tools/wl-lint/eslint-suppressions.json; any
+# new one fails this check. Fixing an old one requires shrinking the baseline
+# (`npm run lint:wl -- --prune-suppressions`), so it can only go down.
+
+on:
+  pull_request:
+    paths:
+      - packages/*/client/src/**
+      - tools/wl-lint/**
+      - .github/workflows/wl-lint.yml
+  push:
+    branches: [main]
+    paths:
+      - packages/*/client/src/**
+      - tools/wl-lint/**
+
+permissions:
+  contents: read
+
+jobs:
+  wl-lint:
+    name: WL house rules
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install
+        run: npm ci --prefix tools/wl-lint
+      - name: Rule tests
+        run: npm test --prefix tools/wl-lint
+      - name: Lint sites
+        run: node tools/wl-lint/bin.mjs
+      - name: Baseline only shrinks
+        run: |
+          # Fail if fixed violations are still listed in the baseline (prune them in this PR).
+          node tools/wl-lint/bin.mjs --prune-suppressions > /dev/null
+          git diff --exit-code -- tools/wl-lint/eslint-suppressions.json || {
+            echo "::error::Some baselined violations are fixed. Run 'npm run lint:wl -- --prune-suppressions' and commit tools/wl-lint/eslint-suppressions.json."
+            exit 1
+          }
