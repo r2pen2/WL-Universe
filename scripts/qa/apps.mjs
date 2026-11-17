@@ -87,6 +87,18 @@ export const SPA_APPS = [
     cms: true,
     siteKey: "BBM",
   },
+  {
+    app: "room01890",
+    port: 8080,
+    kind: "spa-static",
+    dockerfile: SPA_STATIC_DOCKERFILE,
+    extraVolumes: [],
+    cms: true,
+    siteKey: "R01",
+    // First prod deploy creates its env file, service account (shared wladminportal project) and
+    // auth/forms keys on glados: scripts/glados/provision-site.sh.
+    provision: { serviceAccountFrom: "boston-mixtape", mailProfileFrom: "TALK_ABOUT_DREAMS" },
+  },
 ];
 
 /** Apps that seed/cleanup prefixed Firestore CMS collections for QA. */

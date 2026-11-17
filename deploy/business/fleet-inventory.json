@@ -116,6 +116,19 @@
       "status": "deployed"
     },
     {
+      "id": "room01890",
+      "label": "Room 01890 (rebuild of room01890.com)",
+      "kind": "marketing_site",
+      "ownership": "client",
+      "domains": ["room01890.joed.dev"],
+      "cms": true,
+      "formsMail": true,
+      "firebaseProject": "wladminportal",
+      "registrarLikely": null,
+      "monthlyRetainerUsd": null,
+      "status": "deployed"
+    },
+    {
       "id": "a-new-day-coaching",
       "label": "A New Day Coaching (marketing)",
       "kind": "marketing_site",

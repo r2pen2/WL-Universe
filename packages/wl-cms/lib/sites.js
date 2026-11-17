@@ -33,6 +33,12 @@ const SITE_REGISTRY = {
     stack: "v2",
     modelsStack: "v1",
   },
+  room01890: {
+    slug: "room01890",
+    siteKey: "R01",
+    stack: "v2",
+    modelsStack: "v2",
+  },
   "beyond-the-bell": {
     slug: "beyond-the-bell",
     siteKey: null,

@@ -24,6 +24,7 @@ const SITES = [
   { slug: "talk-about-dreams", domain: "talkaboutdreams.com" },
   { slug: "boston-mixtape", domain: "bostonmixtape.com", aliases: ["bostonsoundtrack.com", "berachmusic.com", "bostonsbestmusic.com", "berachorchestra.com"] },
   { slug: "a-new-day-coaching", domain: "anewdaycoaching.com" },
+  { slug: "room01890", domain: "room01890.joed.dev" },
 ];
 
 const PLATFORM = [

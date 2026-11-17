@@ -1,0 +1,15 @@
+{
+  "short_name": "Room 01890",
+  "name": "Room 01890",
+  "icons": [
+    {
+      "src": "logo.png",
+      "type": "image/png",
+      "sizes": "479x213"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#0D0E26",
+  "background_color": "#F6F5F2"
+}

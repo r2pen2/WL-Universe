@@ -33,6 +33,12 @@ const SITE_REGISTRY = {
     authStack: "v2",
     userKeyEnv: "ANDCUSERKEY",
   },
+  room01890: {
+    slug: "room01890",
+    siteKey: "R01",
+    authStack: "v2",
+    userKeyEnv: "R01USERKEY",
+  },
   "beyond-the-bell": {
     slug: "beyond-the-bell",
     siteKey: null,

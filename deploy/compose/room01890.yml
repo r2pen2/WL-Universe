@@ -1,0 +1,25 @@
+services:
+  room01890:
+    image: ghcr.io/r2pen2/wl-universe-room01890:${ROOM01890_IMAGE_TAG:-latest}
+    container_name: room01890
+    restart: unless-stopped
+    env_file:
+      - ${ROOM01890_ENV_FILE:-/opt/services/data/app-env/room01890.env}
+    environment:
+      PORT: "8080"
+      WL_CMS_SITE: room01890
+      WL_AUTH_SITE: room01890
+      WL_FORMS_SITE: room01890
+      SITE_MAIL_SITE_SLUG: room01890
+    networks:
+      - proxy
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+      traefik.enable: "true"
+      traefik.http.routers.room01890.rule: Host(`room01890.joed.dev`)
+      traefik.http.routers.room01890.entrypoints: web
+      traefik.http.services.room01890.loadbalancer.server.port: "8080"
+
+networks:
+  proxy:
+    external: true

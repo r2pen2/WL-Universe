@@ -183,8 +183,27 @@ function imageTagFor(pr, app, owner) {
   }
 }
 
+/**
+ * New v2 sites (apps.mjs `provision`) share the wladminportal service account of an existing
+ * site; copy it to <app>-serviceAccountKey.json if this is the site's first deploy anywhere
+ * (the prod deploy does the same in scripts/glados/provision-site.sh). Seeding and the QA
+ * wl-cms/wl-auth/wl-forms resolve the site's account by that file name.
+ */
+function ensureServiceAccount(app) {
+  const from = APP_BY_NAME[app]?.provision?.serviceAccountFrom;
+  if (!from) return;
+  const dir = "/opt/services/data/app-env";
+  const dest = path.join(dir, `${app}-serviceAccountKey.json`);
+  const src = path.join(dir, `${from}-serviceAccountKey.json`);
+  sh(
+    `if sudo test -f ${JSON.stringify(dest)}; then echo "service account present: ${app}"; ` +
+      `else sudo cp -p ${JSON.stringify(src)} ${JSON.stringify(dest)} && echo "service account copied: ${from} -> ${app}"; fi`,
+  );
+}
+
 function deployOne({ pr, app, owner, sha }) {
   ensureQaEnv(app);
+  ensureServiceAccount(app);
   ensureAssets(pr, app);
   const tag = imageTagFor(pr, app, owner);
 

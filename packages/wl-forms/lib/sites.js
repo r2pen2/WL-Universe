@@ -17,6 +17,10 @@ const SITE_REGISTRY = {
     slug: "a-new-day-coaching",
     formKeyEnv: "ANDCFORMKEY",
   },
+  room01890: {
+    slug: "room01890",
+    formKeyEnv: "R01FORMKEY",
+  },
 };
 
 function envSaKey(slug) {

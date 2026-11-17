@@ -1,0 +1,14 @@
+{
+  "name": "@wl-universe/room01890",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Room 01890 (room01890.com rebuild) marketing site (static SPA)",
+  "scripts": {
+    "sync:packages": "node ../../scripts/sync-local-packages.mjs room01890",
+    "build": "npm run sync:packages && npm run build -w @wl-universe/room01890-client",
+    "fetch-assets": "node scripts/fetch-source-assets.mjs",
+    "seed-cms": "node scripts/seed-cms.mjs"
+  },
+  "author": "Joe Dobbelaar",
+  "license": "ISC"
+}

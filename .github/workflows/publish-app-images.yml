@@ -325,6 +325,24 @@ jobs:
           sudo mv "$ENV.new" "$ENV"
           echo "Mail settings written to $ENV"
 
+      # New v2 sites (scripts/qa/apps.mjs entries with `provision`) get their env file, service
+      # account and auth/forms/mail keys on glados before the first deploy. Idempotent; never
+      # overwrites existing values or prints secrets.
+      - name: Provision site env
+        run: |
+          set -euo pipefail
+          args=$(node -e '
+            import("./scripts/qa/apps.mjs").then((m) => {
+              const a = m.APP_BY_NAME[process.argv[1]];
+              if (a && a.provision) {
+                console.log([a.app, a.provision.serviceAccountFrom, a.provision.mailProfileFrom || ""].join(" "));
+              }
+            })
+          ' "${{ matrix.app }}")
+          if [ -z "${args}" ]; then echo "No provisioning for ${{ matrix.app }}"; exit 0; fi
+          # shellcheck disable=SC2086
+          sudo bash scripts/glados/provision-site.sh ${args}
+
       - name: Deploy compose app
         env:
           # Private per-client billing details (scripts/billing/merge-private-clients.mjs); only read for site-billing.
