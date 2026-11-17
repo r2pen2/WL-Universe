@@ -76,6 +76,13 @@ export function generateCompose({ pr, app, owner, tag }) {
     volumes.push(
       `      - ${assetsRoot}:/opt/services/data/app-assets/${app}`,
     );
+    if (app === "wl-cms") {
+      // Prod image files, read-only: the QA copy of the CMS metadata points at them, and QA
+      // uploads land in the per-PR dir above (routes/assets.js findImageFile).
+      volumes.push(
+        `      - /opt/services/data/app-assets/wl-cms:/opt/services/data/app-assets-prod/wl-cms:ro`,
+      );
+    }
     if (app === "wl-cms" || app === "wl-auth" || app === "wl-forms") {
       // Shared host SA files: <slug>-serviceAccountKey.json
       volumes.push(
@@ -87,6 +94,11 @@ export function generateCompose({ pr, app, owner, tag }) {
   const environment = [
     `      PORT: ${yamlQuote(port)}`,
   ];
+  if (entry.kind === "express" && app === "wl-cms") {
+    environment.push(
+      `      WL_CMS_ASSETS_FALLBACK_DIR: /opt/services/data/app-assets-prod/wl-cms`,
+    );
+  }
   if (entry.kind === "express" && app === "site-mail") {
     environment.push(
       `      SITE_MAIL_LOG_DIR: /opt/services/data/app-assets/site-mail`,
