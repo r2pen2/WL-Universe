@@ -89,6 +89,7 @@ jobs:
           - name: talk-about-dreams
           - name: boston-mixtape
           - name: room01890
+          - name: storybook
           - name: wl-admin-portal
           - name: site-mail
     steps:

@@ -152,11 +152,24 @@ export const DOCS_APPS = [
   },
 ];
 
+/**
+ * Static sites with no WL services: the component catalog (tools/storybook, WL-7). It renders
+ * web-legos and every site's client source, so detect-changed-apps rebuilds it when any of those change.
+ */
+export const STATIC_APPS = [
+  {
+    app: "storybook",
+    port: 8080,
+    kind: "static",
+    dockerfile: "deploy/docker/storybook.Dockerfile",
+  },
+];
+
 /** QA preview apps (no docs host). */
-export const ALL_APPS = [...SPA_APPS, ...EXPRESS_APPS];
+export const ALL_APPS = [...SPA_APPS, ...EXPRESS_APPS, ...STATIC_APPS];
 
 /** Prod publish / deploy matrix. */
-export const PUBLISH_APPS = [...SPA_APPS, ...EXPRESS_APPS, ...DOCS_APPS];
+export const PUBLISH_APPS = [...SPA_APPS, ...EXPRESS_APPS, ...DOCS_APPS, ...STATIC_APPS];
 
 export const APP_BY_NAME = Object.fromEntries(
   PUBLISH_APPS.map((a) => [a.app, a]),

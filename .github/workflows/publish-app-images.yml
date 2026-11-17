@@ -303,6 +303,12 @@ jobs:
           # shellcheck disable=SC2086
           sudo bash scripts/glados/provision-site.sh ${args}
 
+      # The component catalog reads live prod CMS content with a read-only wl-cms key
+      # (scripts/glados/provision-cms-read-key.sh): generated into wl-cms.env, copied to storybook.env.
+      - name: Read-only CMS key for the catalog
+        if: matrix.app == 'storybook' || matrix.app == 'wl-cms'
+        run: sudo bash scripts/glados/provision-cms-read-key.sh
+
       - name: Deploy compose app
         env:
           # Private per-client billing details (scripts/billing/merge-private-clients.mjs); only read for site-billing.
