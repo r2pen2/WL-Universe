@@ -157,110 +157,70 @@ jobs:
 
   # Single runner so Buildx boots once (moby/buildkit pull).
   publish:
-    name: build & push changed images
+    name: build (${{ matrix.app }})
     needs: detect
     if: needs.detect.outputs.has_apps == 'true'
     runs-on: ubuntu-latest
+    # One job per app, all at once (each shows up separately in the Actions UI).
+    strategy:
+      fail-fast: false
+      matrix:
+        app: ${{ fromJSON(needs.detect.outputs.apps) }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
 
+      - name: Resolve build settings
+        id: app
+        env:
+          APP: ${{ matrix.app }}
+        run: |
+          set -euo pipefail
+          node -e '
+            import("./scripts/qa/apps.mjs").then((m) => {
+              const a = m.PUBLISH_APPS.find((x) => x.app === process.env.APP);
+              const out = a
+                ? `build=true\nport=${a.port}\ndockerfile=${a.dockerfile || "deploy/docker/node-react-express.Dockerfile"}\n`
+                : "build=false\n";
+              process.stdout.write(out);
+            })
+          ' >> "$GITHUB_OUTPUT"
+          cat "$GITHUB_OUTPUT"
+
       - name: Set up Docker Buildx
+        if: steps.app.outputs.build == 'true'
         uses: docker/setup-buildx-action@v3
 
       - name: Log in to GHCR
+        if: steps.app.outputs.build == 'true'
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push changed app images
+      - name: Build and push
+        if: steps.app.outputs.build == 'true'
         env:
+          APP: ${{ matrix.app }}
           OWNER: ${{ github.repository_owner }}
           SHA: ${{ github.sha }}
-          APPS_CSV: ${{ needs.detect.outputs.apps_csv }}
+          PORT: ${{ steps.app.outputs.port }}
+          DOCKERFILE: ${{ steps.app.outputs.dockerfile }}
         run: |
           set -euo pipefail
-
-          # Resolve port/dockerfile from the shared catalog.
-          mapfile -t build_entries < <(node -e '
-            import("./scripts/qa/apps.mjs").then((m) => {
-              const wanted = new Set((process.env.APPS_CSV || "").split(",").filter(Boolean));
-              for (const a of m.PUBLISH_APPS) {
-                if (!wanted.has(a.app)) continue;
-                const file = a.dockerfile || "";
-                process.stdout.write(`${a.app}|${a.port}|${file}\n`);
-              }
-            })
-          ')
-
-          if [ "${#build_entries[@]}" -eq 0 ]; then
-            echo "Nothing to build."
-            exit 0
-          fi
-
-          build_one() {
-            local app="$1" port="$2" dockerfile="$3"
-            local image="ghcr.io/${OWNER}/wl-universe-${app}"
-            local file="${dockerfile:-deploy/docker/node-react-express.Dockerfile}"
-
-            echo "::group::Build ${app}"
-            docker buildx build \
-              --file "${file}" \
-              --build-arg "APP_DIR=packages/${app}" \
-              --build-arg "APP_NAME=${app}" \
-              --build-arg "PORT=${port}" \
-              --tag "${image}:latest" \
-              --tag "${image}:${SHA}" \
-              --cache-from "type=gha,scope=${app}" \
-              --cache-to "type=gha,mode=max,scope=${app}" \
-              --push \
-              .
-            echo "::endgroup::"
-          }
-
-          max_jobs=3
-          fail=0
-          declare -a pids=()
-          declare -a names=()
-
-          reap() {
-            local new_pids=() new_names=()
-            local i
-            for i in "${!pids[@]}"; do
-              local pid="${pids[$i]}"
-              if kill -0 "${pid}" 2>/dev/null; then
-                new_pids+=("${pid}")
-                new_names+=("${names[$i]}")
-                continue
-              fi
-              if ! wait "${pid}"; then
-                echo "::error::Build failed for ${names[$i]}"
-                fail=1
-              fi
-            done
-            pids=("${new_pids[@]}")
-            names=("${new_names[@]}")
-          }
-
-          for entry in "${build_entries[@]}"; do
-            IFS='|' read -r app port dockerfile <<< "${entry}"
-            while [ "${#pids[@]}" -ge "${max_jobs}" ]; do
-              sleep 2
-              reap
-            done
-            build_one "${app}" "${port}" "${dockerfile}" &
-            pids+=("$!")
-            names+=("${app}")
-          done
-
-          while [ "${#pids[@]}" -gt 0 ]; do
-            reap
-            [ "${#pids[@]}" -eq 0 ] || sleep 1
-          done
-
-          exit "${fail}"
+          image="ghcr.io/${OWNER}/wl-universe-${APP}"
+          docker buildx build \
+            --file "${DOCKERFILE}" \
+            --build-arg "APP_DIR=packages/${APP}" \
+            --build-arg "APP_NAME=${APP}" \
+            --build-arg "PORT=${PORT}" \
+            --tag "${image}:latest" \
+            --tag "${image}:${SHA}" \
+            --cache-from "type=gha,scope=${APP}" \
+            --cache-to "type=gha,mode=max,scope=${APP}" \
+            --push \
+            .
 
   deploy:
     name: deploy (${{ matrix.app }})
