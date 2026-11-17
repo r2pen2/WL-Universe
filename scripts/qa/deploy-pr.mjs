@@ -115,8 +115,27 @@ function ensureAssets(pr, app) {
       fs.unlinkSync(calTmp);
     }
   }
+  if (app === "wl-cms") cloneCmsAssets(root);
   // spa-static: no per-site assets
   return root;
+}
+
+const PROD_CMS_ASSETS = "/opt/services/data/app-assets/wl-cms";
+
+/**
+ * The PR's wl-cms gets its own copy of prod's CMS files (site images), next to its own copy of
+ * prod's Firestore data (seedFirestore), so a preview never reads or writes prod. Real copies,
+ * not hard links: a QA upload with a prod file name must not change prod's file. -n keeps files
+ * the preview already has (its own uploads/edits) and adds images prod gained since the last
+ * deploy. cleanup-pr.mjs deletes the copy with the rest of pr-<n>/.
+ */
+function cloneCmsAssets(root) {
+  sh(
+    `if sudo test -d ${JSON.stringify(PROD_CMS_ASSETS)}; then ` +
+      `sudo cp -a -n ${JSON.stringify(PROD_CMS_ASSETS + "/.")} ${JSON.stringify(root + "/")} && ` +
+      `echo "cms assets cloned: $(sudo du -sh ${JSON.stringify(root)} | cut -f1) in ${root}"; ` +
+      `else echo "no prod cms assets at ${PROD_CMS_ASSETS}"; fi`,
+  );
 }
 
 function seedFirestore(pr, app, owner) {

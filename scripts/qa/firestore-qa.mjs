@@ -5,6 +5,8 @@
  *   node scripts/qa/firestore-qa.mjs seed --pr 57 --app you-can-do-it-gardening
  *   node scripts/qa/firestore-qa.mjs cleanup --pr 57 --app you-can-do-it-gardening
  *   node scripts/qa/firestore-qa.mjs cleanup --pr 57 --apps you-can-do-it-gardening,beyond-the-bell
+ *   node scripts/qa/firestore-qa.mjs sweep --keep 92,94 --apps <every CMS app>
+ *     (deletes qa-pr-<n>- collections of every PR not in --keep: leftovers of closed PRs)
  *
  * Uses the prod service account at:
  *   /opt/services/data/app-env/<app>-serviceAccountKey.json
@@ -29,11 +31,15 @@ function parseArgs(argv) {
     command: null,
     pr: null,
     apps: [],
+    keep: null,
     saDir: "/opt/services/data/app-env",
   };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
-    if (!args.command && (a === "seed" || a === "cleanup")) args.command = a;
+    if (!args.command && (a === "seed" || a === "cleanup" || a === "sweep")) args.command = a;
+    else if (a === "--keep" && argv[i + 1] !== undefined) {
+      args.keep = argv[++i].split(",").map((s) => s.trim()).filter(Boolean);
+    }
     else if (a === "--pr" && argv[i + 1]) args.pr = String(argv[++i]);
     else if (a === "--app" && argv[i + 1]) args.apps.push(argv[++i]);
     else if (a === "--apps" && argv[i + 1]) {
@@ -45,8 +51,10 @@ function parseArgs(argv) {
       );
     } else if (a === "--sa-dir" && argv[i + 1]) args.saDir = argv[++i];
   }
-  if (!args.command) throw new Error("Usage: firestore-qa.mjs seed|cleanup --pr N --app <app>");
-  if (!args.pr) throw new Error("--pr is required");
+  if (!args.command) throw new Error("Usage: firestore-qa.mjs seed|cleanup --pr N --app <app> | sweep --keep N,M --apps ...");
+  if (args.command === "sweep") {
+    if (!args.keep) throw new Error("sweep needs --keep (open PR numbers, may be empty: --keep '')");
+  } else if (!args.pr) throw new Error("--pr is required");
   if (!args.apps.length) throw new Error("--app or --apps is required");
   for (const app of args.apps) {
     if (!APP_BY_NAME[app]) throw new Error(`Unknown app: ${app}`);
@@ -197,11 +205,33 @@ async function cleanupApp(pr, app, saDir) {
   return { app, prefix, deleted };
 }
 
+/** Delete qa-pr-<n>- collections for every PR not in `keep` (closed PRs whose cleanup failed). */
+async function sweepApp(keep, app, saDir, seenProjects) {
+  if (!cmsQaApps().has(app)) return { app, skipped: true };
+  const saFile = saPath(saDir, app);
+  // Several sites share one Firebase project (wladminportal); sweep each project once.
+  const project = JSON.parse(fs.readFileSync(saFile, "utf8")).project_id;
+  if (seenProjects.has(project)) return { app, project, skipped: "project already swept" };
+  seenProjects.add(project);
+  const db = loadAdmin(app, saFile);
+  const keepSet = new Set(keep.map(String));
+  const deleted = [];
+  for (const col of await db.listCollections()) {
+    const match = /^qa-pr-(\d+)-/.exec(col.id);
+    if (!match || keepSet.has(match[1])) continue;
+    deleted.push({ collection: col.id, docs: await deleteCollection(db, col.id) });
+  }
+  console.log(`firestore sweep ${app} (${project}): ${deleted.length} stale collection(s) deleted`);
+  return { app, project, deleted };
+}
+
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   const out = [];
+  const seenProjects = new Set();
   for (const app of args.apps) {
     if (args.command === "seed") out.push(await seedApp(args.pr, app, args.saDir));
+    else if (args.command === "sweep") out.push(await sweepApp(args.keep, app, args.saDir, seenProjects));
     else out.push(await cleanupApp(args.pr, app, args.saDir));
   }
   console.log(JSON.stringify({ ok: true, command: args.command, pr: args.pr, results: out }, null, 2));
