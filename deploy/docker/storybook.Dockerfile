@@ -5,7 +5,9 @@
 FROM node:22-bookworm AS build
 WORKDIR /app
 COPY . .
-RUN npm ci --no-audit --no-fund --ignore-scripts
+# The root lockfile isn't kept in sync with every workspace (sites build from their own client
+# lockfiles), so resolve the workspaces' dependencies with install, like docs-static does.
+RUN npm install --no-audit --no-fund --ignore-scripts --package-lock=false
 RUN npm ci --prefix tools/storybook --no-audit --no-fund
 RUN npm run build --prefix tools/storybook
 

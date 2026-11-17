@@ -94,8 +94,7 @@ function detect(files, catalog) {
     if (
       known.has("storybook") &&
       (file.startsWith("tools/storybook/") ||
-        file === "deploy/docker/storybook.Dockerfile" ||
-        file === "deploy/docker/storybook-nginx.conf" ||
+        file.startsWith("deploy/docker/storybook") ||
         file.startsWith("packages/web-legos/") ||
         /^packages\/[^/]+\/client\/(src|public)\//.test(file))
     ) {
