@@ -1,0 +1,46 @@
+{
+  "project": "WL",
+  "label": "component-catalog",
+  "epic": {
+    "key": "epic",
+    "name": "Component catalog and shared skins",
+    "description": "<p>See every WL component and every site's version of a pattern (footer, contact form, nav, hero, ...) in one catalog. Then give each pattern one shared implementation with several skins, so a site only picks a skin and passes styling.</p><ul><li><b>Shared logic, one copy</b>: a hook or data layer per pattern (e.g. <code>useContactForm()</code>: fields, validation, honeypot, wl-forms save, site-mail email).</li><li><b>Skins, many</b>: layout and style only (<code>WLContactForm.Card</code>, <code>WLFooter.Columns</code>, ...), themed per site.</li><li><b>Sites</b> pick a skin and pass <code>style</code>/<code>className</code>, like the WL contact components (AGENTS.md).</li></ul>"
+  },
+  "items": [
+    {
+      "key": "catalog",
+      "name": "Storybook catalog of every WL component and site pattern (catalog only)",
+      "description": "<p>New <code>packages/storybook</code>: stories for the web-legos primitives (WL text/headers, WLImageV2, contact components, buttons, WLNav) and, as the before picture, every site's current footer and contact form. It renders against a mock CMS, so everything shows real content with no network. Site themes and fonts can be switched, with phone/tablet/desktop viewports. Deployed at a joed.dev subdomain with a preview per PR. <b>No refactoring</b>: this only makes the duplication visible.</p>"
+    },
+    {
+      "key": "contact-form",
+      "name": "Contact form: shared useContactForm + skins; move every site over",
+      "description": "<p>Extract the shared contact/inquiry form logic (fields, validation, honeypot, FormResponse via wl-forms, MailManager email via site-mail, success/error states) into web-legos, with 2-3 skins that reproduce today's forms. Move Beyond the Bell, room01890 and Joe Dobbelaar onto it one at a time, checking each against its catalog story.</p>",
+      "blockedBy": ["catalog"]
+    },
+    {
+      "key": "footer",
+      "name": "Footer: shared WLFooter + skins; move every site over",
+      "description": "<p>One footer data layer (contact components, socials, FooterAuthButton, copyright, web developer credit) with skins (e.g. Columns, Centered) that reproduce each site's current footer. Move every site over and compare against the catalog stories.</p>",
+      "blockedBy": ["contact-form"]
+    },
+    {
+      "key": "nav-hero",
+      "name": "Nav/header, hero, card grid and gallery: shared logic + skins",
+      "description": "<p>Same treatment for the remaining repeated patterns: nav/header (built on WLNav), hero, card grid, and gallery + lightbox.</p>",
+      "blockedBy": ["footer"]
+    },
+    {
+      "key": "visual-tests",
+      "name": "Visual regression: screenshot every catalog story in CI",
+      "description": "<p>Screenshot each story (per site theme and viewport) in CI and flag changes in the PR, so a change to shared code that alters some site's look is caught before merge.</p>",
+      "blockedBy": ["catalog"]
+    },
+    {
+      "key": "lint",
+      "name": "Lint: sites use the shared pattern components (no hand-written footer or contact form)",
+      "description": "<p>Extend tools/wl-lint so sites can't hand-write a footer or contact form once the shared skins exist (AGENTS.md rule).</p>",
+      "blockedBy": ["contact-form", "footer"]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+name: Create Plane tickets
+
+# Push a file to plane/tickets/ (any branch) to create its linked Plane work items: an epic, child
+# items, "blocked by" relations and Links sections. Idempotent: existing items (same name) are
+# reused. See scripts/plane/create-tickets.mjs.
+
+on:
+  push:
+    paths:
+      - plane/tickets/*.json
+
+permissions:
+  contents: read
+
+jobs:
+  create:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Create tickets for changed files
+        env:
+          PLANE_API_KEY: ${{ secrets.PLANE_API_KEY }}
+          PLANE_WORKSPACE_SLUG: ${{ secrets.PLANE_WORKSPACE_SLUG }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          set -euo pipefail
+          if [ -n "$BEFORE" ] && [ "$BEFORE" != "0000000000000000000000000000000000000000" ] && git cat-file -e "$BEFORE" 2>/dev/null; then
+            files=$(git diff --name-only --diff-filter=AM "$BEFORE" HEAD -- 'plane/tickets/*.json')
+          else
+            files=$(git ls-files 'plane/tickets/*.json')
+          fi
+          [ -n "$files" ] || { echo "No ticket files changed"; exit 0; }
+          node scripts/plane/create-tickets.mjs $files
