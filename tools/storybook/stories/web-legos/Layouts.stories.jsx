@@ -2,7 +2,7 @@ import "../../../../packages/web-legos/Layouts/wl.css";
 import { BannerCentered, BannerWithImage } from "../../../../packages/web-legos/Layouts/Sections/Banner.jsx";
 import { GlyphSectionTwoItemsNoActions } from "../../../../packages/web-legos/Layouts/Sections/GlyphSection.jsx";
 import { HeaderThreeLevels } from "../../../../packages/web-legos/Layouts/Headers/Headers.jsx";
-import photo from "../../fixtures/cms-assets/room01890/images/meeting-space-image-1.jpg";
+import photo from "../../../../packages/room01890/source-assets/images/meeting-space-image-1.jpg";
 
 /**
  * Ready-made sections in web-legos/Layouts. They're slot-based (e.g. BannerCentered.Header /

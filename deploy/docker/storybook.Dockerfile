@@ -11,5 +11,7 @@ RUN npm run build --prefix tools/storybook
 
 FROM nginx:1.27-alpine
 COPY deploy/docker/storybook-nginx.conf /etc/nginx/conf.d/default.conf
+COPY deploy/docker/storybook-config.sh /docker-entrypoint.d/40-wl-config.sh
+RUN chmod +x /docker-entrypoint.d/40-wl-config.sh
 COPY --from=build /app/tools/storybook/storybook-static /usr/share/nginx/html
 EXPOSE 8080

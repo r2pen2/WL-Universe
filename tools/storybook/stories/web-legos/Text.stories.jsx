@@ -2,7 +2,7 @@ import { WLHeaderV2, WLLayoutHeader, WLLayoutText, WLTextV2 } from "../../../../
 
 export default {
   title: "Web-Legos/Text",
-  // Ids resolve against room01890's CMS snapshot.
+  // Ids resolve against room01890's live CMS content (read-only).
   parameters: { layout: "padded", site: "web-legos" },
 };
 

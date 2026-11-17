@@ -221,6 +221,10 @@ function ensureServiceAccount(app) {
 }
 
 function deployOne({ pr, app, owner, sha }) {
+  if (app === "storybook") {
+    // The catalog reads live prod CMS content with a read-only key (writes get 403 from wl-cms).
+    sh(`sudo bash ${JSON.stringify(path.join(repoRoot, "scripts/glados/provision-cms-read-key.sh"))}`);
+  }
   ensureQaEnv(app);
   ensureServiceAccount(app);
   ensureAssets(pr, app);

@@ -12,8 +12,9 @@ export const About = {
       <h1 style={{ fontSize: 32 }}>WL component catalog</h1>
       <p>
         Every WL component, and every site's version of each repeated pattern, rendered from the real source in{" "}
-        <code>packages/</code>. Content comes from a snapshot of each site's public CMS (<code>npm run snapshot-cms</code>), so
-        nothing here calls a live service.
+        <code>packages/</code>, with each site&apos;s live content from the production CMS. The catalog&apos;s CMS key is
+        read-only (the CMS refuses any change), and forms, mail and sign-in aren&apos;t connected, so nothing here can edit
+        a site.
       </p>
       <h2 style={{ fontSize: 20 }}>Sections</h2>
       <ul>
@@ -24,7 +25,7 @@ export const About = {
       <h2 style={{ fontSize: 20 }}>Tips</h2>
       <ul>
         <li>Use the viewport toolbar (Phone / Tablet / Laptop / Desktop) to check responsiveness.</li>
-        <li><b>Admin</b> stories show what a signed-in site admin sees (Request content changes, Site settings, editable elements).</li>
+        <li><b>Admin</b> stories show what a signed-in site admin sees (Request content changes, Site settings, editable elements). Saving there fails on purpose: the key is read-only.</li>
         <li>Switching between sites reloads the preview, so one site&apos;s global CSS never restyles another.</li>
       </ul>
     </div>

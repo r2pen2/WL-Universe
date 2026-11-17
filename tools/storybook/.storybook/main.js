@@ -2,6 +2,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import react from "@vitejs/plugin-react";
 import svgr from "vite-plugin-svgr";
+import fs from "node:fs";
 import { transformWithEsbuild } from "vite";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -14,14 +15,30 @@ export default {
   stories: ["../stories/**/*.stories.@(js|jsx)"],
   framework: { name: "@storybook/react-vite", options: {} },
   addons: [],
-  // Snapshot of each site's CMS image files (scripts/snapshot-cms.mjs), served where the mock CMS's
-  // asset URLs point: <origin>/mock-cms/assets/<site>/images/<file>.
-  staticDirs: [{ from: "../fixtures/cms-assets", to: "/mock-cms/assets" }],
   core: { disableTelemetry: true },
   async viteFinal(config) {
     const { mergeConfig } = await import("vite");
     return mergeConfig(config, {
       plugins: [
+        {
+          // `virtual:wl-site-fonts`: each site's web-font <link>s from its public/index.html, so
+          // stories render in the site's real fonts.
+          name: "wl-site-fonts",
+          resolveId: (id) => (id === "virtual:wl-site-fonts" ? "\0wl-site-fonts" : null),
+          load(id) {
+            if (id !== "\0wl-site-fonts") return null;
+            const fonts = {};
+            for (const site of fs.readdirSync(path.join(repoRoot, "packages"))) {
+              const html = path.join(repoRoot, "packages", site, "client", "public", "index.html");
+              if (!fs.existsSync(html)) continue;
+              const links = [...fs.readFileSync(html, "utf8").matchAll(/<link[^>]+href="([^"]+)"[^>]*>/g)]
+                .filter((m) => /rel="stylesheet"/.test(m[0]) && /fonts|webfonts/.test(m[1]))
+                .map((m) => m[1]);
+              if (links.length) fonts[site] = links;
+            }
+            return `export default ${JSON.stringify(fonts)};`;
+          },
+        },
         {
           // CRA's SVG imports: the default export is the file URL and `ReactComponent` is the SVG as a
           // component (`import logo, { ReactComponent as Logo } from "./logo.svg"`).

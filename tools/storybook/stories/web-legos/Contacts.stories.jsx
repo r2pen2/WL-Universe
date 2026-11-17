@@ -10,7 +10,7 @@ export default {
 
 const box = { display: "flex", flexDirection: "column", gap: 12, fontFamily: "system-ui", fontSize: 18 };
 
-/** The site's contacts from the CMS (room01890's in the mock), each a link built from its value. */
+/** The site's contacts from the CMS (room01890's, live from prod), each a link built from its value. */
 export const Links = {
   render: () => (
     <div style={box}>

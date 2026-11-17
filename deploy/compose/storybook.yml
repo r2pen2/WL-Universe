@@ -3,6 +3,9 @@ services:
     image: ghcr.io/r2pen2/wl-universe-storybook:${STORYBOOK_IMAGE_TAG:-latest}
     container_name: wl-universe-storybook
     restart: unless-stopped
+    # WL_CMS_URL + WL_CMS_READ_API_KEY (read-only), from scripts/glados/provision-cms-read-key.sh
+    env_file:
+      - /opt/services/data/app-env/storybook.env
     networks:
       - proxy
     labels:

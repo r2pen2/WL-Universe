@@ -1,12 +1,11 @@
 {
   "name": "@wl-universe/storybook",
   "private": true,
-  "description": "Catalog of every WL component and every site's version of each pattern (WL-7). Renders the real web-legos and site source from packages/ against a mock CMS. Outside the npm workspaces so Storybook/Vite stay out of the root lockfile.",
+  "description": "Catalog of every WL component and every site's version of each pattern (WL-7). Renders the real web-legos and site source from packages/ with live prod CMS content through a read-only wl-cms key. Outside the npm workspaces so Storybook/Vite stay out of the root lockfile.",
   "type": "module",
   "scripts": {
     "storybook": "storybook dev -p 6006 --no-open",
-    "build": "storybook build -o storybook-static",
-    "snapshot-cms": "node scripts/snapshot-cms.mjs"
+    "build": "storybook build -o storybook-static"
   },
   "devDependencies": {
     "@storybook/react-vite": "^10.6.7",

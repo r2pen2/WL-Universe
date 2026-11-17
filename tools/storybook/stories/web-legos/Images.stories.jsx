@@ -5,7 +5,7 @@ export default {
   parameters: { layout: "padded", site: "web-legos" },
 };
 
-/** WLImageV2: a CMS image by image id (room01890's snapshot). */
+/** WLImageV2: a CMS image by image id (room01890's, live from prod). */
 export const Image = {
   render: () => (
     <div style={{ width: 480 }}>
