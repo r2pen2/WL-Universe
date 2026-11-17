@@ -5,6 +5,8 @@ import { mailingListLink, facebookLink, instagramLink, tiktokLink, youtubeLink }
 import {  WLFooterLogo, WLFooterSignature, WLFooterSocials } from '../libraries/Web-Legos/components/Footer';
 import { WLCopyright, WLText } from '../libraries/Web-Legos/components/Text';
 import { FooterAuthButton } from '../libraries/Web-Legos/components/Auth';
+import { WLContactList } from '../libraries/Web-Legos/components/Contacts';
+import { EMAIL_FALLBACKS } from '../api/contacts';
 import { useContext } from 'react';
 import { CurrentSignInContext } from '../App';
 import { useEffect } from 'react';
@@ -65,7 +67,9 @@ function NewFooterContent() {
     <div className="row d-flex flex-row w-100 align-items-center gap-5 justify-content-center">
       <div className="col-lg-12 col-xl-3 d-flex flex-column align-items-center">
         <WLFooterLogo source={logo} />
-        <WLText firestoreId="footer-contact" editable={userCanEditText} />
+        <div className="text-center ycd-footer-contacts">
+          <WLContactList type="email" block showLabels fallback={EMAIL_FALLBACKS} />
+        </div>
       </div>
       <div className="col-lg-12 col-xl-4 d-flex flex-column align-items-center">
         <WLFooterSocials lineBottom>

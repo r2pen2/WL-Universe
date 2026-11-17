@@ -1,0 +1,33 @@
+{
+  "$comment": "Starting contact info per wl-cms site, for scripts/cms/seed-site-contacts.mjs. Only written to a site whose siteContacts collection is still empty; after that, admins edit it in Site settings and this file is not read again for that site. Keep in step with the fallback values in each site's code.",
+  "a-new-day-coaching": [
+    { "id": "email-1", "type": "email", "value": "rachel.newday@gmail.com" },
+    { "id": "phone-1", "type": "phone", "value": "(202) 798-ADHD" }
+  ],
+  "beyond-the-bell": [
+    { "id": "email-1", "type": "email", "value": "questions@beyondthebelleducation.com" },
+    { "id": "phone-1", "type": "phone", "value": "(508) 316-4751" },
+    { "id": "address-1", "type": "address", "value": "3 Man-Mar Drive #14\nPlainville, MA 02762" }
+  ],
+  "boston-mixtape": [
+    { "id": "email-1", "type": "email", "value": "bbmbostonsbestmusic@gmail.com" },
+    { "id": "phone-1", "type": "phone", "value": "(617) 877-3206" }
+  ],
+  "nicole-levin": [
+    { "id": "email-1", "type": "email", "value": "nicolelevinlcsw@gmail.com" },
+    { "id": "phone-1", "type": "phone", "value": "(215) 668-7277" }
+  ],
+  "room01890": [
+    { "id": "email-1", "type": "email", "value": "info@room01890.com" },
+    { "id": "phone-1", "type": "phone", "value": "781-910-4756" },
+    { "id": "address-1", "type": "address", "value": "38 Church St, 2nd Floor\nWinchester, MA 01890" }
+  ],
+  "talk-about-dreams": [
+    { "id": "email-1", "type": "email", "value": "talkaboutdreams@yahoo.com" },
+    { "id": "phone-1", "type": "phone", "value": "(617) 299-1792" }
+  ],
+  "you-can-do-it-gardening": [
+    { "id": "email-1", "type": "email", "value": "youcandoitgardening@jakerosenentertainment.com", "label": "Collaboration inquiries:" },
+    { "id": "email-2", "type": "email", "value": "jess@youcandoitgardening.com", "label": "Speaking engagements & media inquiries:" }
+  ]
+}

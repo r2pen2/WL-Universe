@@ -35,6 +35,8 @@ app.get("/health", (_req, res) => {
   res.status(200).json({
     ok: true,
     service: "wl-cms",
+    // Capabilities scripts can check for (scripts/cms/seed-site-contacts.mjs needs siteContacts).
+    features: ["siteContacts"],
     sites: listSites().length,
     configured: listConfiguredSites().length,
   });

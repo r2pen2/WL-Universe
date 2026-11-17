@@ -44,15 +44,11 @@ export const TEXT = {
   "contact-text":
     "Whether you're looking for a private space for strategic meetings or a venue for high-stakes card games, our consulting team is ready to assist. Reach out to discuss your specific needs.",
   "contact-location-header": "Location",
-  "contact-location-text": "38 Church St, 2nd Floor<br/>Winchester, MA",
   "contact-email-header": "Email",
-  "contact-email-text": "info@room01890.com",
   "contact-phone-header": "Phone",
-  "contact-phone-text": "781-910-4756",
 
   // Footer
   "footer-contact-header": "Contact",
-  "footer-contact-text": "38 Church St, Winchester, MA 01890",
   "footer-mission-header": "Our Mission",
   "footer-mission-text":
     "We provide strategic business advice and a curated space for card games and private meetings. Our goal is to empower your growth through professional consulting and a sophisticated social environment.",
@@ -109,3 +105,13 @@ export const SOCIALS = [
 ];
 
 export const SERVICE_TYPES = ["Consulting", "Card Games", "Space Rental"];
+
+/**
+ * Contact info (WLEmailAddress / WLPhoneNumber / WLStreetAddress). The values live in the CMS
+ * (Site settings → Contact info); these are shown until it has them.
+ */
+export const CONTACTS = {
+  email: "info@room01890.com",
+  phone: "781-910-4756",
+  address: "38 Church St, 2nd Floor\nWinchester, MA 01890",
+};

@@ -382,3 +382,30 @@ jobs:
           sudo docker compose -f "${compose_file}" pull
           sudo docker compose -f "${compose_file}" up -d
           sudo docker compose -f "${compose_file}" ps
+
+  # Site contact info (WLEmailAddress / WLPhoneNumber / WLStreetAddress) starts from
+  # deploy/cms/site-contacts.json. Only sites with no contacts yet are written, so edits made in
+  # Site settings are kept. Runs after every deploy so wl-cms is already on the new version.
+  seed-contacts:
+    name: seed site contacts
+    needs:
+      - detect
+      - deploy
+    runs-on:
+      - self-hosted
+      - glados
+    if: >
+      always() &&
+      (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master') &&
+      needs.detect.outputs.has_apps == 'true' &&
+      (needs.deploy.result == 'success' || needs.deploy.result == 'failure')
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Seed contacts
+        run: |
+          set -euo pipefail
+          KEY=$(sudo sed -n 's/^WL_CMS_API_KEY=//p' /opt/services/data/app-env/wl-cms.env 2>/dev/null | tail -n1 | tr -d '\r' || true)
+          if [ -z "$KEY" ]; then echo "::warning::No WL_CMS_API_KEY in wl-cms.env; contacts not seeded"; exit 0; fi
+          WL_CMS_API_KEY="$KEY" node scripts/cms/seed-site-contacts.mjs || echo "::warning::Some site contacts weren't seeded (see log)"

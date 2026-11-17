@@ -2,7 +2,8 @@ import { useState } from "react";
 import { Header, Text } from "../Wl.jsx";
 import { FormResponse } from "../../libraries/Web-Legos/api/admin.ts";
 import { R01MailManager } from "../../App.jsx";
-import { SERVICE_TYPES } from "../../content.js";
+import { CONTACTS, SERVICE_TYPES } from "../../content.js";
+import { WLEmailAddress, WLPhoneNumber, WLStreetAddress } from "../../libraries/Web-Legos/components/Contacts.jsx";
 import { ReactComponent as ChevronDown } from "../../assets/icons/dropdown-chevron.svg";
 
 const EMPTY = { firstName: "", lastName: "", email: "", serviceType: "", message: "", website: "" };
@@ -121,7 +122,7 @@ function InquiryForm() {
       </button>
       <p className="r01-form__status" role="status">
         {status === "sent" && "Thanks for submitting!"}
-        {status === "error" && "Sorry — we couldn't send your message. Please try again or email info@room01890.com."}
+        {status === "error" && <>Sorry — we couldn't send your message. Please try again or email <WLEmailAddress fallback={CONTACTS.email} />.</>}
       </p>
     </form>
   );
@@ -136,15 +137,15 @@ export function ContactSection() {
         <Text id="contact-text" className="r01-contact__lead" />
         <div className="r01-contact__item">
           <Header id="contact-location-header" level={6} className="r01-contact__label" />
-          <Text id="contact-location-text" className="r01-contact__value" tight />
+          <WLStreetAddress fallback={CONTACTS.address} className="r01-contact__value" />
         </div>
         <div className="r01-contact__item">
           <Header id="contact-email-header" level={6} className="r01-contact__label" />
-          <Text id="contact-email-text" className="r01-contact__value" />
+          <WLEmailAddress fallback={CONTACTS.email} className="r01-contact__value" />
         </div>
         <div className="r01-contact__item">
           <Header id="contact-phone-header" level={6} className="r01-contact__label" />
-          <Text id="contact-phone-text" className="r01-contact__value" />
+          <WLPhoneNumber fallback={CONTACTS.phone} className="r01-contact__value" />
         </div>
       </div>
       <div className="r01-contact__form">

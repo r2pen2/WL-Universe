@@ -13,7 +13,9 @@ import { WLText, WLCopyright, WLHeader } from '../libraries/Web-Legos/components
 import { WLFooterSignature, WLFooterSocials } from '../libraries/Web-Legos/components/Footer';
 import { platformKeys } from '../libraries/Web-Legos/components/Icons';
 import { iconFills } from './Icons';
-import { callLink, facebookLink, mailLink, mapsLink } from '../api/links';
+import { facebookLink } from '../api/links';
+import { CONTACT_FALLBACKS, useContactLinks } from '../api/contacts';
+import { WLEmailAddress, WLPhoneNumber, WLStreetAddress } from '../libraries/Web-Legos/components/Contacts';
 import { FooterAuthButton } from '../libraries/Web-Legos/components/Auth';
 
 export default function Footer() {
@@ -49,6 +51,8 @@ function FooterCopyright() {
 
 function FooterContent() {
 
+  const { callLink, mailLink, mapsLink } = useContactLinks();
+
   const {currentSignIn} = useContext(CurrentSignInContext)
   const {authenticationManager} = useContext(AuthenticationManagerContext);
 
@@ -67,7 +71,11 @@ function FooterContent() {
         <WLHeader headerLevel={2}>
           Beyond the Bell Education
         </WLHeader>
-        <WLText firestoreId="footer-contact" editable={userCanEditText} />
+        <div className="d-flex flex-column align-items-center text-center gap-2 btb-footer-contacts">
+          <WLStreetAddress fallback={CONTACT_FALLBACKS.address} />
+          <WLEmailAddress fallback={CONTACT_FALLBACKS.email} />
+          <WLPhoneNumber fallback={CONTACT_FALLBACKS.phone} />
+        </div>
       </div>
       <div className="col-lg-12 col-xl-4 d-flex flex-column align-items-center">
         <WLHeader headerLevel={2}>

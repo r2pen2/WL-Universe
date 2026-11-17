@@ -6,6 +6,8 @@ import "../assets/style/text.css";
 import { useEffect, useRef, useState, useLayoutEffect, Component } from "react";
 import { HTMLToMarkdown, markdownToHTML } from "../api/strings";
 import { CmsManager } from "../api/cms.ts";
+import { linkifyContacts } from "../api/contacts.ts";
+import "../assets/style/contacts.css";
 
 function cms() {
   return CmsManager.getShared();
@@ -75,7 +77,7 @@ export function WLText(props) {
 
     // When component mounts, set innerHTML to text from DB + add any prefix
     useEffect(() => {
-      ref.current.innerHTML = (props.prefix ? props.prefix : "") + paragraphText;
+      ref.current.innerHTML = (props.prefix ? props.prefix : "") + linkifyContacts(paragraphText);
     })
 
     // If this is a header, render as a header.
@@ -456,7 +458,7 @@ export function WLTextV2(props) {
 
     // When component mounts, set innerHTML to text from DB + add any prefix
     useEffect(() => {
-      ref.current.innerHTML = (props.prefix ? props.prefix : "") + paragraphText;
+      ref.current.innerHTML = (props.prefix ? props.prefix : "") + linkifyContacts(paragraphText);
     })
 
     // If this is a header, render as a header.
@@ -640,7 +642,7 @@ export function WLLayoutText(props) {
 
     // When component mounts, set innerHTML to text from DB + add any prefix
     useEffect(() => {
-      ref.current.innerHTML = (props.prefix ? props.prefix : "") + paragraphText;
+      ref.current.innerHTML = (props.prefix ? props.prefix : "") + linkifyContacts(paragraphText);
     })
 
     // If this is a header, render as a header.

@@ -77,3 +77,17 @@ describe("FooterAuthButton: request content changes", () => {
 test("CHANGE_REQUESTS_URL points at the WL project in Plane", () => {
   expect(CHANGE_REQUESTS_URL).toMatch(/^https:\/\/plane\.joed\.dev\/main\/projects\/[0-9a-f-]{36}\/issues\/$/)
 })
+
+describe("FooterAuthButton: site settings", () => {
+  test("admins get a Site settings button that opens the contact editor", async () => {
+    render(<FooterAuthButton authManager={fakeAuthManager(true)} currentSignIn={admin} setCurrentSignIn={() => {}} />)
+    fireEvent.click(await screen.findByLabelText("site-settings-button"))
+    expect(await screen.findByText("Contact info")).toBeInTheDocument()
+    expect(screen.getByText("+ Add email")).toBeInTheDocument()
+  })
+
+  test("visitors don't", () => {
+    render(<FooterAuthButton authManager={fakeAuthManager(true)} currentSignIn={null} setCurrentSignIn={() => {}} />)
+    expect(screen.queryByLabelText("site-settings-button")).toBeNull()
+  })
+})

@@ -4,7 +4,7 @@ Rebuild of room01890.com (a Wix site) as a WL site, served at **https://room0189
 
 - Pages: `/` (Hero, Meeting Space, Events & Games, Our Space gallery and lightbox, Get in Touch form) and `/book-online` (Consultation service card).
 - Data: wl-cms site `room01890`, siteKey **`R01`**, in the shared `wladminportal` Firebase project. Text lives in `siteText-R01`, images in `siteImages-R01`, users in `users-R01`. Inquiry-form responses go through wl-forms (`formId: room01890-inquiry`), plus an email via site-mail (`SITE_ROOM01890_*`).
-- Every piece of copy is a WL header or text element (`WLLayoutHeader` / `WLLayoutText`, wrapped in `client/src/components/Wl.jsx`), keyed by a text id in [`client/src/content.js`](client/src/content.js). That file also holds the exact source copy, which is used as the fallback until the CMS has the id. Every photo is a `WLImageV2`, keyed by an image id in the same file. Signed-in admins (joed.dev SSO) can click any text or photo to edit it.
+- Every piece of copy is a WL header or text element (`WLLayoutHeader` / `WLLayoutText`, wrapped in `client/src/components/Wl.jsx`), keyed by a text id in [`client/src/content.js`](client/src/content.js). That file also holds the exact source copy, which is used as the fallback until the CMS has the id. Every photo is a `WLImageV2`, keyed by an image id in the same file. Signed-in admins (joed.dev SSO) can click any text or photo to edit it. The email, phone and address are `WLEmailAddress` / `WLPhoneNumber` / `WLStreetAddress` (values in Site settings, fallbacks in `CONTACTS` in `content.js`).
 
 ## Scripts
 

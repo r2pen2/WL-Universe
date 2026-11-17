@@ -32,6 +32,7 @@ import pupsysImg from "../assets/images/projects/pupsysLogo.png";
 
 import {Swoosh} from "../libraries/Web-Legos/components/Waves"
 import {WLHeaderV2} from "../libraries/Web-Legos/components/Text"
+import {WLEmailAddress, WLPhoneNumber} from "../libraries/Web-Legos/components/Contacts"
 
 import ProjectsPage from './Projects';
 
@@ -833,13 +834,13 @@ function Footer() {
           <Text color="#8C8C8C" css={{textDecoration:"underline"}}>www.joed.dev</Text>
         </Link>
         <Text color="#8C8C8C" className="d-none d-md-inline">・</Text>
-        <Link href="mailto:hire@joed.dev">
-          <Text color="#8C8C8C" css={{textDecoration:"underline"}}>hire@joed.dev</Text>
-        </Link>
+        <WLEmailAddress fallback="hire@joed.dev">
+          {({display}) => <Text color="#8C8C8C" css={{textDecoration:"underline"}}>{display}</Text>}
+        </WLEmailAddress>
         <Text color="#8C8C8C" className="d-none d-md-inline">・</Text>
-        <Link href="callto:7818799058">
-          <Text color="#8C8C8C" css={{textDecoration:"underline"}}>(781) 879-9058</Text>
-        </Link>
+        <WLPhoneNumber fallback="(781) 879-9058">
+          {({display}) => <Text color="#8C8C8C" css={{textDecoration:"underline"}}>{display}</Text>}
+        </WLPhoneNumber>
       </div>
     </footer>
   )
