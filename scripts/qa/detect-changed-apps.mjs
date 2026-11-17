@@ -9,7 +9,8 @@
  * Rules:
  *   - deploy/compose/<app>.yml → that app
  *   - deploy/dns/sites/<app>.json → that app (inbound mail DNS)
- *   - packages/web-legos/** → all SPA apps
+ *   - packages/web-legos/** → all SPA apps (+ storybook)
+ *   - tools/storybook/**, packages/<site>/client/{src,public}/** → storybook
  *   - packages/server-legos/ CMS modules (siteText/Images/Models, cmsCollections)
  *     → SPA apps with cms: true only
  *   - other packages/server-legos/** → all SPA apps
@@ -89,6 +90,18 @@ function detect(files, catalog) {
   const known = new Set(catalog.map((a) => a.app));
 
   for (const file of files) {
+    // The component catalog renders web-legos and every site's client source.
+    if (
+      known.has("storybook") &&
+      (file.startsWith("tools/storybook/") ||
+        file === "deploy/docker/storybook.Dockerfile" ||
+        file === "deploy/docker/storybook-nginx.conf" ||
+        file.startsWith("packages/web-legos/") ||
+        /^packages\/[^/]+\/client\/(src|public)\//.test(file))
+    ) {
+      selected.add("storybook");
+      if (file.startsWith("tools/storybook/") || file.startsWith("deploy/docker/storybook")) continue;
+    }
     if (file.startsWith("packages/web-legos/")) {
       sharedLibs = true;
       continue;

@@ -1,0 +1,1667 @@
+{
+  "you-can-do-it-gardening": {
+    "text": {
+      "footer-follower-count": "Over 1 Million followers on Instagram, TikTok, FaceBook and YouTube combined. Come join the party!",
+      "footer-hook": "Empowering gardeners at all levels to get their hands dirty.<br/>Serving greater Boston in person and virtual consultations anywhere.",
+      "about": "Jessica Zander is a garden coach and content creator based in the Boston area, doing virtual consultations all over the country and Canada.<br/>She has been gardening for over 30 years and she started You Can Do It Gardening in 2022, to help people feel more confident about doing it themselves. With a passion for helping others discover the joy of gardening, she teaches skills, provides guidance and suggestions about plants and design, and works collaboratively and efficiently with clients to help them make small and large improvements in their outdoor spaces. <br/>After a 30-year career in nonprofit finance and operations she left the field in June of 2023 in response to the explosive demand for coaching services. Since the launch of the business, Jess has met with over 2,000 clients and heard from countless others who have expressed frustration, confusion, and surprise about the some of the challenges of gardening. It is one of her greatest joys to help people save money and feel more confident. She is direct and to the point, like Mary Poppins, but for your garden.   <br/>In addition to her own gardening experience she has certificates from the UMASS Green School and NAISMA, in Terrestrial Invasive Plant Management.<br/>Social media @youcandoitgardening",
+      "teaching-hook-header": "Learn To Do It Yourself",
+      "teaching-hook": "I love teaching and to encourage people to see what is possible with some hard work and experimentation. You can't learn without making mistakes. See below for upcoming classes and get in touch if you are interested in having me come and speak.",
+      "media-appearances-header": "Media Appearances",
+      "teaching-description-header": "Where You Can Find Me",
+      "gallery-header": "A Glimpse Into What Garden Coaching Can Be And What My Own Gardens Look Like",
+      "gallery-description": "Here, you'll see snapshots of my own garden, my New Hampshire cottage, and transformations from various clients' gardens. Hopefully, these photos will show you that with a little guidance improvements are possible for anyone. Enjoy!",
+      "home-pictures-header": "My Home",
+      "nh-pictures-header": "My New Hampshire Garden",
+      "home-subtitle": "Empowering you to feel more confident to do it yourself!",
+      "save-money-hook": "<strong>Save Money</strong>",
+      "save-money-description": "Learn how to do it yourself!",
+      "looks-good-hook": "Even small changes can make a huge difference! ",
+      "looks-good-description": "You’d be surprised how easy some of these things are.",
+      "why-it-works-header": "Why This Model Works:",
+      "why-it-works": "Landscapers are in high demand and outsourcing may not be in your budget right now. Doing it yourself can save you a lot of money and most people are much more able than they realize!",
+      "schedule-header": "The Help You Need",
+      "testimonial-quotes-header": "What People Have Said",
+      "befores-and-afters-header": "Befores and Afters",
+      "resources-header": "Things You Might Be Interested In",
+      "resources-description": "Guides and other resources:",
+      "services-header": "What I Do",
+      "services-description": "I help clients feel more empowered in their yards. This helps save money and time, and often also results in more joy gardening. During consultations I provide suggestions and guidance based on clients' unique circumstances and needs. Sessions start with a tour of your space and then we discuss immediate priorities and possible improvements. I meet you where you are, boosting your confidence in gardening whether you're a novice or an experienced gardener seeking a fresh perspective. See reviews on my Google business profile for testimonials from clients. (Link on the Find Me page)",
+      "in-person-header": "In-Person",
+      "in-person-pricing": "FEE: $200/hr plus travel service fee, which varies based on where you live. Click the \"Schedule A Consultation\" link and view information pertaining to fees by town.",
+      "virtual-header": "Virtual",
+      "virtual-pricing": "FEE: $200/hr.",
+      "client-pictures-header": "Clients"
+    },
+    "images": {
+      "about": {
+        "source": "images/1790821449397.jpeg",
+        "fileName": "1790821449397.jpeg"
+      },
+      "teaching-description": {
+        "fileName": "1752685454097.jpeg",
+        "source": "images/1752685454097.jpeg"
+      },
+      "jess": {
+        "fileName": "1695157427673.jpg",
+        "source": "images/1695157427673.jpg"
+      }
+    },
+    "models": {
+      "befores-and-afters": [
+        {
+          "description": "This was just mulch and pine needles. Free plants from a Facebook group helped this client with a weekend makeover.",
+          "afterSource": "images/befores-and-afters/after5.jpg",
+          "order": 4,
+          "beforeSource": "images/befores-and-afters/before5.jpg",
+          "id": "2JpZqAfXwF2p6h0rTPCy"
+        },
+        {
+          "order": 3,
+          "afterSource": "images/befores-and-afters/afterSource1707489198894.jpeg",
+          "beforeSource": "images/befores-and-afters/beforeSource1707489198181.jpeg",
+          "description": "We expanded the bed by moving one of the existing shrubs, dividing existing hostas, buying one new shrub and mulch. This cost about $70.",
+          "id": "4zNTy8sM7zFNhSarjbr2"
+        },
+        {
+          "description": "Planting young plants is an economical way to approach gardening, but you have to be patient. This is a gradual transformation over a few years. More plants were added and given a chance to grow in. 2012 to 2025.",
+          "order": 2,
+          "afterSource": "images/befores-and-afters/afterSource1760229958563.jpg",
+          "beforeSource": "images/befores-and-afters/before2.jpg",
+          "id": "7hBSZ5WNeZ9nDpvVgDqh"
+        },
+        {
+          "order": 9,
+          "afterSource": "images/befores-and-afters/afterSource1704252202203.JPG",
+          "description": "This area was dark and overgrown. Now it features a more defined space, after major pruning and clearing, and adding a greater variety of plants.",
+          "beforeSource": "images/befores-and-afters/beforeSource1689962369933.jpg",
+          "id": "8LmWw39PA1kr0hUNe7FZ"
+        },
+        {
+          "afterSource": "images/befores-and-afters/after6.jpg",
+          "order": 3,
+          "description": "This area had too many curves for such a small space, and the tree hydrangeas were too close to the neighboring plants on the other side of the fence. The hydrangeas were moved and a more proportional shape was created.",
+          "beforeSource": "images/befores-and-afters/before6.jpg",
+          "id": "DJJRLkL9bJ38b3VAk1Zc"
+        },
+        {
+          "beforeSource": "images/befores-and-afters/before3.jpg",
+          "description": "My mother was very skeptical about the potential for this area and she was an amazing gardener; however, any area can be transformed if you know what can be done to improve it.",
+          "order": 10,
+          "afterSource": "images/befores-and-afters/after3.jpg",
+          "id": "P3nt1ik1VIkVrprOnpC3"
+        },
+        {
+          "afterSource": "images/befores-and-afters/afterSource1689962256151.jpg",
+          "order": 7,
+          "description": "This was a deep shade area that was too crowded and overgrown. Some of the plants initially selected did not have sufficient light to thrive. Now, there is more variety of shade-loving plants and it's less congested.",
+          "beforeSource": "images/befores-and-afters/beforeSource1689962255710.jpg",
+          "id": "VFZDg2m4h2Gx13JVoy2Z"
+        },
+        {
+          "beforeSource": "images/befores-and-afters/beforeSource1689962325105.jpg",
+          "afterSource": "images/befores-and-afters/afterSource1693534453182.jpeg",
+          "order": 8,
+          "description": "We must have patience! This took about 8 years.",
+          "id": "eCubfn4fX7xFTdruNnDJ"
+        },
+        {
+          "order": 5,
+          "afterSource": "images/befores-and-afters/afterSource1707490636575.JPG",
+          "description": "We used from heuchera and hostas from the front of the house, where they were getting burned, and added them to this area to create contrasting foliage and additional color.",
+          "beforeSource": "images/befores-and-afters/beforeSource1707490635722.JPG",
+          "id": "hzl03jMzcvpaMwuoROvT"
+        },
+        {
+          "beforeSource": "images/befores-and-afters/before4.jpg",
+          "description": "This place was a simple nondescript, empty rectangle. More plants and focal points were introduced, along with a more interesting shape.",
+          "afterSource": "images/befores-and-afters/after4.jpg",
+          "order": 10,
+          "id": "nykJx4uuyokQQ1kPmqmt"
+        },
+        {
+          "order": 4,
+          "description": "Refresh for a small area, removing grass and bringing in some color.",
+          "afterSource": "images/befores-and-afters/afterSource1695613913900.jpeg",
+          "beforeSource": "images/befores-and-afters/beforeSource1695613914368.jpg",
+          "id": "wDHxXpdPS1K6ihTL6Qtb"
+        },
+        {
+          "afterSource": "images/befores-and-afters/afterSource1689962418254.jpg",
+          "order": 1,
+          "beforeSource": "images/befores-and-afters/beforeSource1689962417823.jpg",
+          "description": "This space was a little imbalanced and square. It was transformed into flowing curves and tight edges, with a tall plant in the right corner.",
+          "id": "wpcjJePbfiP6KuTocjoM"
+        }
+      ],
+      "testimonials": [
+        {
+          "message": "Jess provides a wealth of practical, no nonsense advice for homeowners.  A pleasure to work with and extremely responsive.",
+          "virtual": false,
+          "author": "Tim Keogh",
+          "order": 20,
+          "id": "1Q9Cq9SUiH7ujrGdmm3o"
+        },
+        {
+          "message": "Just do what she tells you to do.",
+          "order": 16,
+          "virtual": true,
+          "author": "Pegg Monahan",
+          "id": "2QlZHRhPZQzPmGSJD8uY"
+        },
+        {
+          "message": "My yard is humungous and completely overwhelming but I think Jess cracked the code. I’ve had road blocks (ones I planted myself!) and have completely changed my view of the future garden plans. I said I didn’t want to do any planting this summer but….. I have this new vision in mind and must now see it thru!",
+          "author": "Juliya Fortuna",
+          "virtual": true,
+          "order": 4,
+          "id": "6GOfsve8CzrcHuGlGgqg"
+        },
+        {
+          "order": 12,
+          "virtual": true,
+          "author": "Melody, Eastern Pennsylvania",
+          "message": "Through FaceTime Jessica walked our property giving her a sense of our landscape allowing her to better design areas of need with our style in mind. She is wonderfully easygoing and knowledgeable. She gave us detailed ideas to think through. We are excited to bring them to life in areas we knew could be fabulous, but struggled ourselves with how to do. We look forward to our next session! ",
+          "id": "7EJE4TtgfKea8GnLI6pb"
+        },
+        {
+          "order": 4,
+          "virtual": true,
+          "author": "Ashley Manning",
+          "message": "Jess is amazing! She’s extremely generous with her knowledge and packs so much value into the time you spend with her. She is the perfect cheerleader to have in your corner.",
+          "id": "8kBlji57XJx9fsRhjgOH"
+        },
+        {
+          "virtual": false,
+          "author": "Susan Weiler",
+          "message": "Jess helped me with plant selections for my shady, city garden and showed me how to separate and move existing plants. Her passion for gardening is contagious. She brings a wealth of plant knowledge, landscape and hardscape experience, and playful sense of fun to each new project. I felt more confident and competent after working with her.",
+          "order": 5,
+          "id": "9YmfchHIIeuUZg2Gofwr"
+        },
+        {
+          "author": "Kathryn Niemirosky",
+          "virtual": false,
+          "message": "Jess was able to come out to our house and gave us so much great information on what was going on with our yard. We have a lot more confidence in our ability to take care of everything and revive some sad plants. She had awesome tips about how to relocate or split some things we already have when we thought we might need to buy new! The best part is she caught some nasty invasives on the  edge of the yard, so we have the opportunity to get them under control before it becomes a massive problem. I highly recommend reaching out to her if you’re feeling overwhelmed by your yard :)",
+          "order": 27,
+          "id": "A05FGpLYt3FkNVMrLZpn"
+        },
+        {
+          "author": "CM",
+          "virtual": false,
+          "message": "Jess was great!  She was full of great ideas that were going to help us achieve our goal but practical at the same time. She didn’t just come in with a set playbook, she really wanted to understand what we were hoping to accomplish and then applied her knowledge from there. Super helpful!",
+          "order": 26,
+          "id": "Awuq454APLEtTm6Us9Xd"
+        },
+        {
+          "order": 2,
+          "message": "Jess was fabulous! I was paralyzed for five years with what to do with my front yard. Within one hour, Jess designed an actionable plan. She is super knowledgeable, no nonsense, and a gifted visionary when it come to landscapes. I would recommend her to anyone!",
+          "virtual": false,
+          "author": "Virginia Desanctis",
+          "id": "DVZTN7W9eaCs4srWJywy"
+        },
+        {
+          "message": "Jessica was terrific! She is direct, clear, and has a good sense of humor, thank goodness.  She focuses on both the space being discussed and the approach/practical abilities of the client-in terms of time, money, and knowledge. Though we didn't end up doing actual pruning during her visit, she was ready and willing to do so. I wish she could have stayed all day!",
+          "virtual": false,
+          "author": "Trish",
+          "order": 14,
+          "id": "F9vox2oOmtweZJI9cuO2"
+        },
+        {
+          "message": "Couldn’t have asked for a more perfect meeting with Jessica.   We toured our yard and she told us the good, bad and the ugly of each area.    She is so knowledgeable and genuinely nice.  We needed someone to tell us what plants, etc would work with our situation.   We didn’t want actual design or physical planting help and could never find anyone that would just tell us what to do for our specific landscape.  Thank you, Jessica, for working  out so perfectly!! Couldn’t be more pleased!",
+          "order": 3,
+          "virtual": false,
+          "author": "Sharon Beebe",
+          "id": "FqgIjw53Wd3qR9OYieee"
+        },
+        {
+          "message": "I’ve been watching Jess on Instagram for a few months. I have downloaded her pruning guides and have learned so much from her. Today I finally had my design consultation with Jess over FaceTime where she helped me to re-design my overcrowded beds by redrawing the lines and make tough choices on what to move, remove and replace things with based on what I already have. She also encouraged me to reel in my enthusiasm for purchasing perennials and take a break from going to any more nurseries! This was definitely time and money well spent!",
+          "order": 3,
+          "virtual": true,
+          "author": "Lorena Palagonia",
+          "id": "ITvLGw1ZjIyVh6ngX6CK"
+        },
+        {
+          "virtual": false,
+          "order": 5,
+          "author": "Carla Gates",
+          "message": "A garden consult with Jessica can be life-changing! She is very knowledgeable, helpful, creative, practical, and a good listener. She knows her plants!",
+          "id": "IvUqxZtfBHBSZ87oJ6PS"
+        },
+        {
+          "author": "Nicole Conley",
+          "virtual": false,
+          "message": "Jess is a wealth of gardening knowledge!  She  is full of creative ideas that helped us get out of our gardening slump.  We planned out a new island, talked about extending existing beds, replacing our patio hedge and planting some more visually appealing trees. She also gives great demos on how to do things like edging and creating drainage paths. Now that we are full of new ideas we can’t wait to get started and show Jess what we were able accomplish!",
+          "order": 6,
+          "id": "JzbfPIBYWCaeENuRKpgY"
+        },
+        {
+          "message": "We have lived in our home for 11 years and let everything become overgrown except for the lawn and bushes which our landscapers shaped into giant orbs. I started following Jess in April 2024 and quirky became a super fan and starting chopping down and splitting everything in my yard. Deciding I needed more of a plan I was lucky enough to score a mid June virtual consult with Jess. Jess was as amazing as she is on TikTok and Instagram and after I fan-girled we got to business. In just one hour she answered all my questions, gave me ideas and even sketched out a garden plan and recorded a voice memo summarizing our entire call in 6 minutes. Most productive hour ever. I’ve gone on to immediately implement most of what we discussed. Highly recommend Jess for a consult. I plan to schedule a follow up as things grow in (if I can find a slot!)",
+          "order": 2,
+          "virtual": true,
+          "author": "Karen Sacks",
+          "id": "KFbhazeoD5NtxNWXrHDd"
+        },
+        {
+          "author": "Mary O'Neil",
+          "virtual": false,
+          "order": 5,
+          "message": "Jess is outstanding! She is smart, fun and makes you feel confident about landscaping plans that you discuss together. I especially love that she helps you repurpose existing plants.",
+          "id": "Kiw3LXRLKS4FA8ZD1SLx"
+        },
+        {
+          "message": "We had the pleasure of meeting with Jess for a landscaping consultation and it was nothing short of exceptional. From the moment she arrived, her professionalism and passion for her craft were evident. Jess took the time to listen to where we wanted her input and offered valuable insights and creative suggestions. Her expertise in landscape design and knowledge of plant species truly impressed us. She skillfully assessed our outdoor space, considering factors like sunlight exposure, soil quality, and our desired level of maintenance.  Jess was incredibly patient and thorough in answering all of our questions, providing detailed explanations and options for various elements of our property.  By the end of the consultation, we felt empowered with a clear understanding of the proposed plan and confident in moving forward.",
+          "order": 4,
+          "author": "Jenna Warner",
+          "virtual": false,
+          "id": "OSfLaHLpO4rApKACIBhT"
+        },
+        {
+          "virtual": false,
+          "order": 26,
+          "message": "Jess was awesome!!! She showed up on time and ready to go. It was a hot day but she was happy to spend the time needed in the sunny garden with me to figure out some spacing and placement questions I had. She had great suggestions for pruning and moving things around. We’ve taken the suggestions to heart and are loving the new changes. My husband keeps saying he can’t wait to prune the massive Holly and boxwoods we have in the winter!",
+          "author": "Callie Arora",
+          "id": "OdjZ2Dy7I5PysSvdb89s"
+        },
+        {
+          "message": "Signing up for a video consult with Jessica was the best decision I could have made as we settle into our new home and get to know the space. I'd already learned a ton from her IG videos, and it was amazing to have her apply her expertise to my yard. She offered concrete, doable advice for taming some overgrown shrubs and moving a few things to more suitable areas, and she answered all my questions about which perennials I could start dividing right away. I came away with a clear, flexible action plan that will help me start off on the right foot with our lovely but  crowded new yard.",
+          "order": 7,
+          "virtual": false,
+          "author": "Melissa Wiley",
+          "id": "QJxY7QryhCZcuC5XDSRJ"
+        },
+        {
+          "message": "Jessica is very knowledgeable and a great communicator. She taught me many things about tending my garden that I will certainly implement in the future. She significantly increased my confidence. I will be happy to hire her for more coaching as the need arises.",
+          "order": 21,
+          "author": "Leslie Smith",
+          "virtual": false,
+          "id": "SSjYp2O0krx76JZF7sav"
+        },
+        {
+          "virtual": false,
+          "order": 30,
+          "author": "Kristina Kossi",
+          "message": "Jessica is very knowledgeable about gardening and very professional. She asks a few questions and then gets right to it. We went over many problem areas in my garden and she came up with good solutions and a maintenance plan to keep everything healthy. She is lovely to speak with! I will check in again in the spring to make sure that I am properly taking care of my plants!\n",
+          "id": "UJup7Jrg394mLuah9dgR"
+        },
+        {
+          "order": 2,
+          "message": "You Can Do Gardening has saved me money, raised my confidence about taking care of my property, all on a realistic budget! Jessica has helped me to fast-track outdoor projects that had been languishing due to inertia caused by my not knowing what to do, and my fear that hiring a landscaper to do the work was beyond my budget. Working side-by-side with her is satisfying, energizing, and inspiring. The results have been amazing!",
+          "virtual": false,
+          "author": "Elizabeth Saltonstall",
+          "id": "UKFUTDYd8MwHz1ahYR5v"
+        },
+        {
+          "author": "Kaitilin Mahoney",
+          "virtual": false,
+          "order": 1,
+          "message": "From start to finish it was an amazing experience working with Jess! She met me exactly where I am in my gardening journey and has given me knowledge/tools that I can use for a lifetime. I was scared and overwhelmed by our garden/yard but after working with her I have the confidence, energy, and guidance to tackle all the projects! She is knowledgeable, kind, and felt like an old friend. 1000% recommend working with Jess!",
+          "id": "UtGv8bsIjo2fFyqkxZ2D"
+        },
+        {
+          "author": "Kelsey Karbowski",
+          "virtual": false,
+          "message": "So personable and professional. I was so surprised with how much we were able to cover in a one hour consult. Great suggestions!",
+          "order": 26,
+          "id": "VFFb2WZWfszNJlEsj0cD"
+        },
+        {
+          "author": "Juliet Promnitz",
+          "message": "I had a wonderful telephone consultation with Jess today. She was so reassuring and calm, made me feel I could totally revamp and control my garden. Jess had great suggestions, was very knowledgeable and approachable. I highly recommend her both for the novice and the experienced gardener.",
+          "order": 6,
+          "virtual": true,
+          "id": "Vhk6N2vre8Ox5rqAyBLR"
+        },
+        {
+          "message": "Jess is the best! My wife and I didn’t know much about gardening but Jess helped us understand everything through her engaging teaching methods. Not only did she help us take care of our landscaping but she also got us excited to learn about the different plants and how best to take care of each! We’ve already recommended her to our friends. Thanks, Jess!!",
+          "order": 8,
+          "virtual": false,
+          "author": "Michael Glenmullen",
+          "id": "VpTwctYCmdkpP4rmwvGs"
+        },
+        {
+          "message": "We did a virtual consult with Jess and wow! She was so knowledgeable giving lots of ideas while aligning with our goals and priorities. Highly recommend!",
+          "order": 11,
+          "virtual": true,
+          "author": "Kristen Murray",
+          "id": "Xornl8gu1nsenQHD5TbJ"
+        },
+        {
+          "virtual": false,
+          "order": 26,
+          "author": "Rose Greely",
+          "message": "An hour long Facetime with Jess was money so well spent!",
+          "id": "Zgai4ar2RwA4uxy8QWdX"
+        },
+        {
+          "author": "Heather",
+          "virtual": true,
+          "message": "Great experience with my virtual appointment. Jess’s ideas, insights, and advice about my various planting beds and potential beds were wonderful, and she combines professionalism, charm, and confidence for a very reassuring consultation. Thank you so much!",
+          "order": 23,
+          "id": "Zo5tYyHxw34tLTI0IKPv"
+        },
+        {
+          "virtual": false,
+          "author": "Joe Monaco",
+          "order": 14,
+          "message": "Jess was so helpful! The expertise she showed to help transform our yard in a an easy and impactful way was evident. She had our best interest in mind and made the experience enjoyable. Would love to work with her again.",
+          "id": "aEwLQkxfruRQF3FvF85l"
+        },
+        {
+          "message": "I looked forward to my online session for weeks and the meeting did not disappoint.  I loved it!  I'm a bit wild and all over the place with gardening excitement and Jessica kept me focused and on task. Together we came up with a great plan based on my likes and dislikes.  I can't wait to start working on some of the suggestions.  Thanks Jessica!",
+          "author": "Rhonda Bencze",
+          "order": 15,
+          "virtual": true,
+          "id": "avS15Z9cUKge9o1UJzvR"
+        },
+        {
+          "message": "Each new blooming season in my yard reaffirms Jess's superb vision for space, color, and complementary plants, a vision equaled by the passion she brings to her art. Working with her was both edifying and pleasurable. ",
+          "virtual": false,
+          "author": "Jack Davis",
+          "order": 9,
+          "id": "bSvQtij01q7F5jwD0VCz"
+        },
+        {
+          "virtual": false,
+          "order": 4,
+          "author": "Leatrice Oram",
+          "message": "Jess came to my half-acre suburban garden and talked me through the disciplines of pruning, dividing, and transplanting.  She used a show-one, do-one approach that built my confidence.  She has both practical and aesthetic gifts, is a warm and direct teacher, and she’s fun to talk with along the way.   She was able to meet me exactly where I was in terms of my knowledge and risk tolerance, and also able to help me dream a little in terms of possible future landscaping projects.  I am so glad I saw her material and approach on Instagram and reached out for a consultation.  You will be glad too!",
+          "id": "cifLlh5OeqcfggjVpoVc"
+        },
+        {
+          "author": "Eva Bric-Furlong",
+          "virtual": false,
+          "message": "After looking out of my kitchen window wondering how to get more joy out of my yard, I realized that I had no idea where to start. Fortunately, Jessica knew exactly what the yard needed.  She suggested that we establish some garden beds and plant interesting vegetation of a variety of sizes and shapes that would bring life and color to the garden year round.  Not only does she have an eye for designing and landscaping a yard, but she has the knowledge of which plants complement each other and the enthusiasm to help you make your garden the envy of the neighborhood.",
+          "order": 11,
+          "id": "dLYyh4kzxZauTotMhWYc"
+        },
+        {
+          "order": 5,
+          "virtual": false,
+          "author": "Deeni Stevens",
+          "message": "My session with Jess was a game changer. I have felt overwhelmed by the tasks in my yard, both in volume and expertise. Jess walked me through steps for maintenance and made some excellent suggestions of items to add/enhance. I came away from my time with Jess feeling energized and empowered - I can do it!",
+          "id": "eLRxopLJfqi9OTNwrjhh"
+        },
+        {
+          "author": "Mim",
+          "message": "Jess has lots of excellent plant knowledge, is fun, and a joy to work with! She has a friendly, practical, no-nonsense, honest, and empowering consulting style. Many of us have solid gardening ideas/knowledge. Getting confirmation and new information about certain issues specific to our own gardens (on the spot!) is so helpful. I now have more confidence to move forward and am very excited to put the plan into action! I am so happy to have found her. ",
+          "order": 10,
+          "virtual": false,
+          "id": "fbGWoBT1BpI7xZobKwzV"
+        },
+        {
+          "virtual": false,
+          "order": 20,
+          "author": "Clint Attebery",
+          "message": "Jess came to our home and gave us so many great ideas for how to improve our yard and garden. We spent an hour together in the front and back of the house talking about our questions and about her own observations. Who knew we had so many invasive species, some of which we planted ourselves! We have a lot of information to work with from now through the coming spring and summer. Thank you, Jess!",
+          "id": "g3PjM60b6sNCJsY2goWB"
+        },
+        {
+          "message": "After purchasing a new home with an overgrown garden, I began working with Jessica. She empowered me to tackle gardening projects of all sizes, offering design ideas and assisting me in organizing and prioritizing tasks. With her help, I was able to develop a feasible plan that had a significant impact without feeling too daunting. Working with her was enjoyable, and I would strongly recommend her services to anyone seeking to begin their own gardening or landscaping endeavors.",
+          "order": 12,
+          "author": "Elisa Welaratne",
+          "virtual": false,
+          "id": "ijt7yAt1j7PmGscpJwWp"
+        },
+        {
+          "order": 13,
+          "message": "Jessica is great.  She helped us get over our fears of making large scale changes to our property.  With her help we've successfully moved established plants we want to keep; removed the plants we don't want; and generally feel more in control of our new property.",
+          "author": "Ruben Goodman",
+          "virtual": false,
+          "id": "j7xhn2YvHwNQh4Kzokdl"
+        },
+        {
+          "virtual": false,
+          "author": "Susie O'Mara",
+          "message": "This was everything I hoped it would be. I finally got the answers to so many of life’s persistent questions about my garden! Jess is a great listener and gave just enough advice that I’m filled with optimism and great intentions. It was a deep kind of fun. Thanks!!\n",
+          "order": 10,
+          "id": "kkPgp4x6ZtactKaZDJFh"
+        },
+        {
+          "order": 9,
+          "author": "Kimberly Settelen",
+          "virtual": false,
+          "message": "I can’t recommend Jess enough for a garden consult! The entire process was seamless and felt really comfortable.  Her insights and suggestions painted a vivid picture of what our garden can be. We are overflowing with anticipation and feel a newfound confidence in our green-thumb capabilities.",
+          "id": "lVkvINpO8XDEAZl8B7ay"
+        },
+        {
+          "author": "Jo Wellins",
+          "virtual": false,
+          "message": "Jess is very knowledgeable, efficient with her time, and creative.  I can’t believe how much we covered in a short amount of time.  She provided just the right amount of inspiration to get me going and not feel overwhelmed.  I highly recommend her to anyone who wants advice about their gardens.",
+          "order": 9,
+          "id": "n7ZcVEwc8gdbJNrMyC9z"
+        },
+        {
+          "author": "Rick",
+          "virtual": false,
+          "message": "Jessica was great to work with. As a beginner and new homeowner she explained important principles and taught me some practical skills to help me feel more empowered and comfortable with gardening. This really helped me feel less overwhelmed and inspired me to get out there and begin to enjoy gardening.  I love that she's also super practical - it's not about buying a lot of tools, being too fussy about pruning / transplanting or buying a lot of expensive plants. Gardening should be a joyful and affordable hobby - after her lessons I find myself spending long hours in the garden just zen-ning out happily. Thanks Jess!",
+          "order": 14,
+          "id": "nwySmAOz3OGYLRqVSS7p"
+        },
+        {
+          "virtual": false,
+          "order": 12,
+          "author": "Danielle Stamford",
+          "message": "Jess was so knowledgeable and really helped me look through our property and come up with an action plan. Our property is in the woods and hadn't been touched for many years prior to us purchasing, and I didn't know where to start. Especially with so much space, little plants, and working with a lot of shade. I'm so thrilled with the next steps and plan we worked through and loved her ideas on being able to repurpose plants or shrubs I had, and dividing up plants. Highly recommend!\n",
+          "id": "oQAC22VKjdGyM03qh44W"
+        },
+        {
+          "message": "Jess was incredible. Before our consultation, I had lots of ideas but wasn’t sure how to bring them together into a cohesive plan. After our time together, I walked away with a clear vision and a roadmap for exactly what to tackle next.\n\nJess took the time to understand my goals, my space, and my gardening experience, then translated that into practical recommendations that feel achievable and exciting. I now feel confident and equipped to transform my yard into the beautiful space I’ve always envisioned.\n\nHer expertise, encouragement, and thoughtful guidance made the entire experience worthwhile. I highly recommend You Can Do It Gardening to anyone looking for professional advice and a personalized plan for their garden.",
+          "author": "Mary Hurst",
+          "order": 5,
+          "virtual": false,
+          "id": "qL6HzWLIMtvLKF64v29A"
+        },
+        {
+          "virtual": false,
+          "order": 25,
+          "author": "CKS",
+          "message": "My consultation with Jess was just what I needed to revamp my front shade garden. I had overhauled this garden three years ago and it never thrived because some of my plants weren't tolerating the dry conditions under our huge Sweetgum tree. Jess gave me ideas to add structure into the garden, group plants together for bigger displays, and recommendations on plants to bring in to add height. I've been working on the garden for a few weeks now and love how it's turning out. If you're considering a consultation, do it.",
+          "id": "rY5bUZCYwBQUQJ3MiVJa"
+        },
+        {
+          "message": "Like having a visit from a loving mom and your favorite elementary school teacher who is also a great gardener. :) Jess is so instructive and kind, and practical. After two years of deliberating on a garden design, I was able to cut a new bed shape and start planting immediately. My new garden will cost me next to nothing, whereas the last proposal I was given was for $10K!! So happy I did this. 💚",
+          "virtual": false,
+          "author": "Diana Roy",
+          "order": 1,
+          "id": "tPCpsE5R2jmK61s7SxmQ"
+        },
+        {
+          "author": "Frank Prinzivalli",
+          "virtual": false,
+          "message": "Very helpful and Knowledgeable. Jess was very delightful. She took her time walking around my yard and made recommendations, along with explaning in detail on how to prune and treat our landscaping bushes and flower garden  properly. We were super delighted with her services.",
+          "order": 22,
+          "id": "wk5npMi6pkRX9Tbr0CS7"
+        },
+        {
+          "author": "Megan Flaherty",
+          "virtual": false,
+          "message": "Jess was so helpful and knowledgeable- she made an intimidating process accessible for our family!",
+          "order": 21,
+          "id": "xbpspQwYHqVf21LJuj5a"
+        }
+      ],
+      "testimonial-slideshow-pictures": [],
+      "teaching-items": [
+        {
+          "order": 3,
+          "link": "https://www.google.com/search?q=You+Can+Do+It+Gardening&stick=H4sIAAAAAAAA_-NgU1I1qDAzNTW3MEg0TzVKMjdMTDS3MqhITLI0MUlOSjGxNEs1TU4zXMQqHplfquCcmKfgkq_gWaLgnliUkpqXmZcOAJE4brtDAAAA&hl=en&mat=CbuuS5JcUJpnElYBpsFAC8Lb9XxHSzHs0Nlv1IvfzmQdIvOru0zvXMlAEV0NAqLKAbuYjzH9_uIwErp8BhHllWILTFRyEYsoSV8V7Ord69bidHvDUvjFudQmB1x-yenlcw&authuser=1#lrd=0x655780a7e2b71aa7:0xab944cbd496e5cf1,1,,,,",
+          "description": "You can read  all of the reviews ",
+          "title": "5 star Google Business Profile",
+          "id": "7rWe2bu6AVno5JpdJDMN"
+        },
+        {
+          "title": "Cambridge Center for Adult Education",
+          "order": 2,
+          "link": "https://ccae.org/classes/",
+          "description": "Like I do in Arlington, I usually teach at least one beginner gardening class in the spring in Cambridge. I'll share the link when it’s available (I usually teach in March or April)",
+          "id": "IHgc0GkkoVD7V3cOLXI0"
+        },
+        {
+          "title": "Article in Stroll Winchester, May, 2022 Issue",
+          "order": 5,
+          "description": "I was featured in this local magazine when I launched the garden coaching business in the spring of 2022",
+          "link": "https://www.google.com/",
+          "id": "X2MKqjqTn057qNWFcSbw"
+        },
+        {
+          "title": "Gardening For Beginners class",
+          "description": "In person next spring in Arlington, MA. ",
+          "order": 1,
+          "link": "https://www.arlingtoncommunityed.org/",
+          "id": "dIz7L2rEJKjS4ybByKvw"
+        },
+        {
+          "order": 4,
+          "description": "Come Visit My Chamber Listing",
+          "link": "https://winchesterchamber.com/members/#!biz/id/61f30cf8a317362ef733040d",
+          "title": "Winchester Chamber of Commerce ",
+          "id": "mF894j5tn2gbi72PoLkL"
+        },
+        {
+          "order": 5,
+          "link": "https://www.realsimple.com/drought-resistant-garden-11737646",
+          "title": "Real Simple article on drought-resistant plants",
+          "description": "",
+          "id": "u6Hx35huuAmMjgsKseIv"
+        }
+      ],
+      "virtual-service-items": [
+        {
+          "order": 5,
+          "text": "If you are wondering if virtual sessions can be as effective, read reviews with the \"location\" icon to see what others have to say!",
+          "id": "9aiOvNHofA3b7EfUqzou"
+        },
+        {
+          "order": 4,
+          "text": "Sessions are conducted over FaceTime or Google Meet.",
+          "id": "OvJ0cIUOTkBPNs8q6Wm7"
+        },
+        {
+          "text": "Instead of hands-on instruction I may mark up a photo or provide a rough sketch for additional guidance.",
+          "order": 2,
+          "id": "tqdmd0AOYmVhBiIoIB1g"
+        },
+        {
+          "order": 3,
+          "text": "Similar to in-person sessions, I provide a summary of recommendations if desired, and this is done with a voice recording.",
+          "id": "u0T15qFhlfDxjHl1Eghj"
+        },
+        {
+          "order": 1,
+          "text": "Virtual tours of your garden allow me to provide the same quality advice as if I'm in person.",
+          "id": "ziTGmBB7UClScLgpiW7m"
+        }
+      ],
+      "in-person-service-items": [
+        {
+          "order": 5,
+          "text": "For experienced gardeners, a new perspective could offer improvements you may not have thought about",
+          "id": "8Ii6isdd6MjwNwxA0XSH"
+        },
+        {
+          "text": "Other services as requested, but I do not provide yard maintenance",
+          "order": 5,
+          "id": "mVnVDOfstYGQ6MZ5iqrS"
+        },
+        {
+          "text": "I often provide summary videos at the end of sessions so you don't need to worry about remembering everything or writing it down.",
+          "order": 5,
+          "id": "sjski8qPt2EAchascUFt"
+        },
+        {
+          "order": 3,
+          "text": "Hands-on gardening skills like pruning and dividing.",
+          "id": "vT2xfgYiNuUt7PpBErlg"
+        },
+        {
+          "text": "Immediate suggestions and ideas for improvement or to address challenges.",
+          "order": 1,
+          "id": "ve7HW9XNO16JeLZATdWO"
+        },
+        {
+          "order": 2,
+          "text": "Design ideas and plant suggestions.",
+          "id": "x9wnu2SL0zJ62iTQLSrJ"
+        }
+      ],
+      "home-pictures": [
+        {
+          "imageSource": "images/home-pictures/imageSource1732415036918.jpg",
+          "order": null,
+          "id": "970dzS8LQgUu0EvThfFc"
+        },
+        {
+          "order": null,
+          "imageSource": "images/home-pictures/imageSource1693532263882.jpeg",
+          "id": "E8LOv2iG1thjOSaUgOj1"
+        },
+        {
+          "imageSource": "images/home-pictures/imageSource1693534103408.jpg",
+          "order": null,
+          "id": "G3CTbA8eRUEGDRuP24Xj"
+        },
+        {
+          "order": null,
+          "imageSource": "images/home-pictures/imageSource1693532166549.jpeg",
+          "id": "GYKszXXg6UvVXRkNmejp"
+        },
+        {
+          "imageSource": "images/home-pictures/imageSource1730670300817.JPG",
+          "order": 17,
+          "id": "GZHlQ4U8ayBL9YexOoKw"
+        },
+        {
+          "imageSource": "images/home-pictures/imageSource1693532334900.jpeg",
+          "order": null,
+          "id": "KKOcO8EEW2JSByt1kdDX"
+        },
+        {
+          "imageSource": "",
+          "order": null,
+          "id": "LnzFfmn6wC1KNGofCG2g"
+        },
+        {
+          "order": null,
+          "imageSource": "images/home-pictures/imageSource1732490065219.jpeg",
+          "id": "MHJ0QrpW2OHge9gPbCa1"
+        },
+        {
+          "imageSource": "images/home-pictures/imageSource1690487423401.jpg",
+          "order": 2,
+          "id": "Q6IhXfmUOmq7w70P6b5z"
+        },
+        {
+          "order": null,
+          "imageSource": "images/home-pictures/imageSource1693534077659.jpg",
+          "id": "QpNuGeCad1CWCZZJ6Tta"
+        },
+        {
+          "order": 12,
+          "imageSource": "images/home-pictures/imageSource1730670254368.jpg",
+          "id": "RxOt4WfhmrI5xQ7VeZ7K"
+        },
+        {
+          "order": null,
+          "imageSource": "images/home-pictures/imageSource1732415737883.jpg",
+          "id": "TYxLByG6P31VQ0ILHDQJ"
+        },
+        {
+          "order": null,
+          "imageSource": "images/home-pictures/imageSource1760230563600.jpg",
+          "id": "aaZgbDjaUpBooxBC4h91"
+        },
+        {
+          "order": null,
+          "imageSource": "images/home-pictures/imageSource1760230511849.jpg",
+          "id": "bayOhSr0t1S0zmWThy7f"
+        },
+        {
+          "order": 1,
+          "imageSource": "images/home-pictures/imageSource1693532299166.jpg",
+          "id": "bbrj45dCmP6q6pzLVuA5"
+        },
+        {
+          "imageSource": "images/home-pictures/imageSource1693534117322.JPG",
+          "order": null,
+          "id": "c06V1tW77njQwTfNF4D9"
+        },
+        {
+          "imageSource": "images/home-pictures/imageSource1690487415380.jpg",
+          "order": 1,
+          "id": "cteyjBtrfZV71fJdO4Gy"
+        },
+        {
+          "order": 14,
+          "imageSource": "images/home-pictures/imageSource1730670269970.jpg",
+          "id": "hfUwnU8YhAGFIQJNDCQ5"
+        },
+        {
+          "order": null,
+          "imageSource": "images/home-pictures/imageSource1693532461364.jpeg",
+          "id": "kuIqGhXA2Zfuw3TI3hNS"
+        },
+        {
+          "order": null,
+          "imageSource": "images/home-pictures/imageSource1760230533526.jpg",
+          "id": "nKYo1TfpG64bwc0NaAhi"
+        },
+        {
+          "order": null,
+          "imageSource": "images/home-pictures/imageSource1693534139242.JPG",
+          "id": "nrVeq8hTCv6yXmm5l3Ij"
+        },
+        {
+          "imageSource": "images/home-pictures/imageSource1760230488040.jpg",
+          "order": null,
+          "id": "oUjU3GEMBsZpZAzIy1wN"
+        },
+        {
+          "imageSource": "images/home-pictures/imageSource1693532185919.jpeg",
+          "order": null,
+          "id": "ow6Lt9pUeCfGTA0gfVDY"
+        },
+        {
+          "order": null,
+          "imageSource": "",
+          "id": "pn5gSmJpSzcAYBnqLUdW"
+        },
+        {
+          "imageSource": "images/home-pictures/imageSource1693534171675.JPG",
+          "order": null,
+          "id": "q4EiibEWcKtlfGysHJ4r"
+        },
+        {
+          "imageSource": "images/home-pictures/imageSource1760230444634.jpg",
+          "order": null,
+          "id": "sYeOQ1xm6gcnvOAlNggQ"
+        }
+      ],
+      "nh-pictures": [
+        {
+          "order": null,
+          "imageSource": "images/nh-pictures/imageSource1693533836951.JPG",
+          "id": "2GHvmNRwEgvOw6QeEoAF"
+        },
+        {
+          "imageSource": "images/nh-pictures/imageSource1693533034781.jpg",
+          "order": null,
+          "id": "2LYuqtEs7YCIDfUCSdTC"
+        },
+        {
+          "order": null,
+          "imageSource": "images/nh-pictures/imageSource1732416605168.jpg",
+          "id": "2pA2SItzTX8ZyIPlMPC9"
+        },
+        {
+          "imageSource": "images/nh-pictures/imageSource1732415565350.JPG",
+          "order": null,
+          "id": "4Krg2OnDVnjof89o6GzS"
+        },
+        {
+          "imageSource": "images/nh-pictures/imageSource1732415122791.JPG",
+          "order": null,
+          "id": "4MZT5FKZd8YExnIsKV1v"
+        },
+        {
+          "imageSource": "images/nh-pictures/imageSource1693532541566.jpeg",
+          "order": 2,
+          "id": "8FWB8vKvkz9gmEbzWMft"
+        },
+        {
+          "imageSource": "images/nh-pictures/imageSource1693533168467.jpg",
+          "order": null,
+          "id": "BEDtQxeLcvgp61nCrATy"
+        },
+        {
+          "order": null,
+          "imageSource": "images/nh-pictures/imageSource1732415220483.JPG",
+          "id": "HN3XMIOYFtRiLbEtAc67"
+        },
+        {
+          "imageSource": "images/nh-pictures/imageSource1693532509515.jpeg",
+          "order": null,
+          "id": "Is9ndAI2ctIjhPKWZeUJ"
+        },
+        {
+          "imageSource": "images/nh-pictures/imageSource1732415095434.JPG",
+          "order": null,
+          "id": "IvBMDZiU6YIB99cezLno"
+        },
+        {
+          "order": null,
+          "imageSource": "images/nh-pictures/imageSource1693532524632.jpeg",
+          "id": "JOBunGwmcIUmqbKlwRpG"
+        },
+        {
+          "order": null,
+          "imageSource": "images/nh-pictures/imageSource1732415111208.JPG",
+          "id": "L3me9e5hR1fgTa87w7nA"
+        },
+        {
+          "imageSource": "images/nh-pictures/imageSource1693533809216.jpg",
+          "order": null,
+          "id": "NNLrLESC41PNcEUkr74m"
+        },
+        {
+          "imageSource": "images/nh-pictures/imageSource1693533003697.JPG",
+          "order": 1,
+          "id": "VyuEwjlutfef8zCT4cyF"
+        },
+        {
+          "order": null,
+          "imageSource": "images/nh-pictures/imageSource1693532989021.jpg",
+          "id": "YQfiJA6LGUmwMLd2K3xe"
+        },
+        {
+          "order": null,
+          "imageSource": "images/nh-pictures/imageSource1732415663616.JPG",
+          "id": "Ykw5GIRkGBNaSUFbESfk"
+        },
+        {
+          "imageSource": "images/nh-pictures/imageSource1732416511364.jpg",
+          "order": null,
+          "id": "d7sXxJAtu7XW0cBHzqTw"
+        },
+        {
+          "imageSource": "images/nh-pictures/imageSource1732415370385.jpg",
+          "order": null,
+          "id": "e0MNQli116bTWADUZcrO"
+        },
+        {
+          "order": null,
+          "imageSource": "images/nh-pictures/imageSource1732415465450.jpg",
+          "id": "fZCpJ043FtT4rOZTd2wY"
+        },
+        {
+          "imageSource": "images/nh-pictures/imageSource1693532492948.jpeg",
+          "order": null,
+          "id": "j2hs1RLb677StD1ekBUA"
+        },
+        {
+          "imageSource": "images/nh-pictures/imageSource1732415136217.JPG",
+          "order": null,
+          "id": "jRWlJ7R13tcMz2f7fhfV"
+        },
+        {
+          "imageSource": "images/nh-pictures/imageSource1732415575816.jpg",
+          "order": null,
+          "id": "o2qB0TxhTbkETlSynIfm"
+        },
+        {
+          "imageSource": "images/nh-pictures/imageSource1732416523967.JPG",
+          "order": null,
+          "id": "rqIR4YTsHugHbQpLxoWO"
+        },
+        {
+          "order": null,
+          "imageSource": "images/nh-pictures/imageSource1760230641267.JPG",
+          "id": "vCxV1vxg78FO2htWHHhW"
+        },
+        {
+          "imageSource": "images/nh-pictures/imageSource1693532566798.jpeg",
+          "order": null,
+          "id": "zfUUJeOXnAwMjlNX0jRa"
+        }
+      ],
+      "client-pictures": [
+        {
+          "imageSource": "images/client-pictures/imageSource1696215635282.jpg",
+          "order": 6,
+          "id": "1cvxIIxSDlUdgkZtPcKe"
+        },
+        {
+          "order": 8,
+          "imageSource": "images/client-pictures/imageSource1706110134729.JPG",
+          "id": "2IYUpLwp9fSasX4ryLre"
+        },
+        {
+          "imageSource": "images/client-pictures/imageSource1696215696865.jpg",
+          "order": 3,
+          "id": "2L9Ra0CYf2WbaEWOdlfw"
+        },
+        {
+          "imageSource": "images/client-pictures/imageSource1690487146888.jpg",
+          "order": 10,
+          "id": "2lhUTW48T1Qjyr6X8Ise"
+        },
+        {
+          "imageSource": "images/client-pictures/imageSource1693886692837.JPG",
+          "order": null,
+          "id": "3BqtXNZLWgRM5GhY7puy"
+        },
+        {
+          "order": 7,
+          "imageSource": "images/client-pictures/imageSource1693887187490.jpg",
+          "id": "3E31K02P9QHV0MNIhVRZ"
+        },
+        {
+          "imageSource": "images/client-pictures/imageSource1693887150720.jpg",
+          "order": 5,
+          "id": "4iw51tztWRudvQAG1u1E"
+        },
+        {
+          "imageSource": "images/client-pictures/imageSource1690487140981.jpg",
+          "order": 9,
+          "id": "6ZYKY5ttg9rAUIPu9k7t"
+        },
+        {
+          "imageSource": "images/client-pictures/imageSource1696215913570.JPG",
+          "order": 4,
+          "id": "875JzevtHmjMHNLATrva"
+        },
+        {
+          "imageSource": "images/client-pictures/imageSource1690487161041.jpg",
+          "order": 11,
+          "id": "8Ka7jQ4Kx5Ja63XPLflA"
+        },
+        {
+          "order": 8,
+          "imageSource": "images/client-pictures/imageSource1696216457610.jpg",
+          "id": "DBsTP4C5JmE2amJz8gpA"
+        },
+        {
+          "order": 12,
+          "imageSource": "images/client-pictures/imageSource1690487167064.jpg",
+          "id": "DPWJC6hURi04MftFNxEj"
+        },
+        {
+          "imageSource": "images/client-pictures/imageSource1690487135285.jpg",
+          "order": 8,
+          "id": "OkZ7Q8oVtNb4nE8VfwQL"
+        },
+        {
+          "imageSource": "images/client-pictures/imageSource1690487099443.jpg",
+          "order": 2,
+          "id": "QcA4RkfgKT3e1muEWuHL"
+        },
+        {
+          "imageSource": "images/client-pictures/imageSource1690487092619.jpg",
+          "order": 2,
+          "id": "S02Q4R702DQ1wK8QRuDO"
+        },
+        {
+          "imageSource": "images/client-pictures/imageSource1690487117922.jpg",
+          "order": 5,
+          "id": "T9TneSf9Do2LutQzzNQS"
+        },
+        {
+          "order": 4,
+          "imageSource": "images/client-pictures/imageSource1693886666703.JPG",
+          "id": "Uj1MniBJqVjAZWQH0MAj"
+        },
+        {
+          "imageSource": "images/client-pictures/imageSource1693886612501.JPG",
+          "order": null,
+          "id": "VmLGKprUcFyGnw8TLT4o"
+        },
+        {
+          "imageSource": "images/client-pictures/imageSource1690487129563.jpg",
+          "order": 7,
+          "id": "WhmSPfaU1EEx2Exc5VkF"
+        },
+        {
+          "imageSource": "images/client-pictures/imageSource1690487124284.jpg",
+          "order": 6,
+          "id": "Y5t6JyiKX1gWZujYBY6n"
+        },
+        {
+          "order": 10,
+          "imageSource": "images/client-pictures/imageSource1693887139953.JPG",
+          "id": "YB14LMsEgxPyyvUR57vk"
+        },
+        {
+          "order": 8,
+          "imageSource": "images/client-pictures/imageSource1693886681502.jpg",
+          "id": "ZOfWPKOkubsMaC7Y2yZj"
+        },
+        {
+          "order": null,
+          "imageSource": "images/client-pictures/imageSource1693886626016.JPG",
+          "id": "eE6AT9senoIaFoK2RceZ"
+        },
+        {
+          "imageSource": "images/client-pictures/imageSource1693887127787.JPG",
+          "order": 6,
+          "id": "pzLfvHCoUb1LsNZnAoSg"
+        },
+        {
+          "order": 10,
+          "imageSource": "images/client-pictures/imageSource1693887353021.jpg",
+          "id": "sjj6DEPuvqNtxmSuakDD"
+        },
+        {
+          "imageSource": "images/client-pictures/imageSource1693886639718.JPG",
+          "order": null,
+          "id": "wTqPemVPCB1xBCQ6OxJ5"
+        },
+        {
+          "imageSource": "images/client-pictures/imageSource1693886654601.JPG",
+          "order": null,
+          "id": "xXUQi2LfBKkslBDPGRy9"
+        }
+      ],
+      "media-appearances": [
+        {
+          "link": "https://www.wcvb.com/article/jess-zander-gardening-tips-hydrangeas-massachusetts-you-can-do-it-gardening/44334264",
+          "title": "WCVB Channel 5 News Segment June 25, 2023",
+          "imageSource": "images/media-appearances/imageSource1693882432246.jpg",
+          "order": 8,
+          "description": "Hydrangea Care",
+          "id": "0XJ5jbOMczSA9IdnLvxI"
+        },
+        {
+          "title": "Podcast with The Pond Digger (July, 2023)",
+          "description": "",
+          "link": "https://podcasts.apple.com/us/podcast/ep139-you-can-do-it-gardening-w-jess-zander/id1439751720?i=1000622736093",
+          "imageSource": "images/media-appearances/imageSource1693881483723.png",
+          "order": 10,
+          "id": "8ReltXdqzaSLjVFVCh4D"
+        },
+        {
+          "title": "Boston 25 News, July 15, 2025",
+          "description": "Why some bigleaf hydrangeas are doing well this summer and others are not",
+          "link": "https://youtu.be/FgTZQlK8jjs",
+          "order": 3,
+          "imageSource": "images/media-appearances/imageSource1752685567163.jpg",
+          "id": "BppYJRNIv5buxeUJoZMK"
+        },
+        {
+          "link": "https://www.wcvb.com/article/should-massachusetts-gardners-be-worried-about-drought-tips-from-an-expert/62926135",
+          "description": "Should Massachusetts Gardeners Be Afraid Of Drought?",
+          "title": "WCVB Channel 5 Segment November, 2024",
+          "order": 4,
+          "imageSource": "images/media-appearances/imageSource1738035413556.jpg",
+          "id": "Jd90qr2soLiNsKB3vd1Z"
+        },
+        {
+          "imageSource": "images/media-appearances/imageSource1744587291509.jpg",
+          "order": 3,
+          "title": "WCVB April 9, 2025",
+          "description": "Local news show Chronicle!  ",
+          "link": "https://www.wcvb.com/article/clean-car-and-tidy-yard-are-signs-of-spring/64435964",
+          "id": "Mr1PKK2MqNYLBO4A9ecB"
+        },
+        {
+          "imageSource": "images/media-appearances/imageSource1777199198972.png",
+          "order": 1,
+          "title": "October, 2025 ",
+          "description": "Featured on the PBS program Windows To The Wild ",
+          "link": "https://youtu.be/niYKpfztsI0?si=GUYfDSXfdC-urskQ",
+          "id": "N1j7errVav15o3rZ3zCZ"
+        },
+        {
+          "title": "Not Just Food Co Podcast",
+          "imageSource": "images/media-appearances/imageSource1740436107095.jpg",
+          "link": "https://www.youtube.com/watch?v=zZdvoaCkXWA",
+          "order": 9,
+          "description": "Conversation with Catherine, from Not Just, in July 2024.",
+          "id": "YdGbDHAKfxlBddcdiJz2"
+        },
+        {
+          "imageSource": "images/media-appearances/imageSource1717328685437.jpg",
+          "order": 4,
+          "link": "https://www.wcvb.com/article/garden-coach-tips-massachusetts-yard-tips-gardening-advice/60940093",
+          "description": "Featured on the evening news with spring gardening tips!",
+          "title": "WCVB Channel 5 Segment May, 2024",
+          "id": "aJTT5pvF5OTaa3INEmJn"
+        },
+        {
+          "order": 7,
+          "description": "Summer Gardening Tips ",
+          "link": "https://www.wcvb.com/article/massachusetts-gardening-tips-rhododendrons-cutting-back/44741317",
+          "title": "WCVB-Channel 5 News Segment, August 5, 2023",
+          "imageSource": "images/media-appearances/imageSource1698805872728.jpg",
+          "id": "hG8g6OPFDFBzPgxT4ODf"
+        },
+        {
+          "title": "WCVB Channel 5 News segment, October 14, 2023",
+          "imageSource": "images/media-appearances/imageSource1698805403047.jpg",
+          "link": "https://www.wcvb.com/article/invasive-plants-cause-for-concern-massachusetts/45537882",
+          "order": 6,
+          "description": "Fall Gardening Tips",
+          "id": "hYnaIp0AhzWZQVareSu7"
+        },
+        {
+          "title": "WCVB Channel 5 News segment, March 2024",
+          "description": "Preparing Your Garden For Spring",
+          "link": "https://www.wcvb.com/article/massachusetts-preparations-now-for-spring-garden/60146772",
+          "order": 5,
+          "imageSource": "images/media-appearances/imageSource1744588635484.jpg",
+          "id": "hzCM3thhfk2IBm7MpleH"
+        },
+        {
+          "title": "WCVB Chanel 5, News segment July 2024",
+          "imageSource": "images/media-appearances/imageSource1726447893277.jpg",
+          "order": 3,
+          "link": "https://www.wcvb.com/article/garden-coach-fall-tips-massachusetts-yard/62192623",
+          "description": "A visit to my house by reporter Jennifer Eagan for fall gardening tips",
+          "id": "lXpEEqtf9KIsMPRnODyt"
+        },
+        {
+          "imageSource": "images/media-appearances/imageSource1777199782905.jpg",
+          "order": 14,
+          "title": "Gardener’s Lodge Podcast ",
+          "description": "In-depth conversation with the host, Mykal Hoare in March, 2026",
+          "link": "https://podcasts.apple.com/us/podcast/you-can-do-it-with-jessica-zander/id1585572570?i=1000755672751",
+          "id": "pTtTe8qqnpwmv5VHTOKv"
+        }
+      ],
+      "gallery-video": [
+        {
+          "embedCode": "M8DuuDtnFcI",
+          "id": "gallery-video"
+        }
+      ],
+      "external-resources": [
+        {
+          "order": 2,
+          "link": "https://homegrownnationalpark.org/remove-invasive-plants/",
+          "category": "Invasive Species",
+          "description": "",
+          "title": "Homegrown National Park Resources",
+          "id": "3iQP06OYNzqU4hSd4PB2"
+        },
+        {
+          "link": "https://stan.store/youcandoitgardening/p/gardening-for-beginners-class",
+          "title": "Gardening For Beginners Class",
+          "category": "Guides and Classes",
+          "order": 1,
+          "description": "This Gardening For Beginners class is an overview of key aspects of gardening to enable the greatest outcomes for you and your property. ",
+          "id": "EA26SEwjWdtD3DBe9aSN"
+        },
+        {
+          "category": "Invasive Species",
+          "title": "Massachusetts Prohibited Plant List",
+          "link": "https://www.mass.gov/massachusetts-prohibited-plant-list",
+          "order": null,
+          "description": "",
+          "id": "NCkXFpAVvg7fvPvqh3Wc"
+        },
+        {
+          "link": "https://tr.ee/UCg_HO38y4",
+          "title": "New Homeowners Guide",
+          "category": "Guides and Classes",
+          "order": 4,
+          "description": "The guide I wish I had when I was a new homeowner!",
+          "id": "Org9TgkuxlYXZdLDkzKW"
+        },
+        {
+          "order": 2,
+          "link": "https://stan.store/youcandoitgardening/p/beginner-gardener-ebook",
+          "title": "ebook from live class",
+          "category": "Guides and Classes",
+          "description": "This guide is jam-packed with information, with over 75 slides of information, pictures and in-depth guidance to help new gardeners feel more confident. These slides accompanied the LIVE class in December of 2024.",
+          "id": "uC3gfqvsdCE4WgEpkCgZ"
+        }
+      ],
+      "faq-items": [
+        {
+          "question": "Do you have a degree for what you do?",
+          "order": null,
+          "answer": "Not directly. I have learned from my own gardening experience over 30 years and from working with hundreds of clients, as well as extensive research for the work I do. I also have a certification from the Green School, at UMASS Amherst and another one from NAISMA, pertaining to invasive species.",
+          "id": "7OJVhzoLt4h1ORuWrg2j"
+        },
+        {
+          "answer": "",
+          "question": "More coming soon!",
+          "order": 4,
+          "id": "EsVW0JLJO0IkBD8IuT20"
+        },
+        {
+          "answer": "Pruning and other guides are available here: https://stan.store/youcandoitgardening",
+          "question": "Where can I find your guides?",
+          "order": null,
+          "id": "u1ZlFIwzhe340PaJJy7s"
+        },
+        {
+          "question": "Where do you live?",
+          "order": null,
+          "answer": "I live in Winchester, MA (zone 6b) and we have a cottage in Harrisville, NH. I do consultations with people locally and virtually all over the country and Canada.",
+          "id": "ywU7O0kNH8OJvK906op1"
+        }
+      ],
+      "siteContacts": [
+        {
+          "id": "email-1",
+          "type": "email",
+          "value": "youcandoitgardening@jakerosenentertainment.com",
+          "order": 0
+        },
+        {
+          "id": "email-2",
+          "type": "email",
+          "value": "jess@youcandoitgardening.com",
+          "order": 1
+        }
+      ]
+    }
+  },
+  "talk-about-dreams": {
+    "text": {
+      "header": "Julia Dobbelaar",
+      "subheader-text": "Assisting individuals, facilitating dream groups, and  educating all those curious to find the meaning in dreams.",
+      "brand-label": "Talk About Dreams",
+      "brand-info": "    ",
+      "about-header": "Meet Julia",
+      "about-blurb-1": "Julia studied psychology at Boston University and went on to earn certifications as a Dream Analyst, Yoga Instructor, and EMT. She is an active member of the International Association of The Study of Dreams and coordinates the Boston Dreamers Meetup. As a lifelong vivid dreamer, Julia's passion is to help others understand and utilize their dreams. Available both virtually and in person. "
+    },
+    "images": {},
+    "models": {
+      "siteContacts": [
+        {
+          "id": "email-1",
+          "type": "email",
+          "value": "talkaboutdreams@yahoo.com",
+          "order": 0
+        },
+        {
+          "id": "phone-1",
+          "type": "phone",
+          "value": "(617) 299-1792",
+          "order": 1
+        }
+      ]
+    }
+  },
+  "room01890": {
+    "text": {
+      "hero-eyebrow": "Gatherings & Events",
+      "hero-header": "Meet and Mingle",
+      "hero-text": "Connect with new people, share great conversations and create memorable moments together.",
+      "meeting-space-header": "Meeting Space",
+      "events-header": "Events & Games",
+      "event-meeting-header": "Meeting Space",
+      "event-meeting-subheader": "Weekly Gathering",
+      "event-meeting-text": "Hold your discussions in our exclusive lounge space. A perfect blend of business and leisure.",
+      "event-board-games-header": "Board Games",
+      "event-board-games-subheader": "Monthly Event",
+      "event-board-games-text": "Explore the world of tabletop gaming. From classic classics to modern innovations, we host curated sessions for every level of player.",
+      "event-networking-header": "Networking Mixer",
+      "event-networking-subheader": "Community Gathering",
+      "event-networking-text": "Connect with a consultant to help plan an event or colaboration. A relaxed environment designed to foster meaningful professional relationships.",
+      "our-space-header": "Our Space",
+      "our-space-text": "Our space blends professional consulting with a refined atmosphere for meetings and socializing",
+      "gallery-3-title": "Women Playing Cards",
+      "contact-header": "Get in Touch",
+      "contact-text": "Whether you're looking for a private space for strategic meetings or a venue for high-stakes card games, our consulting team is ready to assist. Reach out to discuss your specific needs.",
+      "contact-location-header": "Location",
+      "contact-email-header": "Email",
+      "contact-phone-header": "Phone",
+      "footer-contact-header": "Contact",
+      "footer-mission-header": "Our Mission",
+      "footer-mission-text": "We provide strategic business advice and a curated space for card games and private meetings. Our goal is to empower your growth through professional consulting and a sophisticated social environment.",
+      "footer-connect-header": "Connect",
+      "footer-copyright": "© 2026 Consulting Space. All rights reserved.",
+      "services-header": "Our Services",
+      "service-consultation-header": "Consultation",
+      "service-consultation-duration": "1 hr",
+      "service-consultation-price": "$75"
+    },
+    "images": {
+      "hero-image": {
+        "source": "images/hero-image.jpg",
+        "fileName": "hero-image.jpg"
+      },
+      "meeting-space-background": {
+        "fileName": "meeting-space-background.jpg",
+        "source": "images/meeting-space-background.jpg"
+      },
+      "meeting-space-image-1": {
+        "fileName": "meeting-space-image-1.jpg",
+        "source": "images/meeting-space-image-1.jpg"
+      },
+      "meeting-space-image-2": {
+        "fileName": "meeting-space-image-2.jpg",
+        "source": "images/meeting-space-image-2.jpg"
+      },
+      "event-meeting-image": {
+        "source": "images/event-meeting-image.jpg",
+        "fileName": "event-meeting-image.jpg"
+      },
+      "event-board-games-image": {
+        "fileName": "event-board-games-image.jpg",
+        "source": "images/event-board-games-image.jpg"
+      },
+      "event-networking-image": {
+        "source": "images/event-networking-image.jpg",
+        "fileName": "event-networking-image.jpg"
+      },
+      "gallery-1": {
+        "fileName": "gallery-1.jpg",
+        "source": "images/gallery-1.jpg"
+      },
+      "gallery-2": {
+        "source": "images/gallery-2.jpg",
+        "fileName": "gallery-2.jpg"
+      },
+      "gallery-3": {
+        "source": "images/gallery-3.jpg",
+        "fileName": "gallery-3.jpg"
+      },
+      "gallery-4": {
+        "source": "images/gallery-4.jpg",
+        "fileName": "gallery-4.jpg"
+      },
+      "gallery-5": {
+        "fileName": "gallery-5.jpg",
+        "source": "images/gallery-5.jpg"
+      },
+      "service-consultation-image": {
+        "source": "images/service-consultation-image.jpg",
+        "fileName": "service-consultation-image.jpg"
+      }
+    },
+    "models": {
+      "siteContacts": [
+        {
+          "id": "email-1",
+          "type": "email",
+          "value": "info@room01890.com",
+          "order": 0
+        },
+        {
+          "id": "phone-1",
+          "type": "phone",
+          "value": "781-910-4756",
+          "order": 1
+        },
+        {
+          "id": "address-1",
+          "type": "address",
+          "value": "38 Church St, 2nd Floor\nWinchester, MA 01890",
+          "order": 2
+        }
+      ]
+    }
+  },
+  "nicole-levin": {
+    "text": {
+      "education": "University of Pennsylvania MSW (1997) ・ Boston University BA in Psychology (1993)",
+      "education-header": "Education:",
+      "memberships": "Pennsylvania Society of Clinical Social Workers",
+      "memberships-header": "Professional Memberships:",
+      "certifications": "PA Licensed Clinical Social Worker ・ Gestalt Therapist ・ Yoga Teacher ・ Pilates Teacher ・ Group Motion Facilitator",
+      "certifications-header": "Certifications:",
+      "about-body-text": "Welcome!  I am here for you as you explore your healing journey.  Please don't hesitate to reach out to me with any questions.  I can be reached at (215) 668-7277.",
+      "about-header": "Nicole Levin",
+      "splash-title": "Nicole Levin",
+      "splash-min": "LCSW CYT",
+      "splash-subtitle": "Psychotherapist ・ Movement Teacher ・ Workshop Leader ",
+      "personal-statement-header": "Personal Statement",
+      "personal-statement": "At times, life can be very challenging and difficult.  Happiness, peace of mind and intimacy may be what you want but seem impossible to achieve.  I offer psychotherapy to provide a path for you to discover what you are looking for.  I am committed to working with you to help you understand why you feel the way you do and what you can do to feel better.  As a holistic psychotherapist, my goal is to understand you as whole person - mind, body and spirit.   I provide a supportive and transformational therapeutic experience where you can learn to feel more joy and connection with yourself and others.  I will help you heal from emotional, physical, and spiritual pain so that you may experience a more fulfilling and meaningful life.  If you are looking for extra support and guidance through a challenging situation or want to improve your overall quality of life, I look forward to working with you to achieve your goals.",
+      "psychotherapy-body-text": "Nicole Levin is a licensed clinical social worker, psychotherapist, educator, and movement facilitator dedicated to supporting healing, growth, and authentic self-expression. She earned her Master of Social Work degree from the University of Pennsylvania in 1997 and has spent nearly three decades helping individuals and groups deepen awareness, resilience, and wellbeing.<br/>In her private psychotherapy practice, Nicole works with adults experiencing anxiety, depression, trauma, relationship challenges, and life transitions. Her approach is grounded in Gestalt therapy and emphasizes present-moment awareness, emotional integration, and meaningful connection.<br/>Nicole serves on the faculty of the Pennsylvania Gestalt Center, where she teaches in the professional training program, leads workshops, and facilitates experiential group processes. She is passionate about creating spaces where people can explore themselves more fully through dialogue, relationship, and direct experience.<br/>As a Group Motion Dance Facilitator, Nicole leads improvisational movement experiences that integrate mind, body, and spirit, inviting participants to access creativity, embodiment, and connection through movement. She is also a yoga and holistic movement teacher who has taught at nonprofit organizations, health centers, and the Kripalu Center for Yoga & Health.<br/>Nicole leads day-long workshops and weekend retreats that weave together breath, movement, self-exploration, and community. Her work offers opportunities for participants to reconnect with themselves, expand their awareness, and cultivate greater vitality, presence, and personal growth.",
+      "psychotherapy-header": "Psychotherapy",
+      "treatment-specializations-header": "Areas of Focus",
+      "social-worker-body": "<strong>PA Licensed Clinical Social Worker</strong><br/>Nicole is a PA Licensed Clinical Social Worker, bringing a wealth of expertise and dedication to her practice. Her licensure stands as a testament to her commitment to professional excellence and compassionate care.",
+      "gestalt-body": "<strong>Certified Gestalt Therapist</strong><br/>Nicole is a Certified Gestalt Therapist, blending deep understanding and skill to facilitate meaningful personal growth with her clients.",
+      "yoga-header": "Yoga, Pilates, & Dance",
+      "yoga-body": "In 1999, Nicole was certified as a yoga teacher and completed a secondary certification in 2016. In 2021, she expanded her teaching and became a certified pilates teacher. She is also certified as a Group Motion facilitator and leads conscious movement with live music.. Currently, Nicole teaches yoga, pilates, and holistic movement/dance at yoga centers, athletic clubs, non-profits. She has also taught at the Kripalu Center for Yoga and Health.",
+      "gestalt-workshops-header": "Gestalt Workshops",
+      "gestalt-workshops-body": "Nicole is on faculty at the Pennsylvania Gestalt Center and leads workshops integrating gestalt theory and techniques, yoga, breath work and sound. These workshops offer a safe haven for people to explore their deepest feelings and to experience profound transformation. Her unwavering belief in each person's innate ability for healing and wholeness drives her passion and dedication to her work."
+    },
+    "images": {
+      "about": {
+        "source": "images/1757034275727.png",
+        "fileName": "1757034275727.png"
+      }
+    },
+    "models": {
+      "education-item": [],
+      "membership-item": [],
+      "certification-item": [],
+      "treatment-item": [
+        {
+          "title": "Stress Management",
+          "order": 6,
+          "id": "3trYJ9vl0boT33P6OixE"
+        },
+        {
+          "title": "Trauma",
+          "order": 3,
+          "id": "Nb2jlS5GyryB3dEUtDeM"
+        },
+        {
+          "title": "Anxiety",
+          "order": 1,
+          "id": "R2gaQGn9w5sk9ZngZqmk"
+        },
+        {
+          "title": "Relationship Issues",
+          "order": 5,
+          "id": "S29jTpQbmXaMGhg6HbZw"
+        },
+        {
+          "title": "Grief",
+          "order": 4,
+          "id": "WRgQCcQsz17ekjTcKzCP"
+        },
+        {
+          "title": "Life Transitions—Parenting, Divorce, Aging",
+          "order": 9,
+          "id": "Ygg9TBZvGf37HhvDNpvQ"
+        },
+        {
+          "title": "Work Issues",
+          "order": 8,
+          "id": "kuqPt62BujsjgsnzBQrT"
+        },
+        {
+          "title": "Chronic Illness/Pain",
+          "order": 7,
+          "id": "nlX0TM2gexjggJMRaDoB"
+        },
+        {
+          "title": "Depression",
+          "order": 2,
+          "id": "uMFQYwDIhcS7dZXPyUQq"
+        }
+      ],
+      "siteContacts": [
+        {
+          "id": "email-1",
+          "type": "email",
+          "value": "nicolelevinlcsw@gmail.com",
+          "order": 0
+        },
+        {
+          "id": "phone-1",
+          "type": "phone",
+          "value": "(215) 668-7277",
+          "order": 1
+        }
+      ]
+    }
+  },
+  "a-new-day-coaching": {
+    "text": {
+      "contact-name": "Rachel Dayanim",
+      "main-header": "Transform Your Tomorrow: Executive Function Coaching for Teens and Young Adults",
+      "main-subtitle": "Nothing should stand in the way of a student's ability to realize their full potential. As an Executive Function Coach, I combine the educational elements of academic tutoring with the benefits of ADHD coaching. By tailoring my approach to meet each student’s unique needs, I aim to help individuals maximize their strengths while targeting specific areas that need support. <br/>Together, we will work on improving organizational and time management skills in a judgment-free environment, ensuring that each student has the necessary tools to excel in the academic world and beyond.",
+      "about-header": "Meet Your Coach",
+      "about-blurb": "Hi, I'm Rachel Dayanim and I'm excited to partner with you on your coaching journey. As an Executive Function Coach and Learning Specialist, I have worked for over twenty years supporting students of all ages both in schools and through my private practice. I also served as the Director of Student Support at an independent school and I am currently an instructional coach for ADAC and a Collegiate Learning Specialist at Focus Collegiate, supporting college students as they navigate their higher education experience.<br/>Many of my clients have neurodiverse profiles (Autism, ADHD, Asperger's and other learning differences), and I partner with them to recognize their strengths and abilities, create and implement tools to support their success and help them achieve their personal goals.<br/>I earned a Master of Arts in Special Education from Columbia University, with a specialty in Learning Disabilities and an ADHD Coaching Certification from JST Coaching. Additionally, I graduated with a Bachelor of Arts degree in Early Childhood and Elementary Education from Yeshiva University.",
+      "why-coaching-header": "Why work with an Executive Function Coach?",
+      "why-coaching-subtitle": "Executive Function Coaching helps students learn to...",
+      "services-header": "Services:",
+      "services-coaching": "Weekly or bi-weekly one-on-one coaching sessions that provide personal guidance tailored to each student's unique needs. All 60-minute sessions may be conducted in-person or virtually (depending on the student's location and preference). Monthly coaching packages are available.",
+      "services-workshops": "Available for professional development workshops and teacher training.  All workshops are customized to meet the needs of your specific organization. Sample topics include:",
+      "services-workshops-example-1": "<strong>Empowering through Executive Function:</strong> Workshop focusing on supports for Writing, Project-Planning, and Assessments",
+      "services-workshops-example-2": "<strong>What the EF?!</strong>: Helping Students Find Success through Executive Function Skill Development",
+      "services-workshops-example-3": "<strong>Executive Functioning 101:</strong> The Basics",
+      "services-courses": "You're early! Courses will be listed here when they're available.",
+      "thank-you": "          Thanks for reaching out! I'll be in contact with you shortly.",
+      "contact-quote": "Uniqueness is the spark that ignites change; it's the unconventional minds that carve new paths and redefine the world."
+    },
+    "images": {
+      "about-headshot": {
+        "fileName": "rachel-min.jpg",
+        "source": "images/rachel-min.jpg"
+      }
+    },
+    "models": {
+      "siteContacts": [
+        {
+          "id": "email-1",
+          "type": "email",
+          "value": "rachel.newday@gmail.com",
+          "order": 0
+        },
+        {
+          "id": "phone-1",
+          "type": "phone",
+          "value": "(202) 798-ADHD",
+          "order": 1
+        }
+      ]
+    }
+  },
+  "beyond-the-bell": {
+    "text": {
+      "contact-header": "We Would Love To Hear From You!",
+      "contact-subtitle": "Do you want to see how you can take the next step in supporting your child’s educational growth? Drop us a line with any questions. We’re here to help!",
+      "footer-hours": "Monday - Friday 8am to 6pm<br/>Other hours available by appointment",
+      "call-to-action": "Ready to support your child's learning?",
+      "developing-all-learners": "Our mission is to support the development of all learners through a wide range of educational services. From social skills and executive functioning groups to academic tutoring and homework assistance in all subjects, including the specialized Wilson Reading System for Dyslexia remediation, we're here to help. Our services extend to consulting and advocacy for families navigating the IEP and 504 process. Moreover, we offer professional development and consulting for school districts on various subjects. Join us on this educational journey!<br/>",
+      "our-methods": "At Beyond the Bell Education Center, we take pride in creating a nurturing environment where students thrive. Our welcoming staff and sensory-friendly space, along with our joyful approach to learning, foster an atmosphere that supports improved student success in social skills, executive functioning, and academics.<br/>We firmly believe that the key to quality teaching lies in building strong connections. Throughout your child's journey with us, we prioritize understanding their unique strengths, interests, goals, and challenges. Armed with this knowledge, we tailor individual or small group educational lessons and activities that are both creative and fun, ultimately leading to enhanced student success in social skills, executive functioning, and academics.<br/>Our ultimate goal is to empower every student, ensuring they experience growth in their skills while feeling valued, appreciated, and included in our community. Join us at Beyond the Bell for a fulfilling and enriching educational experience!<br/>",
+      "our-learning-center": "Welcome to Beyond The Bell, where joy and playfulness await! Step into our amazing space filled with cozy beanbags, comfy armchairs, vibrant swings and more. Kids adore spending time with us, immersing themselves in our games, fidgets, high-quality art supplies and an endless array of slime materials. At BTB, we embrace curiosity, experimentation and the wonders of learning.<br/>Conveniently located at 3 Man-Mar Drive, Unit 14, in Plainville, Massachusetts, we are just minutes away from Route 1, I-95, and I-495. Our facility is a short walk or drive from various restaurants, playgrounds, the popular An Unlikely Story bookstore and numerous other attractions. Join us at Beyond The Bell for an enriching and fun-filled experience!<br/>",
+      "meet-the-director": "<strong>Nancy Mager</strong> has always loved kids, and her passion is understanding each child’s motivation, strengths and struggles. Nancy has a Bachelor's degree in psychology from Boston University and a Master’s degree in special education from Simmons College. She’s spent the last 25 years working in the field of special education, with a strong interest in autism spectrum disorders and mental health. Professionally, Nancy has worked as a classroom teacher, behavioral and educational consultant, student advocate, adjunct college instructor, and most recently as the Director of Education for a non-profit.<br/>Nancy has been trained extensively in the practices and philosophy of Applied Behavior Analysis (ABA), Social Thinking©, the Picture Exchange Communication System© (PECS), multiple assistive technology programs, TEACCH Autism (University of North Carolina), STARS Autism (Naperville, IL), Moving Traditions; It’s a Girls Thing©, and crisis prevention.",
+      "our-staff-header": "Meet The Team",
+      "class-offerings-header": "Summer and Fall Registration is now OPEN!<br/>",
+      "testimonials-header": "What Parents are Saying",
+      "social-skills": "Our Social Skills groups are more like a playdate with a coach than a class in social rules and expectations. While many children can tell you what the social expectations are in a given situation, they may not be able to access those skills to demonstrate them when that situation occurs. This is why teaching social skills in a more natural setting is important. <br/>Our staff begins by building relationships with each child in order to understand their unique perspective and what strengths and skills they bring to BTB. We then try to foster the development of friendships with unique shared experiences. When tricky situations arise, staff are fully involved in the activities and can step in to help students work through problems in the moment. <br/>The structure of our groups is predictable, yet the activities are always changing based upon student requests, curiosities and interests.  <br/>",
+      "social-skills-details-header": "More About Social Skills at Beyond The Bell",
+      "social-skills-details": "Groups of 2-8 students meet weekly during the school year for 60-90 minutes. <br/>Group Sessions include the following structure:<br/>-Free and Me Time (transition time when students can explore BTB or just relax as they transition between environments)<br/>-Group Meeting (when the whole group comes together for information sharing, community building, group games or group activities)<br/>-Interest-based activity (rotating high interest activities based on group dynamic and preferences)",
+      "1-on-1-tutoring": "Beyond The Bell respects all children for their unique learning profiles. We believe that all children will thrive when provided with appropriate accommodations, positive behavioral supports and skilled, engaging educators.<br/>Beyond The Bell provides carefully organized, one-hour tutoring sessions in all areas of academics. Students engaging with BTB tutoring services receive the necessary assistance in subjects like math, reading, science, and social studies.<br/>For struggling and emerging readers we offer 1:1 support using the <a href=\"https://www.wilsonlanguage.com/programs/wilson-reading-system/\" target=\"blank\">Wilson Reading System©</a>, a multi-sensory approach to literacy instruction. We offer instruction with a certified Wilson reading specialist to students whose basic literacy skills are below that of their peers, despite conventional interventions.<br/>",
+      "1-on-1-tutoring-details-header": "More About 1 on 1 Tutoring at Beyond The Bell",
+      "1-on-1-tutoring-details": "Each 60 minute session is tailored to each student's individual needs. ",
+      "wilson-tutoring": "We offer small group after-school homework help with a dash of executive functioning support for students up to 8th grade. Our awesome space, professional educators and understanding of adolescent development will reduce homework battles at home and give your child a safe space to thrive. ",
+      "wilson-tutoring-details-header": "What to expect at the Homework Club",
+      "wilson-tutoring-details": "A fun space with comfy bean bags and swings.<br/>Structure and support in the completion of homework assigned from school.<br/>Executive functioning support including organization, study skills, task initiation and motivational strategies, self-advocacy, flexibility and more!<br/>",
+      "thank-you": "Thank you for contacting us. We look forward to speaking with you and hearing more about how we can be of assistance. We will be in touch with you soon."
+    },
+    "images": {
+      "meet-the-director": {
+        "fileName": "nancy-mager.jpg",
+        "source": "images/nancy-mager.jpg"
+      },
+      "thank-you": {
+        "fileName": "thankyou.jpg",
+        "source": "images/thankyou.jpg"
+      }
+    },
+    "models": {
+      "gallery-pictures": [
+        {
+          "imageSource": "images/gallery-pictures/imageSource1691706194942.jpeg",
+          "caption": "Pancake art",
+          "order": null,
+          "id": "5lh8vvq77LKGp3rhSVVo"
+        },
+        {
+          "imageSource": "images/gallery-pictures/imageSource1718289255984.jpeg",
+          "caption": "We had a kitten party! ",
+          "order": null,
+          "id": "B9d1Npd7WyapkkvCjKUE"
+        },
+        {
+          "imageSource": "images/gallery-pictures/imageSource1692976844530.jpeg",
+          "caption": "Open mic nights are so much fun! We had storytellers, singers, magicians, comics and more.",
+          "order": null,
+          "id": "GbKixhho1k8mltASCYQs"
+        },
+        {
+          "imageSource": "images/gallery-pictures/imageSource1718289599100.jpeg",
+          "caption": "DIY squishies - we made our own fidgets. ",
+          "order": null,
+          "id": "Lu2JULKxkPfKpndrHt7J"
+        },
+        {
+          "imageSource": "images/gallery-pictures/imageSource1718289504991.jpeg",
+          "caption": "Paint pouring is a great way to learn to “go with the flow”",
+          "order": null,
+          "id": "O5EFDHu2jzIdPxCzPEvB"
+        },
+        {
+          "imageSource": "images/gallery-pictures/imageSource1692976663423.jpeg",
+          "caption": "The swings are a great place to curl up with a book!",
+          "order": null,
+          "id": "X33Pz2j6yDyuHq768TsL"
+        },
+        {
+          "imageSource": "images/gallery-pictures/imageSource1692976723682.jpeg",
+          "caption": "That time when Sonic the hedgehog came to visit the girls group!",
+          "order": null,
+          "id": "oTBF4GR7IFGeAKExFubC"
+        },
+        {
+          "imageSource": "images/gallery-pictures/imageSource1718289705341.jpeg",
+          "caption": "Paint night for our middle school girls groups  led by one of our amazing student artists! ",
+          "order": null,
+          "id": "szsUYDSuB6uSE1ts06kf"
+        },
+        {
+          "imageSource": "images/gallery-pictures/imageSource1718289391809.jpeg",
+          "caption": "We “toasted” to a great year, with toast art! ",
+          "order": null,
+          "id": "y3cYWdPrG8BGRcJ8v2qk"
+        }
+      ],
+      "siteContacts": [
+        {
+          "id": "email-1",
+          "type": "email",
+          "value": "questions@beyondthebelleducation.com",
+          "order": 0
+        },
+        {
+          "id": "phone-1",
+          "type": "phone",
+          "value": "(508) 316-4751",
+          "order": 1
+        },
+        {
+          "id": "address-1",
+          "type": "address",
+          "value": "3 Man-Mar Drive #14\nPlainville, MA 02762",
+          "order": 2
+        }
+      ]
+    }
+  },
+  "boston-mixtape": {
+    "text": {
+      "contact-name": "Boston Mixtape",
+      "contact-header": "Let's get in touch!",
+      "ensemble-header": "Meet some of our Top Talent",
+      "ensemble-body-1": "We have over thirty members of Boston Mixtape and the BERACH Orchestra, selected from hundreds of talented musicians and performers. Many have national and international performance experience, numerous recording credits and extensive experience performing an incredibly diverse range of music. Our extraordinary performers love what they do and that enjoyment translates into an exceptional experience for you and your guests. ",
+      "ensemble-body-2": "Whether you are planning a Wedding, Bar/Bat Mitzvah, Organizational Gala or Banquet, Community Concert, or any special celebration, we can help make it memorable and enjoyable.  <br/>Ensembles are configured to meet your specific needs. We listen to your plans, offer some possible approaches to achieve your ideal result, and then carefully prepare and configure our services accordingly. <br/>Planning is only part of the process. You may be relieved to know that the person with whom you are discussing your plans will be either facilitating your event or working closely with whomever is implementing these plans so the chance for confusion and mistakes are minimized. Your enthusiastic satisfaction and trust are our utmost concern and our ultimate goal. <br/>Imagine some of your favorite movies. The music probably played an important part in the overall experience. Music can help set the tone and tell a meaningful story. We manage your event in a similar way, carefully coordinating musical elements to provide the perfect soundtrack and score, essentially setting your happiness to music.",
+      "services-header": "Services",
+      "repretoire-body": "Boston Mixtape customizes each performance to your specific needs and is proud to offer a comprehensive range of music including songs spanning the globe. Requests are welcome! Our goal is to provide the perfect combination of music to underscore your event. Our exceptional team enjoys the challenge of learning something new and we always come prepared for last minute changes and welcome unusual and original requests (even in foreign languages!). We suggest that any important requests (First Dance, Parent-Child Dance, Last Dance, etc.) be communicated at least three weeks in advance to ensure adequate time to develop an appropriate arrangement.<br/>Want to include something pre-recorded? Have a strange request or an original song to perform?<br/>We can make it happen. ",
+      "hero-text-1": "Offering the most comprehensive repertoire of music by the finest talent;",
+      "hero-text-2": "our reputation for consistently exceeding our client's high expectations has earned us a reputation as Boston's best option for tasteful and exciting musical entertainment.",
+      "call-to-action-header": "The Best of Both Worlds",
+      "call-to-action-body": "Specializing in events requiring a blend of styles and genres, Boston Mixtape defines itself through our uniquely customized approach, dynamic repertoire, exceptional versatility and uncompromising quality. Featuring top performers from the BERACH Orchestra which has been serving the Boston area for over 30 years, we offer a comprehensive repertoire of authentic traditional and contemporary Jewish music along with a full range of American popular music spanning every era from the 40s to Top 40.  ",
+      "featured-video-header": "Check out our simcha sampler!",
+      "differentiation-header": "What Makes Us so Special?",
+      "differentiation-subheader": "Ah, differentiation! Here are some unusual services that you won't typically find elsewhere..."
+    },
+    "images": {},
+    "models": {
+      "performer": [
+        {
+          "imageSource": "images/performer/imageSource1723487405246.jpeg",
+          "name": "Rosemary G",
+          "bio": "While rocking through Boston’s nightclubs, Rosemary attended Berklee College of Music via scholarship, and shared the stage with Average White Band, Til Tuesday, and Deborah Harry (Blondie). She sang back-up vocals with industry legends Alice Cooper, Rick Derringer, Simon Kirke (Bad Company, Free), Paula Cole and Joan Osborne on several benefit shows including Ace Frehley (Kiss), Will Lee (David Letterman), Chuck Leavell (Allman Bros, Rolling Stones), Elliot Easton (The Cars), Kasim Sulton (Todd Rundgren, Meatloaf) and Chad Smith (Red Hot Chili Peppers). Rosemary was a function/wedding bandleader for 12 years, has many studio recording credits, and also performs with a Steely Dan tribute band.",
+          "order": 6,
+          "id": "68tjFsqjNS7luu32g7MW"
+        },
+        {
+          "imageSource": "images/performer/imageSource1723312494222.JPEG",
+          "name": "Justin B.",
+          "bio": "Exceptional ears and a magical voice are two key attributes Justin brings to your celebration. A gifted guitarist and talented vocalist, Justin performs songs with uncanny vocal accuracy and versatility. Justin performs throughout New England and has been a featured artist with our ensemble for over ten years.\n ",
+          "order": 4,
+          "id": "AuRv67whd2LnD9QJ9t5d"
+        },
+        {
+          "imageSource": "images/performer/imageSource1723312117207.jpg",
+          "name": "Scott A.",
+          "bio": "One of our top trumpeters, Scott has been featured with the BERACH Orchestra for nearly a decade. He continues to astound audiences with his trumpet and flugelhorn virtuosity as well as his vocal stylings. One of the most sought after trumpeters in the area, Scott is a key member of our orchestra. Equally at home on vocals or his horn, Scott's contributions are invaluable and his proficiency and personality inspire those around him to new performance heights.",
+          "order": 2,
+          "id": "G9q78933hQurmSuATjcd"
+        },
+        {
+          "imageSource": "images/performer/imageSource1723312613692.jpg",
+          "name": "Pat L.",
+          "bio": "Consistently in demand, Pat is one of the most highly respected and adored musicians in the area. His proficiency as a saxophonist is extraordinary and his repertoire is vast. In addition to being a key member of the band, Pat also steps up for both lead and backup vocals. ",
+          "order": 5,
+          "id": "LqPNfsb1LGTYJQtbM1ey"
+        },
+        {
+          "imageSource": "images/performer/imageSource1723841894496.jpg",
+          "name": "Behzad Dayanim",
+          "bio": "Our founder, lead vocalist and band leader, Behzad Dayanim, brings over two decades of national and international performance experience along with several album credits. A graduate of Manhattan School of Music, Behzad represents the best in New York talent, conveniently based in Boston. His proficiency in numerous styles of Jewish and American music is extraordinary and his dedication and commitment to providing unparalleled personalized service defines our philosophy and consistently leaves clients and their guests smiling.",
+          "order": 1,
+          "id": "UuIlE6BownqwoiiqHM8K"
+        },
+        {
+          "imageSource": "images/performer/imageSource1723842466310.jpg",
+          "name": "Jeff G.",
+          "bio": "Jeff is the musician's musician and redefines the trombone as an essential part of any ensemble. As a remarkably gifted instrumentalist and educator, Jeff has performed extensively with Boston Mixtape and the BERACH Orchestra for over a decade and has become one of our most highly requested members for his incredible energy and musical prowess. Jeff epitomizes our efforts to provide stellar performances & customer service.",
+          "order": 8,
+          "id": "XY3YNtIZAbugsrRTXzuf"
+        },
+        {
+          "imageSource": "images/performer/imageSource1723312548650.jpg",
+          "name": "Evan G.",
+          "bio": "Evan is an original songwriter-singer-guitarist and has written and produced 18 recordings of original soul, funk, blues and rock music.  He’s won the Boston Blues Award, played concerts for Marines on NATO bases in Europe and even jammed with Jimmy Buffet and played multiple shows with B.B. King, Buddy Guy and Peter Frampton. \n",
+          "order": 3,
+          "id": "iX0AC3gjjWZc5AxEFYBt"
+        },
+        {
+          "imageSource": "images/performer/imageSource1723842141730.png",
+          "name": "Thaddeus H.",
+          "bio": "An exceptional guitarist and featured vocalist, Thaddeus adds electricity to our ensemble that must be experienced to be fully appreciated. Equally comfortable with the swing/Jazz idiom as he is with Funk, R&B, Motown and Reggae, Thaddeus complements our ensemble with his remarkable range and repertoire.\nIn addition to his guitar magic, Thaddeus has been known to dazzle audiences as a harmonica soloist. He is also a member of the faculty at a leading conservatory, and a featured artist for the Bose Corporation.",
+          "order": 7,
+          "id": "vR6PqRDWkHTN3Yy4mXux"
+        }
+      ],
+      "featured-video": [
+        {
+          "embedCode": "https://youtu.be/VJ5tWY21ozA",
+          "id": "featured-video"
+        }
+      ],
+      "siteContacts": [
+        {
+          "id": "email-1",
+          "type": "email",
+          "value": "bbmbostonsbestmusic@gmail.com",
+          "order": 0
+        },
+        {
+          "id": "phone-1",
+          "type": "phone",
+          "value": "(617) 877-3206",
+          "order": 1
+        }
+      ]
+    }
+  }
+}
