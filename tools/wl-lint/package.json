@@ -1,0 +1,15 @@
+{
+  "name": "@wl-universe/wl-lint",
+  "private": true,
+  "description": "WL house-rule lint for site code (AGENTS.md). Kept out of the npm workspaces so its ESLint doesn't touch the CRA builds' ESLint 8.",
+  "type": "module",
+  "scripts": {
+    "lint": "node bin.mjs",
+    "test": "node --test test/rules.test.mjs"
+  },
+  "devDependencies": {
+    "@typescript-eslint/parser": "^8.73.0",
+    "eslint": "^10.0.0",
+    "typescript": "~5.9.0"
+  }
+}

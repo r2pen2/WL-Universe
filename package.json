@@ -8,6 +8,7 @@
   ],
   "scripts": {
     "stack": "node scripts/dev/stack.mjs",
+    "lint:wl": "node tools/wl-lint/bin.mjs",
     "client": "node scripts/dev/client.mjs",
     "sync:nicole": "node scripts/sync-local-packages.mjs nicole-levin",
     "build:nicole": "npm run sync:nicole && npm run build -w @wl-universe/nicole-levin-client",

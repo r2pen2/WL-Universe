@@ -1,0 +1,84 @@
+{
+  "packages/beyond-the-bell/client/src/App.jsx": {
+    "wl/wl-forms": {
+      "count": 1
+    }
+  },
+  "packages/beyond-the-bell/client/src/api/firebase.js": {
+    "wl/wl-forms": {
+      "count": 1
+    }
+  },
+  "packages/beyond-the-bell/client/src/components/Footer.jsx": {
+    "wl/wl-forms": {
+      "count": 1
+    }
+  },
+  "packages/beyond-the-bell/client/src/routes/About.jsx": {
+    "wl/wl-forms": {
+      "count": 1
+    },
+    "wl/wl-images": {
+      "count": 1
+    }
+  },
+  "packages/beyond-the-bell/client/src/routes/Gallery.jsx": {
+    "wl/wl-images": {
+      "count": 1
+    }
+  },
+  "packages/beyond-the-bell/client/src/routes/HomePage.jsx": {
+    "wl/wl-forms": {
+      "count": 1
+    },
+    "wl/wl-images": {
+      "count": 2
+    }
+  },
+  "packages/boston-mixtape/client/src/components/homepage/Record.jsx": {
+    "wl/wl-images": {
+      "count": 1
+    }
+  },
+  "packages/boston-mixtape/client/src/routes/Home.jsx": {
+    "wl/wl-text": {
+      "count": 3
+    }
+  },
+  "packages/joe-dobbelaar/client/src/api/firebase.js": {
+    "wl/wl-forms": {
+      "count": 1
+    }
+  },
+  "packages/joe-dobbelaar/client/src/routes/LandingPage.jsx": {
+    "wl/wl-images": {
+      "count": 1
+    },
+    "wl/wl-text": {
+      "count": 3
+    }
+  },
+  "packages/joe-dobbelaar/client/src/routes/Music.jsx": {
+    "wl/wl-images": {
+      "count": 3
+    }
+  },
+  "packages/joe-dobbelaar/client/src/routes/Payments.jsx": {
+    "wl/wl-forms": {
+      "count": 1
+    }
+  },
+  "packages/joe-dobbelaar/client/src/routes/Projects.jsx": {
+    "wl/wl-images": {
+      "count": 1
+    },
+    "wl/wl-text": {
+      "count": 4
+    }
+  },
+  "packages/room01890/client/src/components/home/OurSpaceGallery.jsx": {
+    "wl/wl-images": {
+      "count": 1
+    }
+  }
+}
