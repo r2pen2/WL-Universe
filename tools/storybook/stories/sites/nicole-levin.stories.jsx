@@ -8,4 +8,4 @@ export default {
   parameters: { site: "nicole-levin", fullSite: true, route: "/" },
 };
 
-export const Home = { render: () => <FullSite load={load} /> };
+export const Default = { name: "Nicole Levin", render: () => <FullSite load={load} /> };

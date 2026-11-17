@@ -18,5 +18,4 @@ const render = (admin) => () => (
   </SiteContexts>
 );
 
-export const Visitor = { render: render(false) };
-export const Admin = { parameters: { admin: true }, render: render(true) };
+export const Default = { name: "Room 01890", render: render(false) };

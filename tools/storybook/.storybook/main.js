@@ -15,6 +15,8 @@ export default {
   stories: ["../stories/**/*.stories.@(js|jsx)"],
   framework: { name: "@storybook/react-vite", options: {} },
   addons: [],
+  // A placeholder /wl-config.js; the deployed container overwrites it with the real settings.
+  staticDirs: ["./static"],
   core: { disableTelemetry: true },
   async viteFinal(config) {
     const { mergeConfig } = await import("vite");

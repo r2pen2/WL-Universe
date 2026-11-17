@@ -8,4 +8,4 @@ export default {
   parameters: { site: "talk-about-dreams", fullSite: true, route: "/" },
 };
 
-export const Current = { render: () => <FullSite load={load} scrollTo={'footer'} /> };
+export const Default = { name: "Talk About Dreams", render: () => <FullSite load={load} scrollTo={'footer'} /> };
