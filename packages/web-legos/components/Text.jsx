@@ -634,6 +634,7 @@ export function WLLayoutText(props) {
       let classes = "";
       if (props.indent) { classes += "web-legos-text-indent "; }
       if (props.textClasses) { classes += props.textClasses + " "; }
+      if (props.className) { classes += props.className + " "; }
       return classes;
     }
 
@@ -660,6 +661,9 @@ export function WLLayoutText(props) {
           case 5:
           // eslint-disable-next-line jsx-a11y/heading-has-content
           return <h5 ref={ref} style={{fontWeight: "inherit"}} className={getWLTextClasses()}/>;
+          case 6:
+          // eslint-disable-next-line jsx-a11y/heading-has-content
+          return <h6 ref={ref} style={{fontWeight: "inherit"}} className={getWLTextClasses()}/>;
         default:
           return;
       }
@@ -681,6 +685,14 @@ export function WLLayoutText(props) {
     }
     // Ask DB for the right text
     cms().fetch(`/site-text?id=${props.firestoreId}`).then((res) => {
+      if (!res.ok) {
+        // No text stored under this id (404) or the CMS failed: keep showing the static children.
+        setFetched(false);
+        if (props.setLoaded) {
+          props.setLoaded(true);
+        }
+        return;
+      }
       res.text().then((text) => {
         const gotResponse = !text.includes("<!DOCTYPE html>");
         setFetched(gotResponse);
@@ -757,7 +769,7 @@ export function WLLayoutText(props) {
   }
 
   return (
-    <div data-testid={props["data-testid"]} className={"d-flex flex-column gap-2 w-100" + (props.editable ? "web-legos-text-editable c-pointer" : " ") + (props.align ? getTextAlign() : "")} onClick={() => setEditMode(props.editable)}>
+    <div data-testid={props["data-testid"]} className={"d-flex flex-column gap-2 w-100" + (props.editable ? " web-legos-text-editable c-pointer" : "") + (props.wrapperClassName ? " " + props.wrapperClassName : "") + (props.align ? " " + getTextAlign() : "")} onClick={() => setEditMode(props.editable)}>
       { paragraphs ? renderParagraphs() : (props.showSpinner && <Loading color="primary" />) }
       { editMode && <Button color="success" onClick={sendTextUpdateToServer}>Save Changes</Button> }
       { !fetched && props.children && <WLParagraph paragraphText={markdownToHTML(props.children)} /> }
@@ -792,5 +804,5 @@ export function WLLayoutHeader(props) {
     return 1;
   }
 
-  return <WLLayoutText b={props.b} data-testid={props["data-testid"]} align={props.align} showSpinner={props.showSpinner} setLoaded={props.setLoaded} firestoreId={props.firestoreId} editable={props.editable} headerLevel={headerLevel} textClasses={"web-legos-scaling-header " + props.className}>{props.children}</WLLayoutText>;
+  return <WLLayoutText b={props.b} data-testid={props["data-testid"]} align={props.align} showSpinner={props.showSpinner} setLoaded={props.setLoaded} firestoreId={props.firestoreId} editable={props.editable} headerLevel={headerLevel} wrapperClassName={props.wrapperClassName} textClasses={"web-legos-scaling-header " + (props.className || "")}>{props.children}</WLLayoutText>;
 }

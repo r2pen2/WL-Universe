@@ -167,13 +167,19 @@ export function WLImageV2(props) {
   const [imageFileName, setImageFileName] = useState(null);
 
   useEffect(() => {
+    let cancelled = false;
     cms().fetch(`/site-images?id=${props.firestoreId}`).then((res) => {
+      if (!res.ok) return;
       res.json().then(json => {
+        if (cancelled) return;
         setImageSource(cmsAssetUrl(json.source));
         setImageFileName(json.fileName);
+        if (props.onSource) props.onSource(cmsAssetUrl(json.source));
       })
     })
-  })
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.firestoreId])
 
   function getCss() {
     if (props.halfWidth) {
@@ -195,7 +201,8 @@ export function WLImageV2(props) {
     imageSource ?
     <img
       src={imageSource}
-      alt={props.firestoreId}
+      alt={props.alt !== undefined ? props.alt : props.firestoreId}
+      loading={props.loading}
       className={`${props.className} ${props.editable ? "web-legos-image-edit" : ""} ${props.shadow ? "web-legos-image-shadow" : ""} ${props.round ? "web-legos-image-round" : ""}`}
       onClick={() => {
         if (props.editable) {

@@ -6,8 +6,9 @@ import "../assets/style/navigation.css";
 
 export class WLNav extends Component {
 
-  static Toggle() {
-    return <Navbar.Toggle className="px-2 d-inline d-lg-none" />
+  /** Hamburger toggle (below lg). Optional props: className, aria-label, onChange(isOpen). */
+  static Toggle(props) {
+    return <Navbar.Toggle className={"px-2 d-inline d-lg-none " + (props.className || "")} aria-label={props["aria-label"]} onChange={props.onChange} />
   }
 
   static Left(props) {
@@ -40,6 +41,9 @@ export class WLNav extends Component {
         height={this.props.height ? this.props.height : "80px"}
         variant={this.props.variant ? this.props.variant : "sticky"}
         maxWidth="fluid"
+        className={this.props.className}
+        css={this.props.css}
+        disableShadow={this.props.disableShadow}
       >
         {this.props.children}
       </Navbar>

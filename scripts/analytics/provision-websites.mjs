@@ -38,6 +38,7 @@ const SITES = [
   { slug: "a-new-day-coaching", name: "A New Day Coaching", domain: "anewdaycoaching.com" },
   { slug: "a-new-day-coaching-crm", name: "A New Day Coaching CRM", domain: "bluprint.anewdaycoaching.com" },
   { slug: "wl-admin-portal", name: "WL Admin Portal", domain: "admin.joed.dev" },
+  { slug: "room01890", name: "Room 01890", domain: "room01890.joed.dev" },
 ];
 
 function loadEnvFile(filePath) {

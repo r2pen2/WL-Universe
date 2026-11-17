@@ -37,6 +37,11 @@ export const CLIENTS = {
     port: 3110,
     site: "boston-mixtape",
   },
+  room01890: {
+    workspace: "@wl-universe/room01890-client",
+    port: 3113,
+    site: "room01890",
+  },
   "wl-admin-portal": {
     workspace: "@wl-universe/wl-admin-portal-client",
     port: 3111,
