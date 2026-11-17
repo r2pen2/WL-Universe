@@ -72,8 +72,8 @@ sa="$ENV_DIR/$SLUG-serviceAccountKey.json"
 if [ -f "$sa" ]; then
   echo "   present"
 elif [ -f "$ENV_DIR/$SA_FROM-serviceAccountKey.json" ]; then
-  cp "$ENV_DIR/$SA_FROM-serviceAccountKey.json" "$sa"
-  chmod 600 "$sa"
+  # -p keeps the source's owner/mode, which the service containers already read.
+  cp -p "$ENV_DIR/$SA_FROM-serviceAccountKey.json" "$sa"
   echo "   copied from $SA_FROM ($(sed -n 's/.*"project_id": *"\([^"]*\)".*/\1/p' "$sa" | head -1))"
 else
   echo "::error::No $sa and no $SA_FROM-serviceAccountKey.json to copy"
