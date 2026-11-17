@@ -8,4 +8,4 @@ export default {
   parameters: { site: "you-can-do-it-gardening", fullSite: true, route: "/" },
 };
 
-export const Home = { render: () => <FullSite load={load} /> };
+export const Home = { render: () => <FullSite load={load} htmlId="root-element" /> };

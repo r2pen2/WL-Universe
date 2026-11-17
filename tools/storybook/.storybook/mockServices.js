@@ -46,7 +46,8 @@ async function handleCms(url, init) {
   if (route === "/site-images") {
     if (method === "POST") return new Response("OK");
     const image = data.images[url.searchParams.get("id")];
-    return image ? json(image) : new Response("Not Found", { status: 404 });
+    // Some image components parse every reply as JSON, so a missing id answers with JSON too.
+    return image ? json(image) : json({ ok: false, error: "Not found" }, 404);
   }
   if (route === "/site-models") {
     if (method === "POST") {

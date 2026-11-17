@@ -22,8 +22,23 @@ export default {
     const { mergeConfig } = await import("vite");
     return mergeConfig(config, {
       plugins: [
-        // CRA-style `import { ReactComponent as Icon } from "./icon.svg"`; default import stays the URL.
-        svgr({ include: "**/*.svg", svgrOptions: { exportType: "named", namedExport: "ReactComponent" } }),
+        {
+          // CRA's SVG imports: the default export is the file URL and `ReactComponent` is the SVG as a
+          // component (`import logo, { ReactComponent as Logo } from "./logo.svg"`).
+          name: "wl-cra-svg",
+          enforce: "pre",
+          async resolveId(source, importer) {
+            if (!/\.svg$/.test(source) || !importer) return null;
+            const resolved = await this.resolve(source, importer, { skipSelf: true });
+            return resolved ? `\0cra-svg:${resolved.id}` : null;
+          },
+          load(id) {
+            if (!id.startsWith("\0cra-svg:")) return null;
+            const file = JSON.stringify(id.slice("\0cra-svg:".length));
+            return `import url from ${file.slice(0, -1)}?url"; export default url; export { default as ReactComponent } from ${file.slice(0, -1)}?react";`;
+          },
+        },
+        svgr(),
         {
           // CRA lets .js files contain JSX; compile those as JSX before anything else sees them.
           name: "wl-js-as-jsx",
@@ -48,7 +63,25 @@ export default {
         ],
         dedupe: ["react", "react-dom"],
       },
-      optimizeDeps: { esbuildOptions: { loader: { ".js": "jsx" } } },
+      optimizeDeps: {
+        esbuildOptions: { loader: { ".js": "jsx" } },
+        // Pre-bundle what the sites share up front: discovering these mid-session makes Vite re-optimize
+        // and can leave two copies of a package on the page (e.g. two @firebase/app instances).
+        include: [
+          "firebase/app",
+          "firebase/auth",
+          "firebase/firestore",
+          "firebase/storage",
+          "@nextui-org/react",
+          "@mantine/core",
+          "@mantine/hooks",
+          "react-router-dom",
+          "@mui/material",
+          "@mui/icons-material",
+          "@emotion/react",
+          "@emotion/styled",
+        ],
+      },
       define: { "process.env": "{}" },
       server: { fs: { allow: [repoRoot] } },
     });

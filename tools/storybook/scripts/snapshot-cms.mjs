@@ -21,6 +21,9 @@ const pkg = path.resolve(here, "..");
 const repoRoot = path.resolve(pkg, "../..");
 const fixtures = path.join(pkg, "fixtures");
 const MAX_IMAGE_BYTES = 1536 * 1024;
+// Enough to show what a pattern looks like, without committing whole galleries.
+const MAX_DOCS_PER_COLLECTION = 6;
+const MAX_SITE_BYTES = 10 * 1024 * 1024;
 
 const SITES = {
   "nicole-levin": "https://nicolelevin.org",
@@ -107,11 +110,11 @@ async function snapshotSite(site, origin, contacts) {
     if (collection === "siteContacts") continue;
     const res = await cms(`/site-models?collection=${encodeURIComponent(collection)}`);
     if (!res.ok) continue;
-    const docs = await res.json();
+    const docs = (await res.json()).slice(0, MAX_DOCS_PER_COLLECTION);
     out.models[collection] = docs;
     for (const doc of docs) {
       for (const value of Object.values(doc)) {
-        if (typeof value === "string" && /^images\/[^/]+\.(jpe?g|png|webp|gif|svg)$/i.test(value)) files.add(value);
+        if (typeof value === "string" && /^images\/[\w./-]+\.(jpe?g|png|webp|gif|svg)$/i.test(value)) files.add(value);
       }
     }
   }
@@ -123,7 +126,7 @@ async function snapshotSite(site, origin, contacts) {
     const res = await fetch(`${cfg.url}/assets/${site}/${source}`);
     if (!res.ok) continue;
     const buf = Buffer.from(await res.arrayBuffer());
-    if (buf.length > MAX_IMAGE_BYTES) {
+    if (buf.length > MAX_IMAGE_BYTES || bytes + buf.length > MAX_SITE_BYTES) {
       skipped++;
       continue;
     }

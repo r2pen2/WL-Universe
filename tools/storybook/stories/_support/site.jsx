@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { NextUIProvider } from "@nextui-org/react";
 import { createTheme, MantineProvider } from "@mantine/core";
+import { MemoryRouter } from "react-router-dom";
 import { AuthenticationManager } from "../../../../packages/web-legos/api/auth.ts";
 
 const STORY_ADMIN = { uid: "storybook-admin", displayName: "Storybook Admin", email: "admin@example.com" };
@@ -51,7 +52,8 @@ export function SiteContexts({ contexts, admin, theme, mantine, children }) {
   const [currentSignIn, setCurrentSignIn] = useState(admin ? STORY_ADMIN : null);
   const [authenticationManager] = useState(() => fakeAuthManager({ admin }));
   const authValue = { authenticationManager };
-  let tree = <NextUIProvider theme={theme}>{children}</NextUIProvider>;
+  // Site components link with react-router; inside the catalog they get an in-memory router.
+  let tree = <NextUIProvider theme={theme}><MemoryRouter>{children}</MemoryRouter></NextUIProvider>;
   if (mantine) tree = <MantineProvider theme={createTheme(mantine === true ? {} : mantine)}>{tree}</MantineProvider>;
   if (contexts.auth) tree = <contexts.auth.Provider value={authValue}>{tree}</contexts.auth.Provider>;
   tree = <AuthenticationManager.Context.Provider value={authValue}>{tree}</AuthenticationManager.Context.Provider>;
@@ -74,9 +76,11 @@ export function Frame({ label, children, width }) {
  * site's providers and global CSS. `load` is that site's `() => import(".../src/index.js")`.
  * `scrollTo` (a CSS selector) scrolls to a section once it renders, e.g. the footer.
  */
-export function FullSite({ load, scrollTo }) {
+export function FullSite({ load, scrollTo, htmlId }) {
   const ref = useRef(null);
   useEffect(() => {
+    // Some sites style their own <html id="..."> from public/index.html.
+    if (htmlId) document.documentElement.id = htmlId;
     load();
     if (!scrollTo) return undefined;
     let tries = 0;
@@ -89,6 +93,6 @@ export function FullSite({ load, scrollTo }) {
       }
     }, 250);
     return () => clearInterval(timer);
-  }, [load, scrollTo]);
+  }, [load, scrollTo, htmlId]);
   return <div id="root" ref={ref} />;
 }
