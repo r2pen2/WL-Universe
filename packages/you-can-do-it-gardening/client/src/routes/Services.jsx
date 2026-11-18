@@ -4,7 +4,7 @@ import "../assets/style/services.css"
 import { WLBlockHeader, WLHeader, WLText } from '../libraries/Web-Legos/components/Text';
 import { WLSpinnerPage } from '../libraries/Web-Legos/components/Layout';
 
-import { blockHeaderFill } from "../assets/style/colors";
+import { blockHeaderFill, headerPurple } from "../assets/style/colors";
 import { Card, Divider, Text, Button } from '@nextui-org/react';
 import { AddModelButton, ModelEditButton, ModelEditModal } from '../libraries/Web-Legos/components/Modals';
 import { useEffect } from 'react';
@@ -177,7 +177,7 @@ export default function Services() {
       </div>
     </section>
     <section className="d-flex flex-column align-items-center justify-content-center py-2 gap-2" style={{backgroundColor: "#f5f5f5", filter:"drop-shadow(0px 0px 5px rgba(0,0,0,0.2))"}}>    
-      <WLHeader color="#a67fcf" firestoreId="schedule-header" editable={userCanEditText}/>
+      <WLHeader color={headerPurple} firestoreId="schedule-header" editable={userCanEditText}/>
       <ScheduleButton />
     </section>
     <section className='d-flex flex-column align-items-center justify-content-center'>    

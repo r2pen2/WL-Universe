@@ -4,7 +4,7 @@ import "../assets/style/gallery.css"
 import { WLBlockHeader, WLHeader, WLText } from '../libraries/Web-Legos/components/Text';
 import { WLSpinnerPage } from '../libraries/Web-Legos/components/Layout';
 
-import { blockHeaderFill } from "../assets/style/colors";
+import { blockHeaderFill, headerPurple } from "../assets/style/colors";
 import { AddModelButton, ModelEditButton, ModelEditModal } from '../libraries/Web-Legos/components/Modals';
 import { WLAliceCarousel, createCarouselBreakpoints } from '../libraries/Web-Legos/components/Content';
 import { useEffect } from 'react';
@@ -94,7 +94,7 @@ export default function Gallery() {
     </section>
     <WaveTop color="#f5f5f5" />
     <section className='d-flex flex-column align-items-center justify-content-center' style={{backgroundColor: "#f5f5f5"}}>    
-      <WLHeader color="#a67fcf" firestoreId="nh-pictures-header" editable={userCanEditText}/>
+      <WLHeader color={headerPurple} firestoreId="nh-pictures-header" editable={userCanEditText}/>
       <div className="d-flex flex-column align-items-center justify-content-center px-xxl-5 px-xl-4 px-md-3 px-2" style={{width: "100%", overflow: "visible"}}>
         <WLAliceCarousel
           pagination
