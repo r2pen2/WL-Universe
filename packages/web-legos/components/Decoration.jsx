@@ -181,7 +181,9 @@ export function WLFlourishEdge({ color = "#ffffff", accent = "#a67fcf", height =
       </svg>
       <FlourishOrnament
         accent={accent}
-        style={{ position: "absolute", left: "50%", top: `${(peak + 4) / 64 * 100}%`, transform: "translateX(-50%)", width: ornamentWidth, maxWidth: "80%" }}
+        // Sits on the bottom of the edge: at full width that's where it always was, and as it shrinks on
+        // narrow screens it settles lower, inside the arch, instead of poking out over the section above.
+        style={{ position: "absolute", left: "50%", bottom: 0, transform: "translateX(-50%)", width: ornamentWidth, maxWidth: "50%" }}
       />
     </div>
   );

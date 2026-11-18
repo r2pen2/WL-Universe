@@ -47,7 +47,7 @@ export const FeaturedClipStory = {
   parameters: { fullSite: false, route: undefined },
   render: () => (
     <section className="d-flex flex-column align-items-center px-3 py-5">
-      <FeaturedClip clip={{ youtubeLink: "https://www.youtube.com/watch?v=rNOzgQm63BE", startTime: "0:36", endTime: "11:50" }} />
+      <FeaturedClip clip={{ youtubeLink: "https://www.youtube.com/watch?v=niYKpfztsI0", startTime: "0:35", endTime: "11:40" }} />
     </section>
   ),
 };

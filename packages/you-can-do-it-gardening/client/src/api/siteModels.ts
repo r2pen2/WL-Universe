@@ -415,7 +415,7 @@ export class GalleryVideo extends StaticSiteModel {
 
 /**
  * The homepage's featured clip: one YouTube video, played from startTime to endTime. Times are
- * written the way people say them ("0:36", "11:50"); a blank end plays to the end of the video.
+ * written the way people say them ("0:35", "11:40"); a blank end plays to the end of the video.
  */
 export class FeaturedClip extends StaticSiteModel {
   constructor() {
@@ -428,16 +428,19 @@ export class FeaturedClip extends StaticSiteModel {
   images = {}
   numbers = {}
   shortStrings = {
-    youtubeLink: "",
-    startTime: "0:36",
-    endTime: "11:50",
+    // New Hampshire PBS, "From Backyards to Bedrock Gardens | Windows to the Wild" (the newest
+    // appearance on Find Me). Shown until
+    // someone sets a clip in the CMS; saving a blank link there hides the section.
+    youtubeLink: "https://www.youtube.com/watch?v=niYKpfztsI0",
+    startTime: "0:35",
+    endTime: "11:40",
   }
   longStrings = {}
 
   fillConstantExampleData() {
-    this.shortStrings.youtubeLink = "https://www.youtube.com/watch?v=rNOzgQm63BE";
-    this.shortStrings.startTime = "0:36";
-    this.shortStrings.endTime = "11:50";
+    this.shortStrings.youtubeLink = "https://www.youtube.com/watch?v=niYKpfztsI0";
+    this.shortStrings.startTime = "0:35";
+    this.shortStrings.endTime = "11:40";
     return this;
   }
 
@@ -445,11 +448,14 @@ export class FeaturedClip extends StaticSiteModel {
     default: (new FeaturedClip()).fillConstantExampleData().toFirestore(),
   }
 
+  /** The clip the homepage shows while the CMS has none. */
+  static fallback = (new FeaturedClip()).toFirestore()
+
   fromFirestore(data: any) : FeaturedClip {
     const fc = new FeaturedClip();
     if (!data) { return fc; }
     fc.id = data.id;
-    fc.shortStrings.youtubeLink = data.youtubeLink || "";
+    fc.shortStrings.youtubeLink = data.youtubeLink ?? fc.shortStrings.youtubeLink;
     fc.shortStrings.startTime = data.startTime ?? fc.shortStrings.startTime;
     fc.shortStrings.endTime = data.endTime ?? fc.shortStrings.endTime;
     return fc;
