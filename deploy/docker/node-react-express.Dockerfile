@@ -1,8 +1,11 @@
 # syntax=docker/dockerfile:1
 
 ARG NODE_IMAGE=node:18-bookworm-slim
+# The client builds with Vite 8 (scripts/vite/wl-site.config.mjs), which needs Node 20.19+;
+# the Express server keeps running on NODE_IMAGE.
+ARG BUILD_NODE_IMAGE=node:24-bookworm-slim
 
-FROM ${NODE_IMAGE} AS client-builder
+FROM ${BUILD_NODE_IMAGE} AS client-builder
 ARG APP_DIR
 
 WORKDIR /repo/${APP_DIR}/client

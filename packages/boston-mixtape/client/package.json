@@ -29,7 +29,6 @@
     "react-material-ui-carousel": "^3.4.2",
     "react-responsive-carousel": "^3.2.23",
     "react-router-dom": "^6.11.2",
-    "react-scripts": "5.0.1",
     "react-slick": "^0.31.0",
     "react-sparkle": "^2.0.0",
     "react-type-animation": "^3.2.0",
@@ -39,20 +38,12 @@
     "wl-universe": "file:../../.."
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "start": "vite",
+    "build": "vite build",
     "sync:packages": "node ../../../scripts/sync-local-packages.mjs boston-mixtape",
     "prestart": "npm run sync:packages",
     "prebuild": "npm run sync:packages",
-    "pretest": "npm run sync:packages"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+    "preview": "vite preview"
   },
   "browserslist": {
     "production": [
@@ -68,8 +59,12 @@
   },
   "devDependencies": {
     "@testing-library/react": "^14.0.0",
+    "@vitejs/plugin-react": "^6.3.0",
+    "autoprefixer": "^10.6.2",
     "postcss": "^8.4.40",
     "postcss-preset-mantine": "^1.17.0",
-    "postcss-simple-vars": "^7.0.1"
+    "postcss-simple-vars": "^7.0.1",
+    "vite": "^8.3.8",
+    "vite-plugin-svgr": "^5.2.0"
   }
 }

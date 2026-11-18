@@ -8,7 +8,7 @@ Monorepo for WL shared packages and applications.
 - `packages/server-legos` — shared Express helpers (auth/forms shells, config shims)
 - `packages/wl-cms` — shared CMS microservice (site text, images, models)
 - `packages/site-mail` — shared mail microservice
-- `packages/<site>` — marketing apps (thin Express shell + CRA client)
+- `packages/<site>` — marketing apps (thin Express shell + React client built with Vite, `scripts/vite/wl-site.config.mjs`)
 - `deploy/` — Docker, compose, local stack
 - `scripts/sync-local-packages.mjs` — copies shared packages into nested `libraries` layouts
 
@@ -19,7 +19,7 @@ copy deploy\local\.env.example deploy\local\.env
 npm install --legacy-peer-deps
 
 npm run stack                          # wl-cms + wl-auth (+ forms/mail)
-npm run client -- nicole-levin         # CRA HMR
+npm run client -- nicole-levin         # Vite dev server (HMR)
 npm run client -- beyond-the-bell
 ```
 

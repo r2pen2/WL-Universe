@@ -48,7 +48,6 @@
     "react-flickity-component": "^5.0.0",
     "react-material-ui-carousel": "^3.4.2",
     "react-responsive-carousel": "^3.2.23",
-    "react-scripts": "5.0.1",
     "react-slick": "^0.31.0",
     "react-sparkle": "^2.0.0",
     "recharts": "^2.12.5",
@@ -60,20 +59,14 @@
     "wl-universe": "file:../../.."
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "start": "vite",
+    "build": "vite build",
+    "test": "vitest run",
     "sync:packages": "node ../../../scripts/sync-local-packages.mjs a-new-day-coaching-crm",
     "prestart": "npm run sync:packages",
     "prebuild": "npm run sync:packages",
-    "pretest": "npm run sync:packages"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+    "pretest": "npm run sync:packages",
+    "preview": "vite preview"
   },
   "browserslist": {
     "production": [
@@ -86,5 +79,12 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.3.0",
+    "jsdom": "^31.0.1",
+    "vite": "^8.3.8",
+    "vite-plugin-svgr": "^5.2.0",
+    "vitest": "^5.1.1"
   }
 }

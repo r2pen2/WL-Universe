@@ -5,7 +5,7 @@ import { Loader, Paper, Spoiler, Text } from "@mantine/core";
 // API Imports
 import { getEventTime, getVerboseDateString } from "../api/strings.js";
 import { LinkMaster } from "../api/links.ts";
-import { getCalendarEvents, mockEvents } from "../api/calendar.ts";
+import { getCalendarEvents } from "../api/calendar.ts";
 
 // Style Imports
 import "../assets/style/schedule.css";

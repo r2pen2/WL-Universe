@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * npm run client -- <site-slug>
- * Starts a CRA client with localhost wl-cms (and optional site-mail) env.
+ * Starts a site client (Vite dev server) with localhost wl-cms (and optional site-mail) env.
  */
 import { spawn } from "node:child_process";
 import fs from "node:fs";

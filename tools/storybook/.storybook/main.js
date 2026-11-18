@@ -3,7 +3,8 @@ import { fileURLToPath } from "node:url";
 import react from "@vitejs/plugin-react";
 import svgr from "vite-plugin-svgr";
 import fs from "node:fs";
-import { transformWithEsbuild } from "vite";
+import * as vite from "vite";
+import { craCompatPlugins } from "../../../scripts/vite/wl-site.config.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(here, "../../..");
@@ -23,7 +24,7 @@ export default {
     return mergeConfig(config, {
       plugins: [
         {
-          // `virtual:wl-site-fonts`: each site's web-font <link>s from its public/index.html, so
+          // `virtual:wl-site-fonts`: each site's web-font <link>s from its index.html, so
           // stories render in the site's real fonts.
           name: "wl-site-fonts",
           resolveId: (id) => (id === "virtual:wl-site-fonts" ? "\0wl-site-fonts" : null),
@@ -31,7 +32,7 @@ export default {
             if (id !== "\0wl-site-fonts") return null;
             const fonts = {};
             for (const site of fs.readdirSync(path.join(repoRoot, "packages"))) {
-              const html = path.join(repoRoot, "packages", site, "client", "public", "index.html");
+              const html = path.join(repoRoot, "packages", site, "client", "index.html");
               if (!fs.existsSync(html)) continue;
               const links = [...fs.readFileSync(html, "utf8").matchAll(/<link[^>]+href="([^"]+)"[^>]*>/g)]
                 .filter((m) => /rel="stylesheet"/.test(m[0]) && /fonts|webfonts/.test(m[1]))
@@ -41,32 +42,9 @@ export default {
             return `export default ${JSON.stringify(fonts)};`;
           },
         },
-        {
-          // CRA's SVG imports: the default export is the file URL and `ReactComponent` is the SVG as a
-          // component (`import logo, { ReactComponent as Logo } from "./logo.svg"`).
-          name: "wl-cra-svg",
-          enforce: "pre",
-          async resolveId(source, importer) {
-            if (!/\.svg$/.test(source) || !importer) return null;
-            const resolved = await this.resolve(source, importer, { skipSelf: true });
-            return resolved ? `\0cra-svg:${resolved.id}` : null;
-          },
-          load(id) {
-            if (!id.startsWith("\0cra-svg:")) return null;
-            const file = JSON.stringify(id.slice("\0cra-svg:".length));
-            return `import url from ${file.slice(0, -1)}?url"; export default url; export { default as ReactComponent } from ${file.slice(0, -1)}?react";`;
-          },
-        },
-        svgr(),
-        {
-          // CRA lets .js files contain JSX; compile those as JSX before anything else sees them.
-          name: "wl-js-as-jsx",
-          enforce: "pre",
-          async transform(code, id) {
-            if (!/\.js$/.test(id) || id.includes("node_modules")) return null;
-            return transformWithEsbuild(code, id, { loader: "jsx", jsx: "automatic" });
-          },
-        },
+        // The same CRA-compatibility plugins every site builds with (scripts/vite/wl-site.config.mjs):
+        // CRA-style SVG imports and JSX in .js files.
+        ...craCompatPlugins({ vite, svgr }),
         react({ include: /\.(js|jsx|ts|tsx)$/ }),
       ],
       resolve: {
