@@ -30,6 +30,7 @@ configureAuthClient({ site: "you-can-do-it-gardening" });
 const permissions = new WLPermissionsConfig({
   beforesAndAfters: "befores-and-afters",
   galleryVideo: "gallery-video",
+  featuredClip: "featured-clip",
   galleryPictures: "gallery-pictures",
   serviceItems: "service-items",
   mediaAppearances: "media-appearances",
