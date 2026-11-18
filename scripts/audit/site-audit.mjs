@@ -24,7 +24,8 @@ const SITES = [
   { slug: "talk-about-dreams", domain: "talkaboutdreams.com" },
   { slug: "boston-mixtape", domain: "bostonmixtape.com", aliases: ["bostonsoundtrack.com", "berachmusic.com", "bostonsbestmusic.com", "berachorchestra.com"] },
   { slug: "a-new-day-coaching", domain: "anewdaycoaching.com" },
-  { slug: "room01890", domain: "room01890.joed.dev" },
+  // A joed.dev subdomain: Traefik only routes the bare host, so there is no www to check.
+  { slug: "room01890", domain: "room01890.joed.dev", www: false },
 ];
 
 const PLATFORM = [
@@ -118,7 +119,8 @@ async function auditSite(site) {
   const title = /<title>([^<]*)<\/title>/i.exec(home.text)?.[1];
   console.log(`  title: ${short(title)}`);
 
-  const bundle = /<script[^>]+src="([^"]*\/static\/js\/main[^"]*\.js)"/i.exec(home.text)?.[1];
+  // Vite builds load the app from /assets/index-<hash>.js (the old CRA builds used /static/js/main.<hash>.js).
+  const bundle = /<script[^>]+src="([^"]*\/(?:assets\/index-|static\/js\/main)[^"]*\.js)"/i.exec(home.text)?.[1];
   if (!bundle) problem(label, "no main JS bundle referenced in index.html");
   else {
     const b = await get(new URL(bundle, home.finalUrl).toString());
@@ -126,7 +128,7 @@ async function auditSite(site) {
     if (b.status !== 200) problem(label, `main bundle returned ${b.status || b.error}`);
   }
 
-  for (const host of [`www.${site.domain}`, ...(site.aliases || [])]) {
+  for (const host of [...(site.www === false ? [] : [`www.${site.domain}`]), ...(site.aliases || [])]) {
     const r = await getFollow(`https://${host}/`);
     console.log(`  ${host}: ${r.chain.join(" -> ")}`);
     if (r.status !== 200) problem(label, `${host} returned ${r.status || r.error}`);
