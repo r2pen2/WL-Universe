@@ -21,7 +21,7 @@ export default function Psychotherapy({userCanEditText, modelEditModalOpen, setM
   }, [])
   
   const PsychotherapyBodyText = ({indent}) => (
-    <WLTextV2 color="#8C8C8C" indent={indent} align="left" firestoreId="psychotherapy-body-text" editable={userCanEditText}/>
+    <WLTextV2 color="#6E6E6E" indent={indent} align="left" firestoreId="psychotherapy-body-text" editable={userCanEditText}/>
   )
 
   const PsychotherapyHeader = ({className, align}) => (
@@ -45,10 +45,10 @@ export default function Psychotherapy({userCanEditText, modelEditModalOpen, setM
   )
 
   const Treatment = ({t}) => (
-    <div className="py-2 col-12 col-md-6 col-lg-4 treatment d-flex flex-column align-items-center justify-content-center">
+    <li style={{listStyle: "none"}} className="py-2 col-12 col-md-6 col-lg-4 treatment d-flex flex-column align-items-center justify-content-center">
       <Text>{t.title}</Text>
       <ModelEditButton setCurrentModel={setCurrentModel} setEditModalOpen={setModelEditModalOpen} data={t} userCanEdit={userCanEditText} model={TreatmentItem}/>
-    </div>
+    </li>
   )
 
   const WhiteSection = () => (

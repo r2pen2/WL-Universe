@@ -32,7 +32,7 @@ export const Nav = () => {
     maxWidth="xl"
     className='d-flex d-lg-none z-high gibbons-regular'
   >
-    <NextUINavbar.Toggle onChange={(s) => setIsSideMenuOpen(s)} ref={navbarToggleRef}/>
+    <NextUINavbar.Toggle aria-label="Open menu" onChange={(s) => setIsSideMenuOpen(s)} ref={navbarToggleRef}/>
     <NextUINavbar.Collapse>
       <NextUINavbar.CollapseItem
       >

@@ -90,6 +90,8 @@ export default function Home() {
           slideSize={{ base: '90%', md: '50%' }}
           // align="start"
           loop
+          previousControlProps={{ 'aria-label': 'Previous slide' }}
+          nextControlProps={{ 'aria-label': 'Next slide' }}
         >
           {performers.map((performer, index) => <PerformerSlide key={index} performer={performer} />)}
         </Carousel>

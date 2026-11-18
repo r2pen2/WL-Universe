@@ -48,7 +48,7 @@ const collapseItems = [
     href: "find-me",
   },
   {
-    faq: "FAQ",
+    name: "FAQ",
     href: "faq"
   }
 ];
@@ -129,7 +129,7 @@ export function Navbar() {
     >
       <WLNavContent>
         <WLNavContent.Left>
-          <NextUINavbar.Toggle className="d-flex d-xxl-none px-3" />
+          <NextUINavbar.Toggle aria-label="Open menu" className="d-flex d-xxl-none px-3" />
           <WLNavBrandLeft showIn="md" source={logoBlack} title="You Can Do It Gardening" />
           <Divider className="d-none d-xxl-inline" css={{width: "3rem", marginLeft: "1rem"}}/>
           <NavbarPages />
