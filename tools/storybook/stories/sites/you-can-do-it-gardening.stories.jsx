@@ -1,5 +1,6 @@
 import { FullSite } from "../_support/site.jsx";
 import MailingListButton from "../../../../packages/you-can-do-it-gardening/client/src/components/MailingListButton.jsx";
+import FeaturedClip from "../../../../packages/you-can-do-it-gardening/client/src/components/FeaturedClip.jsx";
 import GardenDrift from "../../../../packages/you-can-do-it-gardening/client/src/components/GardenDrift.jsx";
 import { WLFlourishEdge } from "../../../../packages/web-legos/components/Decoration.jsx";
 import "../../../../packages/you-can-do-it-gardening/client/src/assets/style/homepage.css";
@@ -37,5 +38,16 @@ export const MailingListButtonStory = {
     <div className="background-image d-flex justify-content-center align-items-center" style={{ height: 240 }}>
       <MailingListButton />
     </div>
+  ),
+};
+
+/** The homepage's featured clip (CMS: featured-clip), above the testimonials. */
+export const FeaturedClipStory = {
+  name: "Featured clip",
+  parameters: { fullSite: false, route: undefined },
+  render: () => (
+    <section className="d-flex flex-column align-items-center px-3 py-5">
+      <FeaturedClip clip={{ youtubeLink: "https://www.youtube.com/watch?v=rNOzgQm63BE", startTime: "0:36", endTime: "11:50" }} />
+    </section>
   ),
 };

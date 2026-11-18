@@ -413,6 +413,49 @@ export class GalleryVideo extends StaticSiteModel {
   }
 }
 
+/**
+ * The homepage's featured clip: one YouTube video, played from startTime to endTime. Times are
+ * written the way people say them ("0:36", "11:50"); a blank end plays to the end of the video.
+ */
+export class FeaturedClip extends StaticSiteModel {
+  constructor() {
+    super("featured-clip", "Featured Clip")
+  }
+
+  editText = "Change Featured Clip"
+
+  booleans = {}
+  images = {}
+  numbers = {}
+  shortStrings = {
+    youtubeLink: "",
+    startTime: "0:36",
+    endTime: "11:50",
+  }
+  longStrings = {}
+
+  fillConstantExampleData() {
+    this.shortStrings.youtubeLink = "https://www.youtube.com/watch?v=rNOzgQm63BE";
+    this.shortStrings.startTime = "0:36";
+    this.shortStrings.endTime = "11:50";
+    return this;
+  }
+
+  static examples = {
+    default: (new FeaturedClip()).fillConstantExampleData().toFirestore(),
+  }
+
+  fromFirestore(data: any) : FeaturedClip {
+    const fc = new FeaturedClip();
+    if (!data) { return fc; }
+    fc.id = data.id;
+    fc.shortStrings.youtubeLink = data.youtubeLink || "";
+    fc.shortStrings.startTime = data.startTime ?? fc.shortStrings.startTime;
+    fc.shortStrings.endTime = data.endTime ?? fc.shortStrings.endTime;
+    return fc;
+  }
+}
+
 export class ExternalResource extends SiteModel {
   constructor() {
     super("external-resources", "Resource")
