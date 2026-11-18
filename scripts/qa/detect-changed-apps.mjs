@@ -10,7 +10,8 @@
  *   - deploy/compose/<app>.yml → that app
  *   - deploy/dns/sites/<app>.json → that app (inbound mail DNS)
  *   - packages/web-legos/** → all SPA apps (+ storybook)
- *   - tools/storybook/**, packages/<site>/client/{src,public}/** → storybook
+ *   - tools/storybook/**, packages/<site>/client/{src,public,index.html} → storybook
+ *   - scripts/vite/** (the shared Vite config) → all SPA apps (+ storybook)
  *   - packages/server-legos/ CMS modules (siteText/Images/Models, cmsCollections)
  *     → SPA apps with cms: true only
  *   - other packages/server-legos/** → all SPA apps
@@ -96,12 +97,14 @@ function detect(files, catalog) {
       (file.startsWith("tools/storybook/") ||
         file.startsWith("deploy/docker/storybook") ||
         file.startsWith("packages/web-legos/") ||
-        /^packages\/[^/]+\/client\/(src|public)\//.test(file))
+        file.startsWith("scripts/vite/") ||
+        /^packages\/[^/]+\/client\/((src|public)\/|index\.html$)/.test(file))
     ) {
       selected.add("storybook");
       if (file.startsWith("tools/storybook/") || file.startsWith("deploy/docker/storybook")) continue;
     }
-    if (file.startsWith("packages/web-legos/")) {
+    if (file.startsWith("packages/web-legos/") || file.startsWith("scripts/vite/")) {
+      // web-legos is in every site; scripts/vite is the config every site builds with.
       sharedLibs = true;
       continue;
     }

@@ -46,7 +46,7 @@ Every form a visitor submits (contact, inquiry, sign-up) saves a `FormResponse` 
 
 When asked to rebuild an existing site, the first pass should include all of this:
 
-- **New package.** Hand-written CRA site in `packages/<slug>/`, copied from the newest v2 site (currently `room01890`, or `boston-mixtape`), with a new siteKey in the shared `wladminportal` project. Work on a branch or worktree off `main`.
+- **New package.** Hand-written React site in `packages/<slug>/` (built with the shared Vite config, `scripts/vite/wl-site.config.mjs`; its `vite.config.mjs` is the same three lines as every site's), copied from the newest v2 site (currently `room01890`, or `boston-mixtape`), with a new siteKey in the shared `wladminportal` project. Work on a branch or worktree off `main`.
 - **Text.** Every piece of copy is a WL header or text element (`WLLayoutHeader` / `WLLayoutText`, or `WLHeaderV2` / `WLTextV2`) with a readable kebab-case id per section (`hero-header`, `footer-mission-text`). Keep the source copy exactly, typos included, in `content.js`; it doubles as the fallback. Seed it with a `scripts/seed-cms.mjs`.
 - **Images.** Every photo is a `WLImageV2`, loaded from the source site's own image files and seeded into the CMS. Logos and SVG icons/glyphs are downloaded into `source-assets/` and bundled.
 - **Contact info and forms.** Contact info follows rule 1 and forms follow rule 2.
@@ -71,7 +71,7 @@ When asked to rebuild an existing site, the first pass should include all of thi
 - **The baseline.** Violations that existed when the lint was added are listed in `tools/wl-lint/eslint-suppressions.json`.
   - Fixing one requires pruning it from that file in the same PR: `npm run lint:wl -- --prune-suppressions`. CI checks this, so the baseline only shrinks.
   - **Never** run `--suppress-all` to get a new violation through; fix it.
-- **Installing.** `npm ci --prefix tools/wl-lint`. It is kept out of the workspaces on purpose: it uses ESLint 10, and the CRA builds use ESLint 8.
+- **Installing.** `npm ci --prefix tools/wl-lint`. It is kept out of the workspaces on purpose, so its ESLint 10 stays out of the root lockfile.
 
 ## 5. General
 
