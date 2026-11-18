@@ -108,7 +108,7 @@ export const SERVICE_TYPES = ["Consulting", "Card Games", "Space Rental"];
 
 /**
  * Contact info (WLEmailAddress / WLPhoneNumber / WLStreetAddress). The values live in the CMS
- * (Site settings → Contact info); these are shown until it has them.
+ * (the Contact info menu); these are shown until it has them.
  */
 export const CONTACTS = {
   email: "info@room01890.com",

@@ -3,7 +3,7 @@ import { WLContactList, WLEmailAddress, WLPhoneNumber, WLStreetAddress } from ".
 /**
  * Contact info as links (AGENTS.md rule 1). Values come from the site's contacts in the CMS
  * (room01890's here); the link is built from the value. Sites only change how they look, with
- * `style` / `className`. Admins edit the values in the Site settings menu (Admin menus).
+ * `style` / `className`. Admins edit the values in the Contact info menu (Admin menus).
  */
 export default {
   title: "UI elements/Contact links",

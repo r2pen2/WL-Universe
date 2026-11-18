@@ -27,7 +27,7 @@ import { WLEmailAddress, WLPhoneNumber, WLStreetAddress } from "../libraries/Web
 - **Where the values live.** They are stored in the CMS (wl-cms model collection `siteContacts`, one per siteKey). A site can have any number of each type. Pick one with `id` or `index`; with neither, you get the first of its type.
 - **Fallbacks.** `fallback` is the value shown until the CMS has one. Put a site's fallbacks in one place (e.g. `CONTACTS` in `content.js`).
 - **Seeding.** Add the site's starting contacts to [deploy/cms/site-contacts.json](deploy/cms/site-contacts.json). The deploy workflow seeds a site from that file only while its CMS has none.
-- **Editing.** Admins edit contacts in **Site settings**. `FooterAuthButton` adds the Site settings button and makes the components clickable for admins, so the site needs no extra wiring beyond rendering `FooterAuthButton`.
+- **Editing.** Admins edit contacts in the **Contact info** menu. `FooterAuthButton` adds the Contact info button and makes the components clickable for admins, so the site needs no extra wiring beyond rendering `FooterAuthButton`.
 - **Icon buttons and other hrefs.** For a link that isn't the address itself (an envelope icon, a "Call us" button), use `useContactHref("phone", { fallback })` from `api/contacts.ts` instead of a literal href.
 - **Contact info inside CMS paragraphs.** Emails and phone numbers that appear in running text are linked automatically when WL text renders. Don't hand-write links into seeded copy.
 - **Exceptions.** Only `window.alert` strings, form placeholders and `MailManager` recipient lists may contain a bare address.
@@ -37,7 +37,7 @@ import { WLEmailAddress, WLPhoneNumber, WLStreetAddress } from "../libraries/Web
 Every form a visitor submits (contact, inquiry, sign-up) saves a `FormResponse` through wl-forms and sends an email through site-mail. Never use `mailto:` forms, third-party form services, Wix/Google Forms embeds, or Firestore writes from the client.
 
 - **Saving the response.** `new FormResponse(formId)` from `api/admin.ts`, with readable `content` keys (e.g. "First Name"). `formId` is `<site>-<form>`, e.g. `room01890-inquiry`. Responses land in the shared `siteForms` collection.
-- **Notification.** Create a `MailManager` in `App.jsx` for the site's profile, `addRecipientEmail()` the client's address and `joedobbelaar@gmail.com`, and send a short summary of the submission.
+- **Notification.** Create a `MailManager` in `App.jsx` for the site's profile and send a short summary of the submission. Where it goes is set by the client in the **Contact info** menu ("Contact form messages go to", stored as `formRecipient` entries in `siteContacts`). Seed the client's address there in [deploy/cms/site-contacts.json](deploy/cms/site-contacts.json) and also pass it to `addRecipientEmail()` as the fallback. Add `joedobbelaar@gmail.com` with `addHiddenRecipient()` so it is always copied but never listed in the menu.
 - **Success and errors.** Show success if either the form save or the email went through. Show a friendly error only if both failed, and include `WLEmailAddress` in it.
 - **Spam.** Add a hidden honeypot field. Only add reCAPTCHA if the site already has a key for its domain.
 - **Registration.** Register the site in [packages/wl-forms/lib/sites.js](packages/wl-forms/lib/sites.js) and set up the mail profile (`SITE_<SLUG>_*` in site-mail).

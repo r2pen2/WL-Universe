@@ -32,7 +32,7 @@ import { CmsManager } from "./libraries/Web-Legos/api/cms.ts"
 import { configureAuthClient, configureFormsClient } from "./libraries/Web-Legos/api/services.ts"
 
 export const ANDCMailManager = new MailManager({ site: "andc" });
-ANDCMailManager.addRecipientEmail("joedobbelaar@gmail.com");
+ANDCMailManager.addHiddenRecipient("joedobbelaar@gmail.com");
 ANDCMailManager.addRecipientEmail("rachel.newday@gmail.com");
 
 CmsManager.configure({ site: "a-new-day-coaching" });

@@ -1,3 +1,5 @@
+import { FORM_RECIPIENT, enableFormRecipients, loadFormRecipients, registerContactFallback } from "./contacts.ts";
+
 type MailManagerOptions = {
   /** Site profile slug sent to site-mail (e.g. beyond-the-bell, andc) */
   site?: string;
@@ -5,6 +7,12 @@ type MailManagerOptions = {
   apiUrl?: string;
   /** Bearer API key for site-mail */
   apiKey?: string;
+  /**
+   * Send to the contact form recipients saved in the site's Contact info menu (CMS), when there are
+   * any, instead of the addresses given to addRecipientEmail. Default true; turn off for mail that
+   * isn't the site's contact form.
+   */
+  formRecipientsFromCms?: boolean;
 };
 
 type MailRuntimeConfig = {
@@ -32,7 +40,11 @@ export class MailManager {
   site: string;
   apiUrl: string;
   apiKey: string;
+  /** Fallback recipients, used while the Contact info menu has none saved (shown there as drafts). */
   recipientEmails: string[] = [];
+  /** Always copied, and never listed in the Contact info menu (e.g. the developer). */
+  hiddenRecipientEmails: string[] = [];
+  formRecipientsFromCms: boolean;
   private configLoaded = false;
 
   constructor(options: MailManagerOptions = {}) {
@@ -56,10 +68,38 @@ export class MailManager {
       readEnv("REACT_APP_SITE_MAIL_API_KEY") ||
       readEnv("SITE_MAIL_API_KEY") ||
       "";
+    this.formRecipientsFromCms = options.formRecipientsFromCms !== false;
+    if (this.formRecipientsFromCms) enableFormRecipients();
   }
 
+  /** Where messages go until the site's Contact info menu has form recipients saved. */
   addRecipientEmail(toAddress: string) {
     this.recipientEmails.push(toAddress);
+    if (this.formRecipientsFromCms) registerContactFallback(FORM_RECIPIENT, toAddress);
+  }
+
+  /** Copied on every message, whatever the menu says, and never shown in it. */
+  addHiddenRecipient(toAddress: string) {
+    this.hiddenRecipientEmails.push(toAddress);
+  }
+
+  /** The saved form recipients (or the fallbacks), plus the hidden ones, without duplicates. */
+  async resolveRecipients(): Promise<string[]> {
+    let saved: string[] = [];
+    if (this.formRecipientsFromCms) {
+      try {
+        saved = await loadFormRecipients();
+      } catch {
+        saved = [];
+      }
+    }
+    const seen = new Set<string>();
+    return [...(saved.length ? saved : this.recipientEmails), ...this.hiddenRecipientEmails].filter((to) => {
+      const key = to.trim().toLowerCase();
+      if (!key || seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
   }
 
   /**
@@ -117,8 +157,9 @@ export class MailManager {
 
     // Send in parallel so a slow second recipient is not lost if the page
     // navigates away mid-loop (contact forms historically fire-and-forget).
+    const recipients = await this.resolveRecipients();
     const results = await Promise.all(
-      this.recipientEmails.map(async (to) => {
+      recipients.map(async (to) => {
         const response = await fetch(`${this.apiUrl}/v1/send`, {
           method: "POST",
           headers: {

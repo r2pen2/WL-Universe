@@ -5,13 +5,15 @@ import { CmsManager } from "./cms.ts";
  * Site contact info (email addresses, phone numbers, street addresses), kept in the CMS so a site
  * can list any number of each. Stored with the site models (wl-cms `/site-models`), collection
  * `siteContacts` (`siteContacts-<siteKey>` on v2 sites). One document per contact:
- *   { type: "email" | "phone" | "address", value: string, order: number }
+ *   { type: "email" | "phone" | "address" | "formRecipient", value: string, order: number }
  *
  * WLEmailAddress / WLPhoneNumber / WLStreetAddress (components/Contacts.jsx) render them as links and
- * build the href (mailto: / tel: / Google Maps) automatically. Admins edit them in Site settings.
+ * build the href (mailto: / tel: / Google Maps) automatically. "formRecipient" entries are never
+ * shown on the page: they're the addresses the site's contact form sends to (MailManager reads
+ * them). Admins edit all of it in the Contact info menu (components/SiteSettings.jsx).
  */
 
-export type ContactType = "email" | "phone" | "address";
+export type ContactType = "email" | "phone" | "address" | "formRecipient";
 
 export type SiteContact = {
   id: string;
@@ -21,7 +23,11 @@ export type SiteContact = {
 };
 
 export const CONTACTS_COLLECTION = "siteContacts";
+/** Contact types shown on the page. */
 export const CONTACT_TYPES: ContactType[] = ["email", "phone", "address"];
+/** Where contact form messages go (not shown on the page). */
+export const FORM_RECIPIENT: ContactType = "formRecipient";
+const STORED_TYPES: ContactType[] = [...CONTACT_TYPES, FORM_RECIPIENT];
 
 // ------------------------------------------------------------------ hrefs
 
@@ -72,7 +78,7 @@ export function addressHref(value: string): string {
 
 export function contactHref(type: ContactType, value: string): string {
   if (!value) return "";
-  if (type === "email") return emailHref(value);
+  if (type === "email" || type === FORM_RECIPIENT) return emailHref(value);
   if (type === "phone") return phoneHref(value);
   return addressHref(value);
 }
@@ -81,7 +87,7 @@ export function contactHref(type: ContactType, value: string): string {
 export function validateContact(type: ContactType, value: string): string {
   const v = String(value || "").trim();
   if (!v) return "Required";
-  if (type === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) return "Not an email address";
+  if ((type === "email" || type === FORM_RECIPIENT) && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) return "Not an email address";
   if (type === "phone" && phoneHref(v).replace(/\D/g, "").length < 7) return "Not a phone number";
   return "";
 }
@@ -95,7 +101,9 @@ type State = {
   loaded: boolean;
   canEdit: boolean;
   settings: SettingsState;
-  /** Values the page renders while the CMS has none of that type, offered as drafts in Site settings. */
+  /** True once the page has a contact form (a MailManager), so the menu offers form recipients. */
+  hasContactForm: boolean;
+  /** Values the page renders while the CMS has none of that type, offered as drafts in the Contact info menu. */
   fallbacks: { [type: string]: string[] };
 };
 
@@ -104,6 +112,7 @@ let state: State = {
   loaded: false,
   canEdit: false,
   settings: { open: false, section: "contacts", contactId: null, type: null },
+  hasContactForm: false,
   fallbacks: {},
 };
 const listeners = new Set<() => void>();
@@ -133,7 +142,7 @@ function normalize(raw: any[]): SiteContact[] {
   if (!Array.isArray(raw)) return [];
   return sortContacts(
     raw
-      .filter((doc) => doc && CONTACT_TYPES.includes(doc.type) && typeof doc.value === "string" && doc.value.trim())
+      .filter((doc) => doc && STORED_TYPES.includes(doc.type) && typeof doc.value === "string" && doc.value.trim())
       .map((doc) => ({ id: String(doc.id), type: doc.type, value: doc.value, order: Number(doc.order) || 0 })),
   );
 }
@@ -200,7 +209,7 @@ export function setContactsEditable(canEdit: boolean) {
   if (state.canEdit !== canEdit) setState({ canEdit });
 }
 
-/** Open Site settings (mounted by FooterAuthButton for admins), optionally at one contact. */
+/** Open the Contact info menu (mounted by FooterAuthButton for admins), optionally at one contact. */
 export function openSiteSettings(options: { section?: string; contactId?: string | null; type?: ContactType | null } = {}) {
   setState({
     settings: { open: true, section: options.section || "contacts", contactId: options.contactId || null, type: options.type || null },
@@ -217,6 +226,18 @@ export function registerContactFallback(type: ContactType, value: string) {
   setState({ fallbacks: { ...state.fallbacks, [type]: [...current, value] } });
 }
 
+/** Called by MailManager: the page has a contact form, so the menu lists where it sends. */
+export function enableFormRecipients() {
+  if (!state.hasContactForm) setState({ hasContactForm: true });
+}
+
+/** The addresses saved for the contact form ([] when none are saved or the CMS can't be reached). */
+export async function loadFormRecipients(): Promise<string[]> {
+  await loadContacts();
+  // Read the store, not the load's result, so values saved since the page loaded count.
+  return state.contacts.filter((contact) => contact.type === FORM_RECIPIENT).map((contact) => contact.value.trim());
+}
+
 /** Test hook: forget everything loaded. */
 export function resetContactsStore() {
   loading = null;
@@ -225,6 +246,7 @@ export function resetContactsStore() {
     loaded: false,
     canEdit: false,
     settings: { open: false, section: "contacts", contactId: null, type: null },
+    hasContactForm: false,
     fallbacks: {},
   };
   listeners.forEach((listener) => listener());
@@ -243,10 +265,10 @@ export function useContactsStore(): State {
   return current;
 }
 
-/** Every contact of a type (or all of them), in display order. */
+/** Every contact of a type (or every one shown on the page), in display order. */
 export function useSiteContacts(type?: ContactType): SiteContact[] {
   const { contacts } = useContactsStore();
-  return type ? contacts.filter((contact) => contact.type === type) : contacts;
+  return type ? contacts.filter((contact) => contact.type === type) : contacts.filter((contact) => CONTACT_TYPES.includes(contact.type));
 }
 
 /**

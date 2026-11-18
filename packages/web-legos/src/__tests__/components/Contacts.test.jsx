@@ -1,9 +1,10 @@
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react"
 import "@testing-library/jest-dom"
 import { WLContactList, WLEmailAddress, WLPhoneNumber, WLStreetAddress } from "../../../components/Contacts"
-import { SiteSettingsModal } from "../../../components/SiteSettings"
+import { ContactInfoModal as SiteSettingsModal } from "../../../components/SiteSettings"
+import { MailManager } from "../../../api/mail.ts"
 import { CmsManager } from "../../../api/cms.ts"
-import { resetContactsStore, setContactsEditable } from "../../../api/contacts.ts"
+import { openSiteSettings, resetContactsStore, setContactsEditable } from "../../../api/contacts.ts"
 
 let docs
 let posts
@@ -89,8 +90,8 @@ describe("WL contact links", () => {
   })
 })
 
-describe("editing through Site settings", () => {
-  test("admins click a contact to open Site settings at it, edit, and save", async () => {
+describe("editing through the Contact info menu", () => {
+  test("admins click a contact to open the Contact info menu at it, edit, and save", async () => {
     mockCms([{ id: "email-main", type: "email", value: "hello@site.com", order: 0 }])
     render(<>
       <WLEmailAddress ariaLabel="email" />
@@ -100,7 +101,7 @@ describe("editing through Site settings", () => {
     await waitFor(() => expect(screen.getByLabelText("email")).toHaveTextContent("hello@site.com"))
     act(() => setContactsEditable(true))
 
-    // Clicking doesn't follow the link; it opens Site settings with the contact focused.
+    // Clicking doesn't follow the link; it opens the Contact info menu with the contact focused.
     const click = new MouseEvent("click", { bubbles: true, cancelable: true })
     act(() => { screen.getByLabelText("email").dispatchEvent(click) })
     expect(click.defaultPrevented).toBe(true)
@@ -143,5 +144,55 @@ describe("editing through Site settings", () => {
     await waitFor(() => expect(screen.getByLabelText("email")).toHaveTextContent("two@site.com"))
     expect(posts).toContainEqual(expect.objectContaining({ documentId: "e1", action: "delete" }))
     expect(docs).toEqual([expect.objectContaining({ id: "e2", order: 0 })])
+  })
+})
+
+describe("contact form recipients", () => {
+  test("the menu lists them only on sites with a contact form, without the hidden copy", async () => {
+    mockCms([{ id: "e1", type: "email", value: "hello@site.com", order: 0 }])
+    render(<SiteSettingsModal />)
+    act(() => openSiteSettings())
+    await screen.findByLabelText("Email addresses 1")
+    expect(screen.queryByText("Contact form messages go to")).toBeNull()
+  })
+
+  test("a MailManager adds the group, with its fallbacks as drafts and the hidden recipient left out", async () => {
+    mockCms([{ id: "e1", type: "email", value: "hello@site.com", order: 0 }])
+    const mail = new MailManager({ site: "test-site", apiKey: "m" })
+    mail.addHiddenRecipient("dev@wl.test")
+    mail.addRecipientEmail("owner@site.com")
+    render(<SiteSettingsModal />)
+    act(() => openSiteSettings())
+    expect(await screen.findByText("Contact form messages go to")).toBeInTheDocument()
+    expect(await screen.findByLabelText("Contact form messages go to 1")).toHaveValue("owner@site.com")
+    expect(screen.queryByLabelText("Contact form messages go to 2")).toBeNull()
+    expect(screen.queryByDisplayValue("dev@wl.test")).toBeNull()
+    // No descriptions or hints, just the fields.
+    expect(screen.queryByText(/not saved yet|Link:|Shown everywhere/)).toBeNull()
+
+    fireEvent.click(screen.getByLabelText("site-settings-save"))
+    await waitFor(() => expect(docs).toContainEqual(expect.objectContaining({ type: "formRecipient", value: "owner@site.com", order: 0 })))
+    // Page contact components never show recipients.
+    render(<WLEmailAddress ariaLabel="email" index={1} fallback="none@site.com" />)
+    expect(screen.getByLabelText("email")).toHaveTextContent("none@site.com")
+  })
+
+  test("MailManager sends to the saved recipients plus the hidden ones, else its fallbacks", async () => {
+    mockCms([
+      { id: "r1", type: "formRecipient", value: "Saved@Site.com", order: 0 },
+      { id: "r2", type: "formRecipient", value: "dev@wl.test", order: 1 },
+    ])
+    const mail = new MailManager({ site: "test-site", apiKey: "m" })
+    mail.addRecipientEmail("fallback@site.com")
+    mail.addHiddenRecipient("dev@wl.test")
+    expect(await mail.resolveRecipients()).toEqual(["Saved@Site.com", "dev@wl.test"])
+
+    resetContactsStore()
+    mockCms([])
+    expect(await mail.resolveRecipients()).toEqual(["fallback@site.com", "dev@wl.test"])
+
+    const off = new MailManager({ site: "test-site", apiKey: "m", formRecipientsFromCms: false })
+    off.addRecipientEmail("only@site.com")
+    expect(await off.resolveRecipients()).toEqual(["only@site.com"])
   })
 })
