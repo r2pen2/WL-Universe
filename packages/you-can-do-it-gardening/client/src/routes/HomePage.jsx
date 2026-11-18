@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
 import { Button, Text, Divider, Spacer } from "@nextui-org/react";
-import Alert from "@mui/material/Alert";
-import Snackbar from "@mui/material/Snackbar";
 
 import "../assets/style/homepage.css"
 
@@ -31,10 +29,8 @@ import { CurrentSignInContext } from '../App';
 import { AuthenticationManager } from '../libraries/Web-Legos/api/auth.ts';
 import { cmsAssetUrl } from '../libraries/Web-Legos/api/cms.ts';
 import { AnalyticsManager } from '../libraries/Web-Legos/api/analytics.ts';
-import { mailingListLink } from '../api/links.js';
 import GardenDrift from '../components/GardenDrift';
-
-const MAILING_LIST_PROMPT_DELAY_MS = 5000;
+import MailingListButton from '../components/MailingListButton';
 
 export const textGradient = {textGradient: "0deg, $purple600 -20%, $pink600 100%"}
 
@@ -76,8 +72,6 @@ export default function HomePage() {
   // const [feelDescriptionLoaded, setFeelDescriptionLoaded] = useState(false);              // Whether "Feels Good" description has loaded
   const [beforesAndAftersHeaderLoaded, setBeforesAndAftersHeaderLoaded] = useState(false);// Whether "Befores and Afters" header has loaded
 
-  const [mailingListPromptOpen, setMailingListPromptOpen] = useState(false);
-
   function TestimonialCard({testimonial}) {
     return (
       <div className="p-2 gap-2 d-flex flex-column align-items-center justify-content-center" style={{minHeight: 300, height: '100%', userSelect: "none"}}>
@@ -109,29 +103,6 @@ export default function HomePage() {
     BeforeAndAfter.getAndSet(setBeforesAndAfters, setBeforesAndAftersFetched)
     Testimonial.getAndSet(setTestimonials, setTestimonialsFetched);
   }, [])
-
-  function dismissMailingListPrompt() {
-    setMailingListPromptOpen(false);
-  }
-
-  function handleMailingListSnackbarClose(_event, reason) {
-    if (reason === "clickaway") {
-      return;
-    }
-    dismissMailingListPrompt();
-  }
-
-  function handleJoinMailingListClick() {
-    window.open(mailingListLink, "_blank", "noopener,noreferrer");
-    dismissMailingListPrompt();
-  }
-
-  useEffect(() => {
-    const timerId = window.setTimeout(() => {
-      setMailingListPromptOpen(true);
-    }, MAILING_LIST_PROMPT_DELAY_MS);
-    return () => window.clearTimeout(timerId);
-  }, []);
 
   /**
    * A button scaled to the screen width that opens the {@link ContactModal}
@@ -211,9 +182,7 @@ export default function HomePage() {
             <WLHeader headerLevel={2} firestoreId="home-subtitle" editable={userCanEditText}/>
           </div>
           <div className="elevated mt-3 d-flex flex-row text-center align-items-center justify-content-center w-100">
-            <div className="mailing-list-wobble">
-              <Alert className="mailing-list-alert" severity="success"><a target="_blank" rel="noreferrer" href={mailingListLink}>Click here to join my mailing list!</a></Alert>
-            </div>
+            <MailingListButton />
           </div>
         </div>
         {/* <img alt="leaf-line" src={home3} className="background-pattern" />
@@ -282,38 +251,6 @@ export default function HomePage() {
         <AddModelButton userCanEdit={userCanEditBeforesAndAfters} model={BeforeAndAfter} setCurrentModel={setCurrentModel} setEditModalOpen={setModelEditModalOpen} />
       </section>
     </WLSpinnerPage>
-    <Snackbar
-      open={mailingListPromptOpen}
-      anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      autoHideDuration={null}
-      onClose={handleMailingListSnackbarClose}
-      sx={{
-        top: { xs: "calc(12px + env(safe-area-inset-top, 0px))", sm: "calc(20px + env(safe-area-inset-top, 0px))" },
-        zIndex: 20000,
-      }}
-    >
-      <Alert
-        severity="info"
-        variant="filled"
-        onClose={dismissMailingListPrompt}
-        icon={false}
-        onClick={(e) => {
-          if (e.target.closest("button")) {
-            return;
-          }
-          handleJoinMailingListClick();
-        }}
-        sx={{
-          alignItems: "center",
-          cursor: "pointer",
-          whiteSpace: "nowrap",
-          width: "max-content",
-          maxWidth: "calc(100vw - 48px)",
-        }}
-      >
-        Click to join my newsletter.
-      </Alert>
-    </Snackbar>
     </>
   )
 }

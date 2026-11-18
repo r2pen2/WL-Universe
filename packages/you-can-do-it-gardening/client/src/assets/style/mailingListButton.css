@@ -1,0 +1,51 @@
+/* The hero's mailing-list button: a slow figure-eight wobble that lifts on hover. */
+.mailing-list-wobble {
+  animation: mailing-list-figure-eight 5.5s linear infinite;
+  transform-origin: center;
+  will-change: transform;
+}
+
+.mailing-list-alert {
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  transform-origin: center;
+}
+
+.mailing-list-alert:hover,
+.mailing-list-alert:focus-within {
+  box-shadow: 0 0.35rem 1rem rgba(0, 0, 0, 0.2);
+  transform: scale(1.06);
+}
+
+@keyframes mailing-list-figure-eight {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  12.5% {
+    transform: translate(3px, -2px) rotate(0.7deg);
+  }
+  25% {
+    transform: translate(5px, 0) rotate(0deg);
+  }
+  37.5% {
+    transform: translate(3px, 2px) rotate(-0.7deg);
+  }
+  50% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  62.5% {
+    transform: translate(-3px, -2px) rotate(-0.7deg);
+  }
+  75% {
+    transform: translate(-5px, 0) rotate(0deg);
+  }
+  87.5% {
+    transform: translate(-3px, 2px) rotate(0.7deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mailing-list-wobble {
+    animation: none;
+  }
+}
