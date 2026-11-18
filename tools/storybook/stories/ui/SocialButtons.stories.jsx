@@ -1,6 +1,7 @@
 import { WLFooterSocials } from "../../../../packages/web-legos/components/Footer.jsx";
 import { WLNavSocials } from "../../../../packages/web-legos/components/Navigation.jsx";
 import { SocialButton, SocialIcon, platformKeys } from "../../../../packages/web-legos/components/Icons.jsx";
+import { OnEachSite as Usages } from "../_support/usages.jsx";
 
 /** Icon buttons that open a link (social profiles, mail, phone, maps). */
 export default {
@@ -8,7 +9,35 @@ export default {
   parameters: { layout: "centered" },
 };
 
+/** Every instance on the WL sites, as each site renders it, grouped into variants. */
+export const OnEachSite = {
+  name: "On each site",
+  parameters: { layout: "fullscreen", controls: { disable: true } },
+  render: () => <Usages elements={["socialButtons"]} />,
+};
+
 const KEYS = Object.values(platformKeys);
+
+/** Every platform key at once (SocialButton + SocialIcon), labeled with the key to pass. */
+export const AllPlatforms = {
+  name: "All platforms",
+  args: { size: 40, color: "", bordered: false, background: "#ffffff" },
+  argTypes: {
+    color: { control: "color", description: "Override every icon's color (empty = each platform's own)" },
+    size: { control: { type: "range", min: 16, max: 96 } },
+    background: { control: "color" },
+  },
+  render: ({ size, color, bordered, background }) => (
+    <div style={{ display: "grid", gridTemplateColumns: `repeat(auto-fill, minmax(${Math.max(size + 48, 110)}px, 1fr))`, gap: 16, width: "min(1100px, 92vw)", padding: 20, background, borderRadius: 12 }}>
+      {KEYS.map((key) => (
+        <div key={key} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
+          <SocialButton platformKey={key} bordered={bordered} borderColor={color || undefined} socialLink="https://example.com" socialIcon={<SocialIcon platformKey={key} size={size} color={color || undefined} />} />
+          <code style={{ fontSize: 12, color: "#687076", background: "#f1f3f5", padding: "1px 6px", borderRadius: 4 }}>{key}</code>
+        </div>
+      ))}
+    </div>
+  ),
+};
 
 /** One button. */
 export const Button = {

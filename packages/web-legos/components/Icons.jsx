@@ -220,8 +220,9 @@ export function YouTubeIcon({color, size}) {
  * @default
  * bordered = false
  */
-export function SocialButton({socialIcon, socialLink, bordered, borderColor}) {
-  return <Button bordered={bordered} css={{borderColor: borderColor, overflow: "visible"}} light auto icon={socialIcon} onClick={() => window.open(socialLink, "_blank")} />;
+export function SocialButton({socialIcon, socialLink, bordered, borderColor, platformKey, variant}) {
+  // data-wl marks it for the component catalog (tools/storybook "On each site"); no effect on the page.
+  return <Button data-wl="social-button" data-wl-variant={variant} data-wl-platform={platformKey} bordered={bordered} css={{borderColor: borderColor, overflow: "visible"}} light auto icon={socialIcon} onClick={() => window.open(socialLink, "_blank")} />;
 }
 
 /**

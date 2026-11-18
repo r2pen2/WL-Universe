@@ -30,7 +30,7 @@ export class WLFooterSocials extends Component {
    * bordered = false
    */
   static Button({platformKey, color, href, size, bordered}) {
-    return <SocialButton bordered={bordered} socialIcon={<SocialIcon platformKey={platformKey} color={color} size={size ? size : 48} />} color={color} socialLink={href} />
+    return <SocialButton variant="footer" platformKey={platformKey} bordered={bordered} socialIcon={<SocialIcon platformKey={platformKey} color={color} size={size ? size : 48} />} color={color} socialLink={href} />
   }
 
   render() {
@@ -51,12 +51,12 @@ export class WLFooterSocials extends Component {
  * @param {ImageSource} source - source for footer icon
  */
 export function WLFooterLogo({source}) {
-  return <img src={source} alt="footer-logo" className="m-2" style={{maxHeight: 150, width: "auto"}}/>
+  return <img data-wl="footer-logo" src={source} alt="footer-logo" className="m-2" style={{maxHeight: 150, width: "auto"}}/>
 }
 
 export function WLFooterSignature() {
   return (
-    <div className="d-flex align-items-center justify-content-center flex-row">
+    <div data-wl="developer-credit" className="d-flex align-items-center justify-content-center flex-row">
       <Text size="$xs">
         Web Developer: <Link href="https://www.joed.dev/" style={{textDecoration: "underline"}}>Joe Dobbelaar</Link>
       </Text>

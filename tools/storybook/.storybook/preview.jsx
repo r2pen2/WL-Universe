@@ -39,6 +39,9 @@ const SITE_KEY = "wl-storybook-site";
  * (or between a site and the shared components) reloads the preview iframe.
  */
 function reloadOnSiteSwitch(key) {
+  // "On each site" loads sites in throwaway iframes (stories/_support/usages.jsx): each is a fresh
+  // page already, and they share this tab's sessionStorage, so leave the switch tracking alone.
+  if (new URLSearchParams(window.location.search).has("wlHarvest")) return false;
   const previous = sessionStorage.getItem(SITE_KEY);
   sessionStorage.setItem(SITE_KEY, key);
   if (previous !== null && previous !== key) {

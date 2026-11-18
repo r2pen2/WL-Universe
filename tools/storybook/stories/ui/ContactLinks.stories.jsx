@@ -1,4 +1,5 @@
 import { WLContactList, WLEmailAddress, WLPhoneNumber, WLStreetAddress } from "../../../../packages/web-legos/components/Contacts.jsx";
+import { OnEachSite as Usages } from "../_support/usages.jsx";
 
 /**
  * Contact info as links (AGENTS.md rule 1). Values come from the site's contacts in the CMS
@@ -10,6 +11,13 @@ export default {
   parameters: { layout: "centered" },
   args: { color: "#11181c", fontSize: 18 },
   argTypes: { color: { control: "color" }, fontSize: { control: { type: "range", min: 12, max: 40 } } },
+};
+
+/** Every instance on the WL sites, as each site renders it, grouped into variants. */
+export const OnEachSite = {
+  name: "On each site",
+  parameters: { layout: "fullscreen", controls: { disable: true } },
+  render: () => <Usages elements={["email","phone","address"]} />,
 };
 
 const style = ({ color, fontSize }) => ({ color, fontSize, fontFamily: "system-ui, sans-serif" });

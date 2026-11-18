@@ -282,7 +282,10 @@ export function WLHeaderV2(props) {
  */
 export function WLCopyright({editable}) {
   return (
-    <WLText firestoreId="copyright" size="$sm" editable={editable} prefix="Copyright © " />
+    // display: contents keeps the layout as before; data-wl marks it for the component catalog.
+    <span data-wl="copyright" style={{ display: "contents" }}>
+      <WLText firestoreId="copyright" size="$sm" editable={editable} prefix="Copyright © " />
+    </span>
   )
 }
 

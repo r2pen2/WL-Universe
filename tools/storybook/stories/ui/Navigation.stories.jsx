@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Navbar } from "@nextui-org/react";
 import { WLNav, WLNavBrandLeft, WLNavSocials } from "../../../../packages/web-legos/components/Navigation.jsx";
 import logo from "../../../../packages/room01890/client/public/logo.png";
+import { OnEachSite as Usages } from "../_support/usages.jsx";
 
 /**
  * WLNav: the site navigation bar (NextUI Navbar) with WLNav.Left / WLNav.Right slots, a brand,
@@ -11,6 +12,13 @@ import logo from "../../../../packages/room01890/client/public/logo.png";
 export default {
   title: "UI elements/Navigation bar",
   globals: { viewport: { value: "desktop" } },
+};
+
+/** Every instance on the WL sites, as each site renders it, grouped into variants. */
+export const OnEachSite = {
+  name: "On each site",
+  parameters: { layout: "fullscreen", controls: { disable: true } },
+  render: () => <Usages elements={["nav"]} />,
 };
 
 const LINKS = ["Home", "About", "Services", "Contact"];
