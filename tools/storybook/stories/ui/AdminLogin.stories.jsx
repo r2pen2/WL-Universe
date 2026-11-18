@@ -1,5 +1,6 @@
 import { FooterAuthButton } from "../../../../packages/web-legos/components/Auth.jsx";
 import { fakeAuthManager } from "../_support/site.jsx";
+import { OnEachSite as Usages } from "../_support/usages.jsx";
 
 /**
  * FooterAuthButton: the "Admin Login" control every site has in its footer. Once an admin signs in
@@ -9,6 +10,13 @@ import { fakeAuthManager } from "../_support/site.jsx";
 export default {
   title: "UI elements/Admin login",
   parameters: { layout: "centered" },
+};
+
+/** Every instance on the WL sites, as each site renders it, grouped into variants. */
+export const OnEachSite = {
+  name: "On each site",
+  parameters: { layout: "fullscreen", controls: { disable: true } },
+  render: () => <Usages elements={["adminLogin"]} />,
 };
 
 export const AdminLogin = {

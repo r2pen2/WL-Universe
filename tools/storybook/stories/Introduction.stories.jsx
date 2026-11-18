@@ -19,7 +19,7 @@ export const Introduction = {
       <h2 style={{ fontSize: 20 }}>Hierarchy</h2>
       <ul>
         <li><b>Foundations</b>: icons.</li>
-        <li><b>UI elements</b>: reusable pieces (buttons, social buttons, contact links, admin login, footer pieces, navigation bar). Use the Controls panel to try props.</li>
+        <li><b>UI elements</b>: reusable pieces (buttons, social buttons, contact links, admin login, footer pieces, navigation bar). Each one opens on <b>On each site</b>: every instance on every WL site, as that site renders it (live, 1440px wide), grouped into variants and labeled by site. Look-alikes built without the WL component are listed after them in amber. The other stories are the element on its own; use the Controls panel to try props.</li>
         <li><b>Admin menus</b>: what a signed-in admin opens (Contact info, Request content changes).</li>
         <li><b>Layouts</b>: ready-made sections in web-legos.</li>
         <li><b>CMS elements</b>: reference for the editable text and image elements.</li>

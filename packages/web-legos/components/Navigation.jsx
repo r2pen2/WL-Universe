@@ -38,6 +38,7 @@ export class WLNav extends Component {
   render() {
     return (
       <Navbar
+        data-wl="nav"
         height={this.props.height ? this.props.height : "80px"}
         variant={this.props.variant ? this.props.variant : "sticky"}
         maxWidth="fluid"
@@ -73,7 +74,7 @@ export class WLNavSocials extends Component {
    * @returns
    */
   static Button({platformKey, color, href, size, bordered}) {
-    return <SocialButton bordered={bordered} borderColor={color} socialIcon={<SocialIcon platformKey={platformKey} color={color} size={size ? size : 32} />} color={color} socialLink={href} />
+    return <SocialButton variant="nav" platformKey={platformKey} bordered={bordered} borderColor={color} socialIcon={<SocialIcon platformKey={platformKey} color={color} size={size ? size : 32} />} color={color} socialLink={href} />
   }
 
   render() {
