@@ -101,6 +101,7 @@ export default function HomePage() {
 
   const [modelEditModalOpen, setModelEditModalOpen] = useState(false);
   const [featuredClips, setFeaturedClips] = useState([]);
+  const featuredClip = featuredClips[0] || FeaturedClip.fallback;
   const [currentModel, setCurrentModel] = useState(new SiteModel());
 
   useEffect(() => {
@@ -230,9 +231,9 @@ export default function HomePage() {
         <WLHeader firestoreId="schedule-header" editable={userCanEditText}/>
         <ScheduleButton />
       </section>
-      {(featuredClips[0]?.youtubeLink || userCanEditFeaturedClip) && (
+      {(featuredClip.youtubeLink || userCanEditFeaturedClip) && (
         <section className="d-flex flex-column align-items-center justify-content-center px-3 py-5 gap-2" style={{width: "100%"}}>
-          <FeaturedClipFrame clip={featuredClips[0]} />
+          <FeaturedClipFrame clip={featuredClip} />
           <ModelEditButton userCanEdit={userCanEditFeaturedClip} model={FeaturedClip} data={featuredClips[0]} setCurrentModel={setCurrentModel} setEditModalOpen={setModelEditModalOpen} />
         </section>
       )}

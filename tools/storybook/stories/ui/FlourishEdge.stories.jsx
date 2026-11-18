@@ -27,3 +27,20 @@ export const Default = {
     </div>
   ),
 };
+
+/** The same edge in phone- and tablet-width columns: the ornament shrinks and stays inside the arch. */
+export const NarrowScreens = {
+  name: "Phone widths",
+  render: (args) => (
+    <div style={{ display: "flex", gap: 24, alignItems: "flex-start", padding: 24, background: "#eee" }}>
+      {[360, 390, 430, 768].map((width) => (
+        <div key={width} style={{ width, flex: "none" }}>
+          <div style={{ height: 160, background: "linear-gradient(160deg, #7f97e8 0%, #b9c9f4 50%, #dfe9a8 100%)" }} />
+          <WLFlourishEdge {...args} />
+          <div style={{ height: 80, background: args.color }} />
+          <div style={{ font: "12px sans-serif", paddingTop: 4 }}>{width}px</div>
+        </div>
+      ))}
+    </div>
+  ),
+};

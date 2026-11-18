@@ -428,7 +428,9 @@ export class FeaturedClip extends StaticSiteModel {
   images = {}
   numbers = {}
   shortStrings = {
-    youtubeLink: "",
+    // New Hampshire PBS, "From Backyards to Bedrock Gardens | Windows to the Wild". Shown until
+    // someone sets a clip in the CMS; saving a blank link there hides the section.
+    youtubeLink: "https://www.youtube.com/watch?v=niYKpfztsI0",
     startTime: "0:36",
     endTime: "11:50",
   }
@@ -445,11 +447,14 @@ export class FeaturedClip extends StaticSiteModel {
     default: (new FeaturedClip()).fillConstantExampleData().toFirestore(),
   }
 
+  /** The clip the homepage shows while the CMS has none. */
+  static fallback = (new FeaturedClip()).toFirestore()
+
   fromFirestore(data: any) : FeaturedClip {
     const fc = new FeaturedClip();
     if (!data) { return fc; }
     fc.id = data.id;
-    fc.shortStrings.youtubeLink = data.youtubeLink || "";
+    fc.shortStrings.youtubeLink = data.youtubeLink ?? fc.shortStrings.youtubeLink;
     fc.shortStrings.startTime = data.startTime ?? fc.shortStrings.startTime;
     fc.shortStrings.endTime = data.endTime ?? fc.shortStrings.endTime;
     return fc;
