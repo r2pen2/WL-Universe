@@ -3,8 +3,8 @@ import { Button, Loading, Modal, Text } from "@nextui-org/react";
 import "../assets/style/contacts.css";
 import {
   CONTACT_TYPES,
+  FORM_RECIPIENT,
   closeSiteSettings,
-  contactHref,
   loadContacts,
   saveContacts,
   useContactsStore,
@@ -15,19 +15,26 @@ const GROUPS = {
   email: { title: "Email addresses", add: "Add email", placeholder: "info@example.com" },
   phone: { title: "Phone numbers", add: "Add phone", placeholder: "(617) 555-0123" },
   address: { title: "Street addresses", add: "Add address", placeholder: "38 Church St, 2nd Floor\nWinchester, MA 01890" },
+  [FORM_RECIPIENT]: { title: "Contact form messages go to", add: "Add email", placeholder: "info@example.com" },
 };
 
 let nextKey = 0;
 const rowKey = () => `row-${nextKey++}`;
 
-function initialRows(contacts, fallbacks) {
+/** The groups the menu shows: form recipients only on sites with a contact form. */
+function menuTypes(hasContactForm, contacts) {
+  const hasRecipients = hasContactForm || contacts.some((contact) => contact.type === FORM_RECIPIENT);
+  return hasRecipients ? [...CONTACT_TYPES, FORM_RECIPIENT] : CONTACT_TYPES;
+}
+
+function initialRows(types, contacts, fallbacks) {
   const rows = [];
-  for (const type of CONTACT_TYPES) {
+  for (const type of types) {
     const saved = contacts.filter((contact) => contact.type === type);
     if (saved.length) {
       saved.forEach((contact) => rows.push({ key: rowKey(), id: contact.id, type, value: contact.value }));
     } else {
-      // Nothing saved yet: offer what the page currently shows, so saving keeps it.
+      // Nothing saved yet: offer what the page currently uses, so saving keeps it.
       (fallbacks[type] || []).forEach((value) => rows.push({ key: rowKey(), type, value, draft: true }));
     }
   }
@@ -35,14 +42,17 @@ function initialRows(contacts, fallbacks) {
 }
 
 /**
- * Site settings for admins. Today it holds the site's contact info: any number of email addresses,
- * phone numbers and street addresses, which WLEmailAddress / WLPhoneNumber / WLStreetAddress show
- * across the site. Opened from FooterAuthButton's "Site settings" link or by clicking one of those
- * components while signed in. FooterAuthButton mounts it for admins; sites don't need to.
+ * The Contact info menu for admins: any number of email addresses, phone numbers and street
+ * addresses (which WLEmailAddress / WLPhoneNumber / WLStreetAddress show across the site) and, on
+ * sites with a contact form, the addresses its messages go to (MailManager reads them; recipients
+ * added in code with addHiddenRecipient aren't listed). Opened from FooterAuthButton's "Contact
+ * info" link or by clicking a contact component while signed in. FooterAuthButton mounts it for
+ * admins; sites don't need to.
  */
-export function SiteSettingsModal() {
+export function ContactInfoModal() {
   const store = useContactsStore();
   const { open, contactId, type: focusType } = store.settings;
+  const types = menuTypes(store.hasContactForm, store.contacts);
   const [rows, setRows] = useState([]);
   const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);
@@ -58,7 +68,7 @@ export function SiteSettingsModal() {
     setSaveError("");
     loadContacts(true).then((contacts) => {
       if (cancelled) return;
-      const next = initialRows(contacts, store.fallbacks);
+      const next = initialRows(menuTypes(store.hasContactForm, contacts), contacts, store.fallbacks);
       let focus = contactId ? next.find((row) => row.id === contactId) : null;
       if (!focus && focusType) {
         focus = next.find((row) => row.type === focusType);
@@ -73,7 +83,7 @@ export function SiteSettingsModal() {
     return () => {
       cancelled = true;
     };
-    // store.fallbacks is read once per open on purpose.
+    // store.fallbacks / hasContactForm are read once per open on purpose.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, contactId, focusType]);
 
@@ -124,7 +134,7 @@ export function SiteSettingsModal() {
     setSaving(true);
     setSaveError("");
     try {
-      const ordered = CONTACT_TYPES.flatMap((type) => keep.filter((row) => row.type === type));
+      const ordered = types.flatMap((type) => keep.filter((row) => row.type === type));
       await saveContacts(ordered.map(({ id, type, value }) => ({ id, type, value })));
       closeSiteSettings();
     } catch (err) {
@@ -141,14 +151,10 @@ export function SiteSettingsModal() {
   return (
     <Modal open={open} onClose={close} closeButton blur width="720px" aria-labelledby="wl-site-settings-title">
       <Modal.Header>
-        <Text id="wl-site-settings-title" h4>Site settings</Text>
+        <Text id="wl-site-settings-title" h4>Contact info</Text>
       </Modal.Header>
       <Modal.Body>
-        <Text h5 css={{ margin: 0 }}>Contact info</Text>
-        <Text size="$sm" color="$accents7" css={{ marginTop: 0 }}>
-          Shown everywhere the site lists an email, phone number or address. Links are made automatically.
-        </Text>
-        {CONTACT_TYPES.map((type) => {
+        {types.map((type) => {
           const group = GROUPS[type];
           const list = rows.filter((row) => row.type === type);
           return (
@@ -165,21 +171,18 @@ export function SiteSettingsModal() {
                   onChange: (e) => update(row.key, { value: e.target.value }),
                   onFocus: () => setFocusKey(row.key),
                 };
-                const href = row.value.trim() && !validateContact(type, row.value) ? contactHref(type, row.value) : "";
                 return (
                   <div
                     key={row.key}
                     className={["wl-site-settings__row", focused ? "wl-site-settings__row--focused" : "", row.draft ? "wl-site-settings__row--draft" : ""].filter(Boolean).join(" ")}
                   >
-                    {type === "address" ? <textarea rows={2} {...fieldProps} /> : <input type={type === "email" ? "email" : type === "phone" ? "tel" : "text"} {...fieldProps} />}
+                    {type === "address" ? <textarea rows={2} {...fieldProps} /> : <input type={type === "phone" ? "tel" : "email"} {...fieldProps} />}
                     <div className="wl-site-settings__actions">
                       <button type="button" aria-label="Move up" disabled={i === 0} onClick={() => move(row.key, -1)}>↑</button>
                       <button type="button" aria-label="Move down" disabled={i === list.length - 1} onClick={() => move(row.key, 1)}>↓</button>
                       <button type="button" aria-label={`Remove ${group.title} ${i + 1}`} onClick={() => remove(row.key)}>Remove</button>
                     </div>
                     {errors[row.key] && <div className="wl-site-settings__error">{errors[row.key]}</div>}
-                    {row.draft && <div className="wl-site-settings__hint">Currently shown on the site but not saved yet. Save to keep it.</div>}
-                    {href && <div className="wl-site-settings__hint">Link: {href}</div>}
                   </div>
                 );
               })}
@@ -198,3 +201,6 @@ export function SiteSettingsModal() {
     </Modal>
   );
 }
+
+/** @deprecated Old name for ContactInfoModal. */
+export const SiteSettingsModal = ContactInfoModal;

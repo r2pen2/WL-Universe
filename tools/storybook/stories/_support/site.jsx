@@ -8,7 +8,7 @@ const STORY_ADMIN = { uid: "storybook-admin", displayName: "Storybook Admin", em
 
 /**
  * A stand-in AuthenticationManager: no Firebase, no popups. `admin` makes the story's user a
- * signed-in site admin (Request changes, Site settings, editable WL elements).
+ * signed-in site admin (Request changes, Contact info, editable WL elements).
  */
 export function fakeAuthManager({ admin = false } = {}) {
   const user = admin ? STORY_ADMIN : null;

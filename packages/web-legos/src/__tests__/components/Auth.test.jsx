@@ -78,16 +78,16 @@ test("CHANGE_REQUESTS_URL points at the WL project in Plane", () => {
   expect(CHANGE_REQUESTS_URL).toMatch(/^https:\/\/plane\.joed\.dev\/main\/projects\/[0-9a-f-]{36}\/issues\/$/)
 })
 
-describe("FooterAuthButton: site settings", () => {
-  test("admins get a Site settings button that opens the contact editor", async () => {
+describe("FooterAuthButton: Contact info menu", () => {
+  test("admins get a Contact info button that opens the contact editor", async () => {
     render(<FooterAuthButton authManager={fakeAuthManager(true)} currentSignIn={admin} setCurrentSignIn={() => {}} />)
-    fireEvent.click(await screen.findByLabelText("site-settings-button"))
-    expect(await screen.findByText("Contact info")).toBeInTheDocument()
-    expect(screen.getByText("+ Add email")).toBeInTheDocument()
+    fireEvent.click(await screen.findByLabelText("contact-info-button"))
+    expect(await screen.findByText("Email addresses")).toBeInTheDocument()
+    expect(screen.getAllByText("Contact info")).toHaveLength(2)
   })
 
   test("visitors don't", () => {
     render(<FooterAuthButton authManager={fakeAuthManager(true)} currentSignIn={null} setCurrentSignIn={() => {}} />)
-    expect(screen.queryByLabelText("site-settings-button")).toBeNull()
+    expect(screen.queryByLabelText("contact-info-button")).toBeNull()
   })
 })

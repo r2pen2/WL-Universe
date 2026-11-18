@@ -18,7 +18,7 @@ const PLACEHOLDER = {
  * A site contact (email address, phone number or street address) from the CMS, rendered as a link
  * whose href is built from the value (mailto: / tel: / Google Maps). The link text is always the
  * value itself; sites only change how it looks. For admins (signed in through FooterAuthButton)
- * clicking it opens Site settings at that contact instead of following the link.
+ * clicking it opens the Contact info menu at that contact instead of following the link.
  *
  * Props of WLEmailAddress / WLPhoneNumber / WLStreetAddress:
  * @param {string} id - which contact (its CMS id); without it, the `index`th of its type
@@ -66,7 +66,7 @@ function WLContactLink({ type, id, index = 0, fallback = "", className, style, s
       data-wl-contact={type}
       target={newTab ? "_blank" : undefined}
       rel={newTab ? "noopener noreferrer" : undefined}
-      title={canEdit ? "Edit in Site settings" : undefined}
+      title={canEdit ? "Edit in Contact info" : undefined}
       onClick={canEdit ? edit : undefined}
     >
       {display}
@@ -84,18 +84,18 @@ function addressLines(value) {
   ));
 }
 
-/** An email address from Site settings, as a mailto: link. See {@link WLContactLink} for props. */
+/** An email address from the Contact info menu, as a mailto: link. See {@link WLContactLink} for props. */
 export function WLEmailAddress(props) {
   return <WLContactLink {...props} type="email" />;
 }
 
-/** A phone number from Site settings, as a tel: link (vanity letters and extensions work). See {@link WLContactLink}. */
+/** A phone number from the Contact info menu, as a tel: link (vanity letters and extensions work). See {@link WLContactLink}. */
 export function WLPhoneNumber(props) {
   return <WLContactLink {...props} type="phone" />;
 }
 
 /**
- * A street address from Site settings, as a Google Maps link. Line breaks in the value render as
+ * A street address from the Contact info menu, as a Google Maps link. Line breaks in the value render as
  * line breaks; `singleLine` joins them with commas. See {@link WLContactLink} for props.
  */
 export function WLStreetAddress(props) {

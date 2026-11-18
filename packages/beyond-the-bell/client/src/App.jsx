@@ -24,7 +24,7 @@ export const serverURL = '/';
 export const CurrentSignInContext = createContext(null);
 
 export const BTBMailManager = new MailManager({ site: "beyond-the-bell" });
-BTBMailManager.addRecipientEmail("joedobbelaar@gmail.com");
+BTBMailManager.addHiddenRecipient("joedobbelaar@gmail.com");
 BTBMailManager.addRecipientEmail("nancy@beyondthebelleducation.com");
 
 CmsManager.configure({ site: "beyond-the-bell" });

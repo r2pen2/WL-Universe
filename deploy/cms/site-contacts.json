@@ -1,17 +1,21 @@
 {
-  "$comment": "Starting contact info per wl-cms site, for scripts/cms/seed-site-contacts.mjs. Only written to a site whose siteContacts collection is still empty; after that, admins edit it in Site settings and this file is not read again for that site. Keep in step with the fallback values in each site's code.",
+  "$comment": "Starting contact info per wl-cms site, for scripts/cms/seed-site-contacts.mjs. Types: email, phone, address (shown on the site) and formRecipient (where the contact form's messages go; never shown). Each type is written to a site once, while it has none of that type; after that admins edit it in the Contact info menu and this file is not read again for that type. Keep in step with the fallback values in each site's code (formRecipient = the MailManager's addRecipientEmail list; the developer copy is addHiddenRecipient in code, never here).",
   "a-new-day-coaching": [
     { "id": "email-1", "type": "email", "value": "rachel.newday@gmail.com" },
-    { "id": "phone-1", "type": "phone", "value": "(202) 798-ADHD" }
+    { "id": "phone-1", "type": "phone", "value": "(202) 798-ADHD" },
+    { "id": "form-recipient-1", "type": "formRecipient", "value": "rachel.newday@gmail.com" }
   ],
   "beyond-the-bell": [
     { "id": "email-1", "type": "email", "value": "questions@beyondthebelleducation.com" },
     { "id": "phone-1", "type": "phone", "value": "(508) 316-4751" },
-    { "id": "address-1", "type": "address", "value": "3 Man-Mar Drive #14\nPlainville, MA 02762" }
+    { "id": "address-1", "type": "address", "value": "3 Man-Mar Drive #14\nPlainville, MA 02762" },
+    { "id": "form-recipient-1", "type": "formRecipient", "value": "nancy@beyondthebelleducation.com" }
   ],
   "boston-mixtape": [
     { "id": "email-1", "type": "email", "value": "bbmbostonsbestmusic@gmail.com" },
-    { "id": "phone-1", "type": "phone", "value": "(617) 877-3206" }
+    { "id": "phone-1", "type": "phone", "value": "(617) 877-3206" },
+    { "id": "form-recipient-1", "type": "formRecipient", "value": "BostonMixtapeInfo@gmail.com" },
+    { "id": "form-recipient-2", "type": "formRecipient", "value": "BBMbostonsbestmusic@gmail.com" }
   ],
   "nicole-levin": [
     { "id": "email-1", "type": "email", "value": "nicolelevinlcsw@gmail.com" },
@@ -20,11 +24,13 @@
   "room01890": [
     { "id": "email-1", "type": "email", "value": "info@room01890.com" },
     { "id": "phone-1", "type": "phone", "value": "781-910-4756" },
-    { "id": "address-1", "type": "address", "value": "38 Church St, 2nd Floor\nWinchester, MA 01890" }
+    { "id": "address-1", "type": "address", "value": "38 Church St, 2nd Floor\nWinchester, MA 01890" },
+    { "id": "form-recipient-1", "type": "formRecipient", "value": "info@room01890.com" }
   ],
   "talk-about-dreams": [
     { "id": "email-1", "type": "email", "value": "talkaboutdreams@yahoo.com" },
-    { "id": "phone-1", "type": "phone", "value": "(617) 299-1792" }
+    { "id": "phone-1", "type": "phone", "value": "(617) 299-1792" },
+    { "id": "form-recipient-1", "type": "formRecipient", "value": "talkaboutdreams@yahoo.com" }
   ],
   "you-can-do-it-gardening": [
     { "id": "email-1", "type": "email", "value": "youcandoitgardening@jakerosenentertainment.com" },

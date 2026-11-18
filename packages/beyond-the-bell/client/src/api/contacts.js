@@ -1,6 +1,6 @@
 import { useContactHref } from "../libraries/Web-Legos/api/contacts.ts";
 
-/** What the site showed before its contacts were in the CMS; shown until Site settings has them. */
+/** What the site showed before its contacts were in the CMS; shown until the Contact info menu has them. */
 export const CONTACT_FALLBACKS = {
   address: "3 Man-Mar Drive #14\nPlainville, MA 02762",
   email: "questions@beyondthebelleducation.com",

@@ -20,7 +20,7 @@ export const Introduction = {
       <ul>
         <li><b>Foundations</b>: icons.</li>
         <li><b>UI elements</b>: reusable pieces (buttons, social buttons, contact links, admin login, footer pieces, navigation bar). Use the Controls panel to try props.</li>
-        <li><b>Admin menus</b>: what a signed-in admin opens (Site settings, Request content changes).</li>
+        <li><b>Admin menus</b>: what a signed-in admin opens (Contact info, Request content changes).</li>
         <li><b>Layouts</b>: ready-made sections in web-legos.</li>
         <li><b>CMS elements</b>: reference for the editable text and image elements.</li>
         <li><b>Patterns</b>: each site&apos;s current footer and contact form, one per site, to compare before they share one implementation with skins.</li>

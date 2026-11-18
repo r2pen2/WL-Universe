@@ -46,7 +46,8 @@ const wlTheme = createWLTheme();
 const mantineTheme = createMantineTheme({});
 
 export const TAGMailManager = new MailManager({ site: "talk-about-dreams" });
-TAGMailManager.addRecipientEmail("joedobbelaar@gmail.com");
+TAGMailManager.addHiddenRecipient("joedobbelaar@gmail.com");
+TAGMailManager.addRecipientEmail("talkaboutdreams@yahoo.com");
 
 CmsManager.configure({ site: "talk-about-dreams" });
 configureAuthClient({ site: "talk-about-dreams" });

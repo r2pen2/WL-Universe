@@ -40,7 +40,7 @@ analyticsManager.initialize();
 /** Inquiry-form notifications (site-mail profile SITE_ROOM01890_*). */
 export const R01MailManager = new MailManager({ site: SITE_SLUG });
 R01MailManager.addRecipientEmail("info@room01890.com");
-R01MailManager.addRecipientEmail("joedobbelaar@gmail.com");
+R01MailManager.addHiddenRecipient("joedobbelaar@gmail.com");
 
 CmsManager.configure({ site: SITE_SLUG });
 configureAuthClient({ site: SITE_SLUG });
