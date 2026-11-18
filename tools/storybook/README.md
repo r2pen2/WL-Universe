@@ -28,3 +28,17 @@ npm run storybook --prefix tools/storybook   # http://localhost:6006
 Without a key, WL components show their fallback content.
 
 It lives outside the npm workspaces (like `tools/wl-lint`), so Storybook and Vite stay out of the root lockfile.
+
+## "On each site" and Fonts are pre-rendered
+
+Those pages show every instance of an element (and every type style) as each live site renders it.
+Collecting that means loading all 8 sites, so the deployed catalog serves a snapshot instead:
+`scripts/glados/storybook-snapshot.sh` opens the catalog in headless Chromium (`scripts/snapshot.mjs`),
+runs the same harvest the page would, and writes `/opt/services/data/app-assets/storybook/usages.json`,
+which nginx serves at `/snapshot/usages.json`. It's retaken after every deploy and every 6 hours
+(`.github/workflows/storybook-snapshot.yml`; run it by hand from Actions after CMS edits).
+
+`?wlLive=1` on a page harvests live instead. Locally there is no snapshot, so it's always live; to
+test the snapshot path, write one into `.storybook/static/snapshot/` (gitignored):
+
+    node scripts/snapshot.mjs http://localhost:6006 .storybook/static/snapshot/usages.json "<path to chrome>"

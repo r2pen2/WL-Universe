@@ -375,3 +375,27 @@ jobs:
           KEY=$(sudo sed -n 's/^WL_CMS_API_KEY=//p' /opt/services/data/app-env/wl-cms.env 2>/dev/null | tail -n1 | tr -d '\r' || true)
           if [ -z "$KEY" ]; then echo "::warning::No WL_CMS_API_KEY in wl-cms.env; contacts not seeded"; exit 0; fi
           WL_CMS_API_KEY="$KEY" node scripts/cms/seed-site-contacts.mjs || echo "::warning::Some site contacts weren't seeded (see log)"
+
+  # The catalog's "On each site" and Fonts pages are served pre-rendered from glados
+  # (scripts/glados/storybook-snapshot.sh). Retaken after every deploy, since any site or web-legos
+  # change can change them; storybook-snapshot.yml also refreshes it on a schedule for CMS edits.
+  storybook-snapshot:
+    name: storybook snapshot
+    needs:
+      - detect
+      - deploy
+      - seed-contacts
+    runs-on:
+      - self-hosted
+      - glados
+    if: >
+      always() &&
+      (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master') &&
+      needs.detect.outputs.has_apps == 'true' &&
+      (needs.deploy.result == 'success' || needs.deploy.result == 'failure')
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Pre-render On each site / Fonts
+        run: sudo bash scripts/glados/storybook-snapshot.sh || echo "::warning::Storybook snapshot failed; the previous one is still served (see log)"
