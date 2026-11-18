@@ -1,4 +1,4 @@
-import { Component } from "react";
+import { Component, useMemo } from "react";
 import "../assets/style/backgrounds.css";
 
 /**
@@ -188,4 +188,110 @@ export class TornadoBackground1 extends WLBackground {
       </g>
     </svg>
   )
+}
+
+/** Small deterministic PRNG so a drifting layout is the same on every render and every reload. */
+function mulberry32(seed) {
+  return function () {
+    seed |= 0;
+    seed = (seed + 0x6d2b79f5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/**
+ * A decorative layer of shapes that drift slowly across a section, swaying like falling leaves.
+ * Place it as the first child of a `position: relative; isolation: isolate` section: it fills the
+ * section behind the content (z-index -1), never takes clicks, and is hidden for prefers-reduced-motion.
+ * How far the shapes travel follows the section's height. CSS-only; the layout comes from `seed`,
+ * so re-renders don't reshuffle it.
+ * @param {React.ReactNode[]} shapes - The shapes to drift (usually small SVGs); each item picks one at random
+ * @param {"up"|"down"} direction - Rise from the bottom or fall from the top
+ * @param {number} count - How many shapes are in flight at once
+ * @param {number[]} size - [min, max] width of each shape in px
+ * @param {number[]} duration - [min, max] seconds to cross the section
+ * @param {number[]} opacity - [min, max] peak opacity of each shape
+ * @param {number} sway - Max side-to-side sway in px
+ * @param {number} seed - Seed for the layout; change it for a different arrangement
+ * @param {string} className - Extra class on the layer, e.g. for styling the shapes
+ * @param {Object} style - Extra style on the layer
+ * @default
+ * direction = "up";
+ * count = 11;
+ * size = [36, 76];
+ * duration = [22, 36];
+ * opacity = [0.5, 0.85];
+ * sway = 26;
+ * seed = 20261118;
+ */
+export function WLDriftingShapes({
+  shapes,
+  direction = "up",
+  count = 11,
+  size = [36, 76],
+  duration = [22, 36],
+  opacity = [0.5, 0.85],
+  sway = 26,
+  seed = 20261118,
+  className,
+  style,
+}) {
+  const [sizeMin, sizeMax] = size;
+  const [durationMin, durationMax] = duration;
+  const [opacityMin, opacityMax] = opacity;
+  const shapeCount = shapes?.length || 0;
+
+  const items = useMemo(() => {
+    const rand = mulberry32(seed);
+    const between = (min, max) => min + rand() * (max - min);
+    return Array.from({ length: count }, (_, i) => {
+      const itemDuration = between(durationMin, durationMax);
+      return {
+        // Spread across the width in lanes, with jitter, so they don't clump.
+        left: ((i + between(0.15, 0.85)) / count) * 100,
+        size: between(sizeMin, sizeMax),
+        duration: itemDuration,
+        // Negative delay = already mid-flight on first paint, so the section never looks empty.
+        delay: -between(0, itemDuration),
+        swayDuration: between(5, 9),
+        sway: between(sway * 0.4, sway),
+        tilt: between(-10, 10),
+        opacity: between(opacityMin, opacityMax),
+        flip: rand() < 0.5,
+        shape: Math.floor(rand() * shapeCount),
+      };
+    });
+  }, [seed, count, sizeMin, sizeMax, durationMin, durationMax, opacityMin, opacityMax, sway, shapeCount]);
+
+  if (!shapeCount) return null;
+
+  return (
+    <div
+      className={["wl-drifting-shapes", `wl-drifting-shapes--${direction === "down" ? "down" : "up"}`, className].filter(Boolean).join(" ")}
+      data-wl="drifting-shapes"
+      aria-hidden="true"
+      style={style}
+    >
+      {items.map((item, i) => (
+        <span
+          key={i}
+          className="wl-drift-item"
+          style={{
+            left: `${item.left}%`,
+            width: item.size,
+            "--drift-duration": `${item.duration}s`,
+            "--drift-delay": `${item.delay}s`,
+            "--sway-duration": `${item.swayDuration}s`,
+            "--sway": `${item.sway}px`,
+            "--tilt": `${item.tilt}deg`,
+            "--peak-opacity": item.opacity,
+          }}
+        >
+          <span className={`wl-drift-sway${item.flip ? " wl-drift-flip" : ""}`}>{shapes[item.shape]}</span>
+        </span>
+      ))}
+    </div>
+  );
 }

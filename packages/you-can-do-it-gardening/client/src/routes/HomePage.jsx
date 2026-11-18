@@ -25,12 +25,14 @@ import { WLAliceCarousel, createCarouselBreakpoints } from '../libraries/Web-Leg
 import { SiteModel } from '../libraries/Web-Legos/api/models.ts';
 import { AddModelButton, ModelEditButton, ModelEditModal } from '../libraries/Web-Legos/components/Modals';
 import { WaveBottom, WaveTop } from '../libraries/Web-Legos/components/Waves';
+import { WLFlourishEdge } from '../libraries/Web-Legos/components/Decoration';
 import { useContext } from 'react';
 import { CurrentSignInContext } from '../App';
 import { AuthenticationManager } from '../libraries/Web-Legos/api/auth.ts';
 import { cmsAssetUrl } from '../libraries/Web-Legos/api/cms.ts';
 import { AnalyticsManager } from '../libraries/Web-Legos/api/analytics.ts';
 import { mailingListLink } from '../api/links.js';
+import GardenDrift from '../components/GardenDrift';
 
 const MAILING_LIST_PROMPT_DELAY_MS = 5000;
 
@@ -201,6 +203,7 @@ export default function HomePage() {
       <ContactModal open={contactModalOpen} setOpen={setContactModalOpen} />
       <section className="d-flex flex-column w-100 align-items-center">
         <div className="w-100 flex-column align-items-center background-image" style={{paddingTop: "10vh", paddingBottom: "10vh",}}>
+          <GardenDrift />
           <div className="elevated d-flex flex-column w-100 text-background py-2">
             <WLHeader>
               You Can Do It Gardening
@@ -233,6 +236,7 @@ export default function HomePage() {
           </div>
         </div> */}
       </section>
+      <WLFlourishEdge />
       <section className='py-lg-5 py-2 d-flex flex-column align-items-center justify-content-center'>
         <div className="container d-flex flex-row justify-content-center align-items-center">
           <div className="row w-100 justify-content-center">

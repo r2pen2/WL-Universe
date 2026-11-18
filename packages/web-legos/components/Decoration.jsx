@@ -109,3 +109,73 @@ export const QuoteIcon = (props) => (
     <path fill={props.color} d="M30,20.07C23.8,22.7,19.19,26.26,19.19,31.52c0,4.6,4.35,5.65,8.81,6.7.8.13,1.72,2,1.72,3.56,0,3.54-2.77,5.91-6.71,5.91-5.79,0-11.57-4.73-11.57-13.41,0-9.34,8.41-15.52,16.83-17.88Zm23.16,0C47,22.7,42.34,26.26,42.34,31.52c0,4.6,4.47,5.65,8.95,6.7.79.13,1.71,2,1.71,3.56,0,3.54-2.89,5.91-6.71,5.91-5.79,0-11.57-4.73-11.57-13.41,0-9.34,8.42-15.52,16.83-17.88Z"></path>
   </svg>
 )
+
+/** Right half of the WLFlourishEdge ornament (viewBox 0 0 360 44, centered on x=180); mirrored for the left. */
+function FlourishHalf({ accent }) {
+  return (
+    <g fill="none" stroke={accent} strokeWidth="1.4" strokeLinecap="round">
+      {/* C-scroll curling up and back in on itself */}
+      <path d="M190 22C200 22 206 12 218 12C230 12 234 22 226 25C220 27 216 21 221 19" />
+      {/* Counter-scroll sweeping under it */}
+      <path d="M190 22C204 22 214 32 232 32C246 32 252 24 262 22" />
+      {/* Tendril trailing off, ending in a bead */}
+      <path d="M262 22C290 20.5 320 21 344 22" strokeWidth="1" />
+      <circle cx="350" cy="22" r="1.6" fill={accent} stroke="none" />
+      {/* Leaf off the tendril */}
+      <path d="M268 21C274 13 284 12 291 14C285 18 277 20.5 268 21Z" fill={accent} fillOpacity="0.35" strokeWidth="1" />
+    </g>
+  );
+}
+
+/**
+ * A soft arch with a quiet baroque scroll ornament, for the top of a section. It reaches up over the
+ * bottom of the section above (by `height` px) so a hard edge between two sections becomes a gentle
+ * curve. Place it right before the section it caps; it never takes clicks.
+ * @param {string} color - Fill of the arch: the background color of the section it caps
+ * @param {string} accent - Color of the ornament and the hairline along the arch
+ * @param {number} height - Height of the edge in px; also how far it overlaps the section above
+ * @param {number} ornamentWidth - Width of the center ornament in px (shrinks to fit narrow screens)
+ * @default
+ * color = "#ffffff";
+ * accent = "#a67fcf";
+ * height = 64;
+ * ornamentWidth = 360;
+ */
+export function WLFlourishEdge({ color = "#ffffff", accent = "#a67fcf", height = 64, ornamentWidth = 360 }) {
+  // Arch: shoulders at 78% of the height, peak at 25%.
+  const shoulder = 50;
+  const peak = 16;
+  const arch = `C400 ${shoulder} 560 ${peak} 720 ${peak}C880 ${peak} 1040 ${shoulder} 1440 ${shoulder}`;
+  const gradientId = "wl-flourish-edge-line";
+  return (
+    <div
+      data-wl="flourish-edge"
+      aria-hidden="true"
+      style={{ position: "relative", width: "100%", height, marginTop: -height, zIndex: 2, pointerEvents: "none" }}
+    >
+      <svg viewBox="0 0 1440 64" preserveAspectRatio="none" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", display: "block" }}>
+        <defs>
+          <linearGradient id={gradientId} x1="0" x2="1" y1="0" y2="0">
+            <stop offset="0" stopColor={accent} stopOpacity="0" />
+            <stop offset="0.5" stopColor={accent} stopOpacity="0.7" />
+            <stop offset="1" stopColor={accent} stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        <path d={`M0 64V${shoulder}${arch}V64Z`} fill={color} />
+        <path d={`M0 ${shoulder}${arch}`} fill="none" stroke={`url(#${gradientId})`} strokeWidth="1.2" vectorEffect="non-scaling-stroke" />
+      </svg>
+      <svg
+        viewBox="0 0 360 44"
+        style={{ position: "absolute", left: "50%", top: `${(peak + 4) / 64 * 100}%`, transform: "translateX(-50%)", width: ornamentWidth, maxWidth: "80%", height: "auto", overflow: "visible", display: "block" }}
+      >
+        <FlourishHalf accent={accent} />
+        <g transform="translate(360 0) scale(-1 1)">
+          <FlourishHalf accent={accent} />
+        </g>
+        {/* Center bud */}
+        <path d="M180 13L186 22L180 31L174 22Z" fill="none" stroke={accent} strokeWidth="1.4" strokeLinejoin="round" />
+        <circle cx="180" cy="22" r="2" fill={accent} />
+      </svg>
+    </div>
+  );
+}

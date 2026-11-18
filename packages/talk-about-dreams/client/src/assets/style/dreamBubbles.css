@@ -1,80 +1,16 @@
-/* Background layer: sits above the splash background, below all content. */
-.dream-bubbles {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-  z-index: -1;
-}
-
-/* Outer span handles the slow vertical rise + fade. */
-.dream-bubble {
-  position: absolute;
-  bottom: -80px;
-  display: block;
-  opacity: 0;
-  animation: dream-rise var(--rise-duration) linear var(--rise-delay) infinite;
-  will-change: transform, opacity;
-}
-
-/* Inner span handles the gentle side-to-side sway, like a leaf. */
-.dream-bubble-inner {
-  display: block;
-  animation: dream-sway var(--sway-duration) ease-in-out var(--rise-delay) infinite alternate;
-}
-
-.dream-bubble-inner.flip svg {
-  transform: scaleX(-1);
-}
-
-.dream-bubble svg {
-  display: block;
-  width: 100%;
-  height: auto;
-  overflow: visible;
+/* The look of the dream bubbles; the drifting itself is WLDriftingShapes (web-legos). */
+.dream-bubbles svg {
   filter: drop-shadow(0 0 6px rgba(214, 205, 255, 0.45));
 }
 
-.dream-bubble svg path,
-.dream-bubble svg circle {
+.dream-bubbles svg path,
+.dream-bubbles svg circle {
   fill: rgba(255, 255, 255, 0.14);
   stroke: rgba(255, 255, 255, 0.75);
   stroke-width: 1.5;
 }
 
-.dream-bubble svg .dot {
+.dream-bubbles svg .dot {
   fill: rgba(255, 255, 255, 0.65);
   stroke: none;
-}
-
-@keyframes dream-rise {
-  0% {
-    transform: translateY(0);
-    opacity: 0;
-  }
-  12% {
-    opacity: var(--peak-opacity);
-  }
-  70% {
-    opacity: var(--peak-opacity);
-  }
-  100% {
-    transform: translateY(calc(var(--rise-distance, 960px) * -1));
-    opacity: 0;
-  }
-}
-
-@keyframes dream-sway {
-  from {
-    transform: translateX(calc(var(--sway) * -1)) rotate(calc(var(--tilt) * -1));
-  }
-  to {
-    transform: translateX(var(--sway)) rotate(var(--tilt));
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .dream-bubbles {
-    display: none;
-  }
 }
