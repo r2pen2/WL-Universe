@@ -88,7 +88,7 @@ export default function Navbar() {
     >
       <WLNavContent>
         <WLNavContent.Left>
-          <NextUINavbar.Toggle 
+          <NextUINavbar.Toggle aria-label="Open menu" 
             className="px-3"
             ref={navbarToggleRef}
             onChange={(s) => {setIsSideMenuOpen(s); setCurrentTab("HOME")}}

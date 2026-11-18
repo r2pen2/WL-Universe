@@ -119,7 +119,7 @@ export function App(props) {
                 <Spacer y={1}/>
                 <div className="d-flex flex-column align-items-center justify-content-center">
                   <Link href="https://www.joed.dev">
-                    <Text color="#8C8C8C" css={{textDecoration:"underline"}}>Web Designer: Joe Dobbelaar</Text>
+                    <Text color="#6E6E6E" css={{textDecoration:"underline"}}>Web Designer: Joe Dobbelaar</Text>
                   </Link>
                   <FooterAuthButton authManager={authenticationManager} currentSignIn={currentSignIn} setCurrentSignIn={setCurrentSignIn}/>
                 </div>

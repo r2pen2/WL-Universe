@@ -182,6 +182,8 @@ export const RecordTray = ({userCanEditText}) => {
         ref={carouselRef}
         slideSize="20%"
         loop
+        previousControlProps={{ 'aria-label': 'Previous slide' }}
+        nextControlProps={{ 'aria-label': 'Next slide' }}
         onSlideChange={num => setActiveRecord(num)}
       >
         {tracks.map((track, index) => (
