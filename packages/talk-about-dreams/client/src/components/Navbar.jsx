@@ -17,7 +17,7 @@ export default function Navbar() {
     >
       <WLNavContent>
         <WLNavContent.Left>
-          <NextUINavbar.Toggle className="d-flex d-xxl-none px-3" />
+          <NextUINavbar.Toggle aria-label="Open menu" className="d-flex d-xxl-none px-3" />
           <WLNavBrandLeft source={logo} title="Talk About Dreams" imageSize={60} />
         </WLNavContent.Left>
           <NavbarPages />

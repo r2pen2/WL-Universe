@@ -48,7 +48,7 @@ export default function Navbar() {
       maxWidth="xl"
       className='d-flex d-lg-none'
     >
-      <NextUINavbar.Toggle onChange={(s) => setIsSideMenuOpen(s)} ref={navbarToggleRef}/>
+      <NextUINavbar.Toggle aria-label="Open menu" onChange={(s) => setIsSideMenuOpen(s)} ref={navbarToggleRef}/>
       <NextUINavbar.Collapse>
         <NextUINavbar.CollapseItem
         >

@@ -208,3 +208,26 @@ jobs:
             fi
           done
           exit "$fail"
+
+  accessibility:
+    name: accessibility (Lighthouse)
+    needs: [detect, deploy]
+    if: needs.detect.outputs.has_apps == 'true' && needs.deploy.result == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Audit previews against the live sites
+        env:
+          PR: ${{ github.event.pull_request.number }}
+          APPS_CSV: ${{ needs.detect.outputs.apps_csv }}
+        run: |
+          set -euo pipefail
+          export CHROME_PATH="$(command -v google-chrome || command -v chromium)"
+          # Fails if a preview scores lower than its live site or fails a new audit.
+          node scripts/qa/a11y-check.mjs --pr "$PR" --only "$APPS_CSV"

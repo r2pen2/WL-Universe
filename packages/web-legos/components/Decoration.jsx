@@ -127,6 +127,21 @@ function FlourishHalf({ accent }) {
   );
 }
 
+/** The mirrored scroll ornament with its center bud (360 x 44), shared by the flourish edge and frame. */
+function FlourishOrnament({ accent, style }) {
+  return (
+    <svg viewBox="0 0 360 44" aria-hidden="true" style={{ height: "auto", overflow: "visible", display: "block", ...style }}>
+      <FlourishHalf accent={accent} />
+      <g transform="translate(360 0) scale(-1 1)">
+        <FlourishHalf accent={accent} />
+      </g>
+      {/* Center bud */}
+      <path d="M180 13L186 22L180 31L174 22Z" fill="none" stroke={accent} strokeWidth="1.4" strokeLinejoin="round" />
+      <circle cx="180" cy="22" r="2" fill={accent} />
+    </svg>
+  );
+}
+
 /**
  * A soft arch with a quiet baroque scroll ornament, for the top of a section. It reaches up over the
  * bottom of the section above (by `height` px) so a hard edge between two sections becomes a gentle
@@ -164,18 +179,63 @@ export function WLFlourishEdge({ color = "#ffffff", accent = "#a67fcf", height =
         <path d={`M0 64V${shoulder}${arch}V64Z`} fill={color} />
         <path d={`M0 ${shoulder}${arch}`} fill="none" stroke={`url(#${gradientId})`} strokeWidth="1.2" vectorEffect="non-scaling-stroke" />
       </svg>
-      <svg
-        viewBox="0 0 360 44"
-        style={{ position: "absolute", left: "50%", top: `${(peak + 4) / 64 * 100}%`, transform: "translateX(-50%)", width: ornamentWidth, maxWidth: "80%", height: "auto", overflow: "visible", display: "block" }}
-      >
-        <FlourishHalf accent={accent} />
-        <g transform="translate(360 0) scale(-1 1)">
-          <FlourishHalf accent={accent} />
-        </g>
-        {/* Center bud */}
-        <path d="M180 13L186 22L180 31L174 22Z" fill="none" stroke={accent} strokeWidth="1.4" strokeLinejoin="round" />
-        <circle cx="180" cy="22" r="2" fill={accent} />
-      </svg>
+      <FlourishOrnament
+        accent={accent}
+        style={{ position: "absolute", left: "50%", top: `${(peak + 4) / 64 * 100}%`, transform: "translateX(-50%)", width: ornamentWidth, maxWidth: "80%" }}
+      />
+    </div>
+  );
+}
+
+/** One corner scroll of WLOrnateFrame, drawn for the top-left corner (viewBox 0 0 64 64). */
+function FrameCorner({ accent, style }) {
+  return (
+    <svg viewBox="0 0 64 64" aria-hidden="true" style={{ position: "absolute", width: 56, height: 56, overflow: "visible", pointerEvents: "none", ...style }}>
+      <g fill="none" stroke={accent} strokeWidth="1.4" strokeLinecap="round">
+        {/* Two scrolls running out along each edge, curling back in */}
+        <path d="M6 40C6 22 14 12 26 9C36 6.5 46 9 52 6" />
+        <path d="M40 6C22 6 12 14 9 26C6.5 36 9 46 6 52" />
+        <path d="M52 6C58 3 62 8 58 11C55 13 52 10 54 8.5" strokeWidth="1.1" />
+        <path d="M6 52C3 58 8 62 11 58C13 55 10 52 8.5 54" strokeWidth="1.1" />
+        {/* Leaf tucked into the corner */}
+        <path d="M14 14C20 18 22 24 21 28C17 24 14 20 14 14Z" fill={accent} fillOpacity="0.3" strokeWidth="1" />
+      </g>
+      <path d="M8 2L11 8L8 14L5 8Z" transform="rotate(-45 8 8)" fill={accent} />
+    </svg>
+  );
+}
+
+/**
+ * A quiet baroque frame: a double rule with scrolls in the corners and the scroll ornament breaking
+ * the rule at the top and bottom. Wraps anything (a video, a photo, a quote).
+ * @param {string} accent - Color of the rules and ornaments
+ * @param {string} background - Background behind the frame; the ornaments sit on it where they break the rule
+ * @param {number|string} maxWidth - Max width of the whole frame
+ * @param {number} ornamentWidth - Width of the top and bottom ornaments in px
+ * @default
+ * accent = "#a67fcf";
+ * background = "#ffffff";
+ * ornamentWidth = 260;
+ */
+export function WLOrnateFrame({ accent = "#a67fcf", background = "#ffffff", maxWidth, ornamentWidth = 260, children, className, style }) {
+  const inset = 10;
+  const ornament = (top) => (
+    <div style={{ position: "absolute", left: "50%", [top ? "top" : "bottom"]: 0, transform: `translate(-50%, ${top ? "-50%" : "50%"})${top ? "" : " scaleY(-1)"}`, boxSizing: "border-box", width: ornamentWidth, maxWidth: "60%", padding: "0 12px", background, pointerEvents: "none" }}>
+      <FlourishOrnament accent={accent} style={{ width: "100%" }} />
+    </div>
+  );
+  return (
+    <div data-wl="ornate-frame" className={className} style={{ position: "relative", boxSizing: "border-box", width: "100%", maxWidth, margin: "0 auto", padding: inset + 18, ...style }}>
+      {/* Outer hairline and inner rule */}
+      <div aria-hidden="true" style={{ position: "absolute", inset: 0, border: `1px solid ${accent}`, opacity: 0.55, borderRadius: 4, pointerEvents: "none" }} />
+      <div aria-hidden="true" style={{ position: "absolute", inset, border: `2px solid ${accent}`, borderRadius: 2, pointerEvents: "none" }} />
+      <FrameCorner accent={accent} style={{ top: -4, left: -4 }} />
+      <FrameCorner accent={accent} style={{ top: -4, right: -4, transform: "scaleX(-1)" }} />
+      <FrameCorner accent={accent} style={{ bottom: -4, left: -4, transform: "scaleY(-1)" }} />
+      <FrameCorner accent={accent} style={{ bottom: -4, right: -4, transform: "scale(-1, -1)" }} />
+      {ornament(true)}
+      {ornament(false)}
+      <div style={{ position: "relative", minWidth: 0 }}>{children}</div>
     </div>
   );
 }

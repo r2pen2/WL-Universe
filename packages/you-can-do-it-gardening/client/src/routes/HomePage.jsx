@@ -14,7 +14,7 @@ import ComputerTwoToneIcon from '@mui/icons-material/ComputerTwoTone';
 import LocationOnTwoToneIcon from '@mui/icons-material/LocationOnTwoTone';
 import { QuoteBlock, WLHeader, WLText, WLTextBlock } from "../libraries/Web-Legos/components/Text";
 
-import {BeforeAndAfter, Testimonial} from "../api/siteModels.ts";
+import {BeforeAndAfter, FeaturedClip, Testimonial} from "../api/siteModels.ts";
 
 import { WLSpinnerPage } from "../libraries/Web-Legos/components/Layout"
 import { WLImage } from '../libraries/Web-Legos/components/Images';
@@ -32,6 +32,7 @@ import { AnalyticsManager } from '../libraries/Web-Legos/api/analytics.ts';
 import { headerPurple } from '../assets/style/colors';
 import GardenDrift from '../components/GardenDrift';
 import MailingListButton from '../components/MailingListButton';
+import FeaturedClipFrame from '../components/FeaturedClip';
 
 export const textGradient = {textGradient: "0deg, $purple600 -20%, $pink600 100%"}
 
@@ -46,12 +47,14 @@ export default function HomePage() {
   const [userCanEditText, setUserCanEditText] = useState(false);
   const [userCanEditImages, setUserCanEditImages] = useState(false);
   const [userCanEditTestimonials, setUserCanEditTestimonials] = useState(false);
+  const [userCanEditFeaturedClip, setUserCanEditFeaturedClip] = useState(false);
   const [userCanEditBeforesAndAfters, setUserCanEditBeforesAndAfters] = useState(false);
 
   useEffect(() => {
     authenticationManager.getPermission(currentSignIn, "siteText").then(p => setUserCanEditText(p));
     authenticationManager.getPermission(currentSignIn, "siteImages").then(p => setUserCanEditImages(p));
     authenticationManager.getPermission(currentSignIn, "testimonials").then(p => setUserCanEditTestimonials(p));
+    authenticationManager.getPermission(currentSignIn, "featured-clip").then(p => setUserCanEditFeaturedClip(p));
     authenticationManager.getPermission(currentSignIn, "befores-and-afters").then(p => setUserCanEditBeforesAndAfters(p));
   }, [authenticationManager, currentSignIn]);
 
@@ -98,11 +101,13 @@ export default function HomePage() {
 
 
   const [modelEditModalOpen, setModelEditModalOpen] = useState(false);
+  const [featuredClips, setFeaturedClips] = useState([]);
   const [currentModel, setCurrentModel] = useState(new SiteModel());
 
   useEffect(() => {
     BeforeAndAfter.getAndSet(setBeforesAndAfters, setBeforesAndAftersFetched)
     Testimonial.getAndSet(setTestimonials, setTestimonialsFetched);
+    FeaturedClip.getAndSet(setFeaturedClips);
   }, [])
 
   /**
@@ -226,6 +231,12 @@ export default function HomePage() {
         <WLHeader firestoreId="schedule-header" editable={userCanEditText}/>
         <ScheduleButton />
       </section>
+      {(featuredClips[0]?.youtubeLink || userCanEditFeaturedClip) && (
+        <section className="d-flex flex-column align-items-center justify-content-center px-3 py-5 gap-2" style={{width: "100%"}}>
+          <FeaturedClipFrame clip={featuredClips[0]} />
+          <ModelEditButton userCanEdit={userCanEditFeaturedClip} model={FeaturedClip} data={featuredClips[0]} setCurrentModel={setCurrentModel} setEditModalOpen={setModelEditModalOpen} />
+        </section>
+      )}
       <WaveTop color="#f5f5f5" />
       <section className='d-flex flex-column align-items-center justify-content-center' style={{backgroundColor: "#F5F5F5"}}>
         <WLHeader color={headerPurple} firestoreId="testimonial-quotes-header" editable={userCanEditText}/>

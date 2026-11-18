@@ -8,7 +8,7 @@ export class WLNav extends Component {
 
   /** Hamburger toggle (below lg). Optional props: className, aria-label, onChange(isOpen). */
   static Toggle(props) {
-    return <Navbar.Toggle className={"px-2 d-inline d-lg-none " + (props.className || "")} aria-label={props["aria-label"]} onChange={props.onChange} />
+    return <Navbar.Toggle className={"px-2 d-inline d-lg-none " + (props.className || "")} aria-label={props["aria-label"] || "Open menu"} onChange={props.onChange} />
   }
 
   static Left(props) {
