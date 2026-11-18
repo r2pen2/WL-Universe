@@ -15,12 +15,14 @@ import "../assets/style/homepageV2.css"
 import { Paper } from '@mantine/core';
 
 import moonLogo from "../assets/images/moonLogo.png";
+import DreamBubbles from "../components/DreamBubbles";
 
 export default function HomepageV2({userCanEditText, userCanEditImages}) {
   const emailHref = useContactHref("email", { fallback: "talkaboutdreams@yahoo.com" });
 
   const Splash = () => (
     <section className="splash d-flex flex-column align-items-center justify-content-center px-2">
+      <DreamBubbles />
       <hgroup style={{maxWidth: 800}} id="home">
         <WLHeaderV2 editable={userCanEditText} firestoreId="header" align="center" color="white" />
         <WLTextV2 editable={userCanEditText} firestoreId="subheader-text" align="center" size={24} color="white" />
