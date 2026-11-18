@@ -25,6 +25,7 @@ import { WLAliceCarousel, createCarouselBreakpoints } from '../libraries/Web-Leg
 import { SiteModel } from '../libraries/Web-Legos/api/models.ts';
 import { AddModelButton, ModelEditButton, ModelEditModal } from '../libraries/Web-Legos/components/Modals';
 import { WaveBottom, WaveTop } from '../libraries/Web-Legos/components/Waves';
+import { WLFlourishEdge } from '../libraries/Web-Legos/components/Decoration';
 import { useContext } from 'react';
 import { CurrentSignInContext } from '../App';
 import { AuthenticationManager } from '../libraries/Web-Legos/api/auth.ts';
@@ -235,6 +236,7 @@ export default function HomePage() {
           </div>
         </div> */}
       </section>
+      <WLFlourishEdge />
       <section className='py-lg-5 py-2 d-flex flex-column align-items-center justify-content-center'>
         <div className="container d-flex flex-row justify-content-center align-items-center">
           <div className="row w-100 justify-content-center">
