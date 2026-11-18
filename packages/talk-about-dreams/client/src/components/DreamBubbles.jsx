@@ -1,47 +1,8 @@
 import React from "react";
+import { WLDriftingShapes } from "../libraries/Web-Legos/components/Backgrounds";
 import "../assets/style/dreamBubbles.css";
 
-/**
- * Soft, translucent speech bubbles that drift slowly upward behind the
- * splash content — falling leaves in reverse. Purely decorative.
- *
- * The layout is computed once at module load so re-renders of the
- * homepage don't reshuffle (and restart) every bubble.
- */
-
-const BUBBLE_COUNT = 11;
-
-// Small deterministic PRNG so the layout is stable across reloads too.
-function mulberry32(seed) {
-  return function () {
-    seed |= 0;
-    seed = (seed + 0x6d2b79f5) | 0;
-    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
-const rand = mulberry32(20261118);
-const between = (min, max) => min + rand() * (max - min);
-
-const BUBBLES = Array.from({ length: BUBBLE_COUNT }, (_, i) => {
-  const duration = between(22, 36);
-  return {
-    // Spread bubbles across the width in lanes, with jitter, so they don't clump.
-    left: ((i + between(0.15, 0.85)) / BUBBLE_COUNT) * 100,
-    size: between(36, 76),
-    duration,
-    // Negative delay = already mid-flight on first paint, so the page never looks empty.
-    delay: -between(0, duration),
-    swayDuration: between(5, 9),
-    sway: between(10, 26),
-    tilt: between(-10, 10),
-    opacity: between(0.5, 0.85),
-    flip: rand() < 0.5,
-    variant: rand() < 0.35 ? "thought" : "speech",
-  };
-});
+/* Soft, translucent speech and thought bubbles: the shapes for the homepage splash's drifting layer. */
 
 const SpeechBubble = () => (
   <svg viewBox="0 0 64 56" aria-hidden="true" focusable="false">
@@ -60,34 +21,13 @@ const ThoughtBubble = () => (
   </svg>
 );
 
+/** The bubble shapes, for WLDriftingShapes (style them with the `dream-bubbles` class): two speech bubbles to every thought bubble. */
+export const DREAM_BUBBLE_SHAPES = [<SpeechBubble />, <SpeechBubble />, <ThoughtBubble />];
+
 /**
- * Decorative layer of slowly rising speech and thought bubbles. Place it as the first child of a
- * `position: relative; isolation: isolate` section; it fills the section behind the content.
- * @param {number} [riseDistance=960] - How far (px) each bubble travels; roughly the section's height.
+ * Dream bubbles rising slowly behind the homepage splash, like falling leaves in reverse.
+ * Place it as the first child of the splash section (`.splash` sets `isolation: isolate`).
  */
-export default function DreamBubbles({ riseDistance = 960 }) {
-  return (
-    <div className="dream-bubbles" aria-hidden="true" style={{ "--rise-distance": `${riseDistance}px` }}>
-      {BUBBLES.map((b, i) => (
-        <span
-          key={i}
-          className="dream-bubble"
-          style={{
-            left: `${b.left}%`,
-            width: b.size,
-            "--rise-duration": `${b.duration}s`,
-            "--rise-delay": `${b.delay}s`,
-            "--sway-duration": `${b.swayDuration}s`,
-            "--sway": `${b.sway}px`,
-            "--tilt": `${b.tilt}deg`,
-            "--peak-opacity": b.opacity,
-          }}
-        >
-          <span className={`dream-bubble-inner${b.flip ? " flip" : ""}`}>
-            {b.variant === "thought" ? <ThoughtBubble /> : <SpeechBubble />}
-          </span>
-        </span>
-      ))}
-    </div>
-  );
+export default function DreamBubbles() {
+  return <WLDriftingShapes shapes={DREAM_BUBBLE_SHAPES} direction="up" className="dream-bubbles" />;
 }

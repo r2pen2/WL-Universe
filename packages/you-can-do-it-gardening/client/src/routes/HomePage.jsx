@@ -31,6 +31,7 @@ import { AuthenticationManager } from '../libraries/Web-Legos/api/auth.ts';
 import { cmsAssetUrl } from '../libraries/Web-Legos/api/cms.ts';
 import { AnalyticsManager } from '../libraries/Web-Legos/api/analytics.ts';
 import { mailingListLink } from '../api/links.js';
+import GardenDrift from '../components/GardenDrift';
 
 const MAILING_LIST_PROMPT_DELAY_MS = 5000;
 
@@ -201,6 +202,7 @@ export default function HomePage() {
       <ContactModal open={contactModalOpen} setOpen={setContactModalOpen} />
       <section className="d-flex flex-column w-100 align-items-center">
         <div className="w-100 flex-column align-items-center background-image" style={{paddingTop: "10vh", paddingBottom: "10vh",}}>
+          <GardenDrift />
           <div className="elevated d-flex flex-column w-100 text-background py-2">
             <WLHeader>
               You Can Do It Gardening

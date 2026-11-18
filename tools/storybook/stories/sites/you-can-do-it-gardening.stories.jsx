@@ -1,4 +1,6 @@
 import { FullSite } from "../_support/site.jsx";
+import GardenDrift from "../../../../packages/you-can-do-it-gardening/client/src/components/GardenDrift.jsx";
+import "../../../../packages/you-can-do-it-gardening/client/src/assets/style/homepage.css";
 
 const load = () => import("../../../../packages/you-can-do-it-gardening/client/src/index.js");
 
@@ -9,3 +11,14 @@ export default {
 };
 
 export const Default = { name: "You Can Do It Gardening", render: () => <FullSite load={load} htmlId="root-element" /> };
+
+/** The homepage hero's falling leaves and flowers on their own: the real `.background-image` hero, without the content. */
+export const LeavesAndFlowersStory = {
+  name: "Leaves and flowers",
+  parameters: { fullSite: false, route: undefined },
+  render: () => (
+    <div className="background-image" style={{ height: 600 }}>
+      <GardenDrift />
+    </div>
+  ),
+};

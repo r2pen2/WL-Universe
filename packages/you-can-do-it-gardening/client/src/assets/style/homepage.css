@@ -32,6 +32,12 @@
   z-index: 1;
 }
 
+/* The drifting leaves layer (GardenDrift) fills the hero: above the blurred photo, below the content. */
+.background-image > .wl-drifting-shapes {
+  position: absolute;
+  z-index: 0;
+}
+
 .testimonial-img {
   width: 10rem;
   height: 10rem;

@@ -89,3 +89,84 @@
     transform: scale(1);
   }
 }
+
+/* WLDriftingShapes: the layer fills its section behind the content. */
+.wl-drifting-shapes {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: -1;
+  /* Lets the shapes travel exactly the section's height (100cqh). */
+  container-type: size;
+}
+
+/* Outer span: the slow vertical drift + fade. */
+.wl-drift-item {
+  position: absolute;
+  display: block;
+  opacity: 0;
+  animation: wl-drift var(--drift-duration) linear var(--drift-delay) infinite;
+  will-change: transform, opacity;
+}
+
+.wl-drifting-shapes--up .wl-drift-item {
+  top: 100%;
+  --drift-from: 0px;
+  --drift-to: calc(-100cqh - 100%);
+}
+
+.wl-drifting-shapes--down .wl-drift-item {
+  top: 0;
+  --drift-from: -100%;
+  --drift-to: 100cqh;
+}
+
+/* Inner span: the gentle side-to-side sway, like a leaf. */
+.wl-drift-sway {
+  display: block;
+  animation: wl-drift-sway var(--sway-duration) ease-in-out var(--drift-delay) infinite alternate;
+}
+
+.wl-drift-sway > svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.wl-drift-flip > svg {
+  transform: scaleX(-1);
+}
+
+@keyframes wl-drift {
+  0% {
+    transform: translateY(var(--drift-from));
+    opacity: 0;
+  }
+  12% {
+    opacity: var(--peak-opacity);
+  }
+  70% {
+    opacity: var(--peak-opacity);
+  }
+  100% {
+    transform: translateY(var(--drift-to));
+    opacity: 0;
+  }
+}
+
+@keyframes wl-drift-sway {
+  from {
+    transform: translateX(calc(var(--sway) * -1)) rotate(calc(var(--tilt) * -1));
+  }
+  to {
+    transform: translateX(var(--sway)) rotate(var(--tilt));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wl-drifting-shapes {
+    display: none;
+  }
+}
