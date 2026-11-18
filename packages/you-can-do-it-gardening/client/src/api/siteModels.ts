@@ -415,7 +415,7 @@ export class GalleryVideo extends StaticSiteModel {
 
 /**
  * The homepage's featured clip: one YouTube video, played from startTime to endTime. Times are
- * written the way people say them ("0:36", "11:50"); a blank end plays to the end of the video.
+ * written the way people say them ("0:35", "11:40"); a blank end plays to the end of the video.
  */
 export class FeaturedClip extends StaticSiteModel {
   constructor() {
@@ -428,18 +428,19 @@ export class FeaturedClip extends StaticSiteModel {
   images = {}
   numbers = {}
   shortStrings = {
-    // New Hampshire PBS, "From Backyards to Bedrock Gardens | Windows to the Wild". Shown until
+    // New Hampshire PBS, "From Backyards to Bedrock Gardens | Windows to the Wild" (the newest
+    // appearance on Find Me). Shown until
     // someone sets a clip in the CMS; saving a blank link there hides the section.
     youtubeLink: "https://www.youtube.com/watch?v=niYKpfztsI0",
-    startTime: "0:36",
-    endTime: "11:50",
+    startTime: "0:35",
+    endTime: "11:40",
   }
   longStrings = {}
 
   fillConstantExampleData() {
-    this.shortStrings.youtubeLink = "https://www.youtube.com/watch?v=rNOzgQm63BE";
-    this.shortStrings.startTime = "0:36";
-    this.shortStrings.endTime = "11:50";
+    this.shortStrings.youtubeLink = "https://www.youtube.com/watch?v=niYKpfztsI0";
+    this.shortStrings.startTime = "0:35";
+    this.shortStrings.endTime = "11:40";
     return this;
   }
 
