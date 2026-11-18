@@ -1,2 +1,5 @@
 storybook-static/
 debug-storybook.log
+
+# Local copy of the pre-rendered catalog data (deployed: served from glados)
+.storybook/static/snapshot/

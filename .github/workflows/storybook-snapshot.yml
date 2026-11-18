@@ -1,0 +1,25 @@
+name: storybook snapshot
+
+# Re-take the component catalog's pre-rendered "On each site" / Fonts data, so CMS edits (contact
+# info, copy) show up without a deploy. publish-app-images.yml also runs it after every deploy.
+on:
+  schedule:
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: storybook-snapshot
+  cancel-in-progress: false
+
+jobs:
+  snapshot:
+    name: storybook snapshot
+    runs-on:
+      - self-hosted
+      - glados
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Pre-render On each site / Fonts
+        run: sudo bash scripts/glados/storybook-snapshot.sh

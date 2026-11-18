@@ -6,6 +6,9 @@ services:
     # WL_CMS_URL + WL_CMS_READ_API_KEY (read-only), from scripts/glados/provision-cms-read-key.sh
     env_file:
       - /opt/services/data/app-env/storybook.env
+    # Pre-rendered "On each site" / Fonts data (scripts/glados/storybook-snapshot.sh), served at /snapshot/.
+    volumes:
+      - /opt/services/data/app-assets/storybook:/usr/share/nginx/html/snapshot:ro
     networks:
       - proxy
     labels:
