@@ -4,8 +4,8 @@ const orange200 = "#fdae93";
 const orange300 = "#fc9067";
 const orange400 = "#fb7846";
 const orange500 = "#fb6225";
-const orange600 = "#f05a21";
-const orange700 = "#e2551c";
+const orange600 = "#d2440e"; // was #f05a21: darkened to 4.6:1 on white so orange text and white-on-orange buttons pass WCAG AA
+const orange700 = "#b53a0b"; // hover: a step darker than orange600
 
 const blue200 = "#7fd4f6";
 const blue300 = "#4cc2f2";

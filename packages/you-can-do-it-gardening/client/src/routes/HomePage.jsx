@@ -29,6 +29,7 @@ import { CurrentSignInContext } from '../App';
 import { AuthenticationManager } from '../libraries/Web-Legos/api/auth.ts';
 import { cmsAssetUrl } from '../libraries/Web-Legos/api/cms.ts';
 import { AnalyticsManager } from '../libraries/Web-Legos/api/analytics.ts';
+import { headerPurple } from '../assets/style/colors';
 import GardenDrift from '../components/GardenDrift';
 import MailingListButton from '../components/MailingListButton';
 
@@ -227,7 +228,7 @@ export default function HomePage() {
       </section>
       <WaveTop color="#f5f5f5" />
       <section className='d-flex flex-column align-items-center justify-content-center' style={{backgroundColor: "#F5F5F5"}}>
-        <WLHeader color="#a67fcf" firestoreId="testimonial-quotes-header" editable={userCanEditText}/>
+        <WLHeader color={headerPurple} firestoreId="testimonial-quotes-header" editable={userCanEditText}/>
         <div className="d-flex flex-column align-items-center justify-content-center px-xxl-5 px-xl-4 px-md-3 px-2" style={{width: "100%", overflow: "visible"}}>
           <WLAliceCarousel
             scaleActive

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import "../assets/style/teaching.css"
 import { WLBlockHeader, WLHeader, WLText } from '../libraries/Web-Legos/components/Text';
 
-import { blockHeaderFill } from "../assets/style/colors";
+import { blockHeaderFill, headerPurple } from "../assets/style/colors";
 import { WLSpinnerPage } from '../libraries/Web-Legos/components/Layout';
 import { WLImage } from '../libraries/Web-Legos/components/Images';
 
@@ -155,7 +155,7 @@ export default function FindMe() {
     </section>
     <WaveTop color="#f5f5f5"/>
     <section className="d-flex flex-column align-items-center justify-content-center py-2 px-2 px-lg-5" style={{backgroundColor:"#f5f5f5"}}>
-      <WLHeader firestoreId="media-appearances-header" editable={userCanEditText} color="#a67fcf" />
+      <WLHeader firestoreId="media-appearances-header" editable={userCanEditText} color={headerPurple} />
       <WLAliceCarousel
         pagination
         paginationTop
