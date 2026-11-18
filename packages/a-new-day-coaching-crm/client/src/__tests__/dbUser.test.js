@@ -3,15 +3,22 @@
 // left that person stuck on the login screen. Reads now check each doc against
 // USER_DEFAULTS and write any missing fields back before returning it.
 
-jest.mock('../api/firebase', () => ({ db: {} }));
-jest.mock('../components/Navigation', () => ({
+import { vi } from 'vitest';
+import { User } from '../api/db/dbUser.ts';
+import { USER_DEFAULTS, applyUserDefaults } from '../api/db/userDefaults';
+
+// vi.mock calls are hoisted above the imports.
+vi.mock('../api/firebase', () => ({ db: {} }));
+vi.mock('../components/Navigation', () => ({
   navigationItems: { ADMINUSERS: 'users-admin', ADMININVOICES: 'invoices-admin', ADMINFORMS: 'forms-admin', ADMINTOOLS: 'tools-admin' },
 }));
 
 // In-memory stand-in for the `users` collection. Plain functions rather than
-// jest.fn(): CRA sets resetMocks, which would wipe the implementations.
+// vi.fn(), so nothing that resets mocks can wipe the implementations.
 const mockStore = {};
 const mockWrites = [];
+// Set by a test to make setDoc fail (e.g. a refused write).
+let mockSetDocOverride = null;
 function mockSnap(id) {
   const data = mockStore[id];
   return { id, ref: { id }, exists: () => data !== undefined, data: () => data };
@@ -24,7 +31,7 @@ function mockDeepMerge(target, patch) {
   }
   return out;
 }
-jest.mock('firebase/firestore', () => ({
+vi.mock('firebase/firestore', () => ({
   arrayRemove: () => {},
   arrayUnion: () => {},
   collection: () => {},
@@ -36,15 +43,13 @@ jest.mock('firebase/firestore', () => ({
   query: () => {},
   runTransaction: async () => {},
   setDoc: async (ref, data, options) => {
+    if (mockSetDocOverride) { return mockSetDocOverride(ref, data, options); }
     mockWrites.push({ id: ref.id, data, options });
     mockStore[ref.id] = options?.merge ? mockDeepMerge(mockStore[ref.id] || {}, data) : data;
   },
   updateDoc: async () => {},
   where: () => {},
 }));
-
-const { User } = require('../api/db/dbUser.ts');
-const { USER_DEFAULTS, applyUserDefaults } = require('../api/db/userDefaults');
 
 beforeEach(() => {
   for (const id of Object.keys(mockStore)) { delete mockStore[id]; }
@@ -106,17 +111,15 @@ test('fetchSearch keeps the roster and repairs a doc with no personalData', asyn
 
 test('getById returns the defaulted record even if the repair write is refused', async () => {
   mockStore.child = { personalData: { displayName: 'Kid', role: 'Student' } };
-  const firestore = require('firebase/firestore');
-  const setDoc = firestore.setDoc;
-  firestore.setDoc = async () => { throw new Error('permission-denied'); };
-  const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
+  mockSetDocOverride = async () => { throw new Error('permission-denied'); };
+  const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
   try {
     const data = await User.getById('child');
     expect(data.personalData.displayName).toBe('Kid');
     expect(data.resources).toEqual([]);
     expect(mockStore.child.resources).toBeUndefined(); // the write really was refused
   } finally {
-    firestore.setDoc = setDoc;
+    mockSetDocOverride = null;
     spy.mockRestore();
   }
 });

@@ -28,7 +28,6 @@
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "expres": "^0.0.5",
-    "react-scripts": "^5.0.1",
     "stripe": "^15.2.0"
   },
   "private": true

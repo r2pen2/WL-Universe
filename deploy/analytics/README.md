@@ -61,7 +61,7 @@ const analyticsManager = new AnalyticsManager({
 analyticsManager.initialize();
 ```
 
-Optional CRA env: `REACT_APP_UMAMI_URL`, `REACT_APP_UMAMI_WEBSITE_ID` (baked at image build).
+Optional build-time env: `REACT_APP_UMAMI_URL`, `REACT_APP_UMAMI_WEBSITE_ID` (baked at image build).
 
 **QA:** `*.qa.joed.dev` does not send beacons by default (client + server).
 

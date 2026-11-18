@@ -1,4 +1,4 @@
-# Local development (microservices + CRA)
+# Local development (microservices + Vite clients)
 
 ## Quick start
 
@@ -12,7 +12,7 @@ npm run client -- nicole-levin
 npm run client -- beyond-the-bell
 ```
 
-Marketing CMS sites have **no** `server.js` — only CRA locally and nginx static images in prod.
+Marketing CMS sites have **no** `server.js` — only the Vite dev server locally and nginx static images in prod.
 
 Apps that still ship Node: `joe-dobbelaar`, `a-new-day-coaching-crm`, `wl-admin-portal`, plus microservices (`wl-cms`, `wl-auth`, `wl-forms`, `site-mail`).
 

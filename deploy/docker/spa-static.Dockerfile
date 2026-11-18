@@ -1,8 +1,9 @@
 # syntax=docker/dockerfile:1
-# Static CRA marketing sites — no per-site Node/Express.
+# Static marketing sites (Vite: scripts/vite/wl-site.config.mjs) — no per-site Node/Express.
 # Build context: monorepo root
 
-ARG NODE_IMAGE=node:18-bookworm-slim
+# Vite 8 needs Node 20.19+.
+ARG NODE_IMAGE=node:24-bookworm-slim
 
 FROM ${NODE_IMAGE} AS client-builder
 ARG APP_DIR

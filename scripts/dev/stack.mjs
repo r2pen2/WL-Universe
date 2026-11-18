@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * npm run stack — start shared microservices for local CRA clients.
+ * npm run stack — start shared microservices for local site clients.
  */
 import { spawn } from "node:child_process";
 import fs from "node:fs";
