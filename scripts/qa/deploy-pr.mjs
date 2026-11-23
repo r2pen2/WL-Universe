@@ -312,6 +312,10 @@ function deployOne({ pr, app, owner, sha }) {
 function main() {
   const args = parseArgs(process.argv.slice(2));
   sh(`sudo mkdir -p ${JSON.stringify(QA_ASSETS_ROOT)}`);
+  // update-active-json.mjs writes active.json here without sudo, so the runner user must own the
+  // folder (only the folder: the pr-N trees under it stay root's). A new host's first preview
+  // otherwise fails with EACCES, because the sudo mkdir above made it root's.
+  sh(`sudo chown "$(id -u):$(id -g)" ${JSON.stringify(QA_ASSETS_ROOT)}`);
   const deployments = [];
   const apps = [...args.apps];
   if (apps.some((app) => APP_BY_NAME[app].kind === "spa-static")) {

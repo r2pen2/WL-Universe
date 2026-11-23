@@ -1,0 +1,10 @@
+{
+  "project": "WL",
+  "label": "cms-editor",
+  "epic": {
+    "key": "epic",
+    "name": "Sleek CMS editor: overhaul the edit dialogs",
+    "description": "<p>The dialogs clients use to edit their sites are huge and padded: on a phone the \"Edit: Teaching Item\" dialog shows only three fields, under a giant heading, a big \"Text\" section title, centered labels and roomy boxes, with a long link cut off in a single-line box. Give them a complete overhaul: compact and sleek, so editing feels like a modern app.</p><p>Scope (all in <code>packages/web-legos</code>, used by every site): <code>ModelEditModal</code> (Modals.jsx), the text editor behind editable <code>WLText</code>/<code>WLHeader</code>, image upload behind <code>WLImage</code>, the Contact info dialog (SiteSettings.jsx) and Request changes (Auth.jsx).</p><ul><li>Much less margin and padding; small left-aligned labels above fields; a short title (e.g. the item's name, not <i>Edit: \"Teaching Item\"</i>).</li><li>Fields sized to their content: links wrap or scroll rather than truncating; descriptions grow with text.</li><li>Friendly field names, not model keys (\"Link\", \"Order\").</li><li>On phones a full-height sheet with Save/Cancel pinned at the bottom; on desktop a narrow dialog.</li><li>Delete as a quiet text action with a confirm step, not a big pink button at the top.</li><li>One look across all the dialogs, shown in the Storybook catalog.</li></ul>"
+  },
+  "items": []
+}
