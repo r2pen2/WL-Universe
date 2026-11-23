@@ -1,0 +1,486 @@
+{
+  "$comment": "WL-Universe app catalog: the one list of apps for QA previews (r2pen2/devops reusable workflows), the prod publish and scripts/qa/apps.mjs. Fields: r2pen2/devops ci/scripts/lib/catalog.mjs.",
+  "imagePrefix": "wl-universe",
+  "qaHostDomain": "joed.dev",
+  "qaTagFallback": "latest",
+  "sharedPaths": [
+    "package.json",
+    "package-lock.json",
+    "scripts/sync-local-packages.mjs",
+    "re:^deploy/docker/(?!(node-react-express|spa-static|node-express|docs-static).Dockerfile$|storybook)"
+  ],
+  "qaSeed": {
+    "script": "scripts/qa/firestore-qa.mjs",
+    "image": "wl-cms",
+    "nodePath": "/repo/packages/wl-cms/node_modules",
+    "mounts": [
+      "scripts",
+      "deploy"
+    ]
+  },
+  "apps": [
+    {
+      "app": "nicole-levin",
+      "port": 8080,
+      "kind": "spa-static",
+      "dockerfile": "deploy/docker/spa-static.Dockerfile",
+      "cms": true,
+      "siteKey": "NL",
+      "packagePath": "packages/nicole-levin",
+      "watchPaths": [
+        "packages/nicole-levin/",
+        "deploy/compose/nicole-levin.yml",
+        "deploy/compose/nicole-levin.env.example",
+        "deploy/dns/sites/nicole-levin.json",
+        "packages/web-legos/",
+        "scripts/vite/",
+        "packages/server-legos/",
+        "deploy/docker/spa-static.Dockerfile"
+      ],
+      "companions": [
+        "wl-cms",
+        "wl-auth",
+        "wl-forms",
+        "site-mail"
+      ],
+      "qaEnvironment": {
+        "WL_CMS_URL": "{url:wl-cms}",
+        "WL_CMS_API_KEY": "qa-not-for-production",
+        "WL_CMS_SITE": "{app}",
+        "WL_AUTH_URL": "{url:wl-auth}",
+        "WL_AUTH_API_KEY": "qa-not-for-production",
+        "WL_AUTH_SITE": "{app}",
+        "WL_FORMS_URL": "{url:wl-forms}",
+        "WL_FORMS_API_KEY": "qa-not-for-production",
+        "WL_FORMS_SITE": "{app}",
+        "SITE_MAIL_URL": "{url:site-mail}",
+        "SITE_MAIL_API_KEY": "qa-not-for-production",
+        "SITE_MAIL_SITE_SLUG": "{app}"
+      }
+    },
+    {
+      "app": "a-new-day-coaching",
+      "port": 8080,
+      "kind": "spa-static",
+      "dockerfile": "deploy/docker/spa-static.Dockerfile",
+      "cms": true,
+      "siteKey": "ANDC",
+      "packagePath": "packages/a-new-day-coaching",
+      "watchPaths": [
+        "packages/a-new-day-coaching/",
+        "deploy/compose/a-new-day-coaching.yml",
+        "deploy/compose/a-new-day-coaching.env.example",
+        "deploy/dns/sites/a-new-day-coaching.json",
+        "packages/web-legos/",
+        "scripts/vite/",
+        "packages/server-legos/",
+        "deploy/docker/spa-static.Dockerfile"
+      ],
+      "companions": [
+        "wl-cms",
+        "wl-auth",
+        "wl-forms",
+        "site-mail"
+      ],
+      "qaEnvironment": {
+        "WL_CMS_URL": "{url:wl-cms}",
+        "WL_CMS_API_KEY": "qa-not-for-production",
+        "WL_CMS_SITE": "{app}",
+        "WL_AUTH_URL": "{url:wl-auth}",
+        "WL_AUTH_API_KEY": "qa-not-for-production",
+        "WL_AUTH_SITE": "{app}",
+        "WL_FORMS_URL": "{url:wl-forms}",
+        "WL_FORMS_API_KEY": "qa-not-for-production",
+        "WL_FORMS_SITE": "{app}",
+        "SITE_MAIL_URL": "{url:site-mail}",
+        "SITE_MAIL_API_KEY": "qa-not-for-production",
+        "SITE_MAIL_SITE_SLUG": "{app}"
+      }
+    },
+    {
+      "app": "a-new-day-coaching-crm",
+      "port": 3008,
+      "kind": "spa",
+      "dockerfile": "deploy/docker/node-react-express.Dockerfile",
+      "extraVolumes": [
+        "cal"
+      ],
+      "packagePath": "packages/a-new-day-coaching-crm",
+      "watchPaths": [
+        "packages/a-new-day-coaching-crm/",
+        "deploy/compose/a-new-day-coaching-crm.yml",
+        "deploy/compose/a-new-day-coaching-crm.env.example",
+        "deploy/dns/sites/a-new-day-coaching-crm.json",
+        "packages/web-legos/",
+        "scripts/vite/",
+        "packages/server-legos/",
+        "deploy/docker/node-react-express.Dockerfile",
+        "!re:^packages/server-legos/(cmsCollections.js|site(Text|Images|Models)(V2)?.js)$"
+      ]
+    },
+    {
+      "app": "beyond-the-bell",
+      "port": 8080,
+      "kind": "spa-static",
+      "dockerfile": "deploy/docker/spa-static.Dockerfile",
+      "cms": true,
+      "packagePath": "packages/beyond-the-bell",
+      "watchPaths": [
+        "packages/beyond-the-bell/",
+        "deploy/compose/beyond-the-bell.yml",
+        "deploy/compose/beyond-the-bell.env.example",
+        "deploy/dns/sites/beyond-the-bell.json",
+        "packages/web-legos/",
+        "scripts/vite/",
+        "packages/server-legos/",
+        "deploy/docker/spa-static.Dockerfile"
+      ],
+      "companions": [
+        "wl-cms",
+        "wl-auth",
+        "wl-forms",
+        "site-mail"
+      ],
+      "qaEnvironment": {
+        "WL_CMS_URL": "{url:wl-cms}",
+        "WL_CMS_API_KEY": "qa-not-for-production",
+        "WL_CMS_SITE": "{app}",
+        "WL_AUTH_URL": "{url:wl-auth}",
+        "WL_AUTH_API_KEY": "qa-not-for-production",
+        "WL_AUTH_SITE": "{app}",
+        "WL_FORMS_URL": "{url:wl-forms}",
+        "WL_FORMS_API_KEY": "qa-not-for-production",
+        "WL_FORMS_SITE": "{app}",
+        "SITE_MAIL_URL": "{url:site-mail}",
+        "SITE_MAIL_API_KEY": "qa-not-for-production",
+        "SITE_MAIL_SITE_SLUG": "{app}"
+      }
+    },
+    {
+      "app": "wl-admin-portal",
+      "port": 25565,
+      "kind": "spa",
+      "dockerfile": "deploy/docker/node-react-express.Dockerfile",
+      "packagePath": "packages/wl-admin-portal",
+      "watchPaths": [
+        "packages/wl-admin-portal/",
+        "deploy/compose/wl-admin-portal.yml",
+        "deploy/compose/wl-admin-portal.env.example",
+        "deploy/dns/sites/wl-admin-portal.json",
+        "packages/web-legos/",
+        "scripts/vite/",
+        "packages/server-legos/",
+        "deploy/docker/node-react-express.Dockerfile",
+        "!re:^packages/server-legos/(cmsCollections.js|site(Text|Images|Models)(V2)?.js)$"
+      ]
+    },
+    {
+      "app": "you-can-do-it-gardening",
+      "port": 8080,
+      "kind": "spa-static",
+      "dockerfile": "deploy/docker/spa-static.Dockerfile",
+      "cms": true,
+      "packagePath": "packages/you-can-do-it-gardening",
+      "watchPaths": [
+        "packages/you-can-do-it-gardening/",
+        "deploy/compose/you-can-do-it-gardening.yml",
+        "deploy/compose/you-can-do-it-gardening.env.example",
+        "deploy/dns/sites/you-can-do-it-gardening.json",
+        "packages/web-legos/",
+        "scripts/vite/",
+        "packages/server-legos/",
+        "deploy/docker/spa-static.Dockerfile"
+      ],
+      "companions": [
+        "wl-cms",
+        "wl-auth",
+        "wl-forms",
+        "site-mail"
+      ],
+      "qaEnvironment": {
+        "WL_CMS_URL": "{url:wl-cms}",
+        "WL_CMS_API_KEY": "qa-not-for-production",
+        "WL_CMS_SITE": "{app}",
+        "WL_AUTH_URL": "{url:wl-auth}",
+        "WL_AUTH_API_KEY": "qa-not-for-production",
+        "WL_AUTH_SITE": "{app}",
+        "WL_FORMS_URL": "{url:wl-forms}",
+        "WL_FORMS_API_KEY": "qa-not-for-production",
+        "WL_FORMS_SITE": "{app}",
+        "SITE_MAIL_URL": "{url:site-mail}",
+        "SITE_MAIL_API_KEY": "qa-not-for-production",
+        "SITE_MAIL_SITE_SLUG": "{app}"
+      }
+    },
+    {
+      "app": "joe-dobbelaar",
+      "port": 3002,
+      "kind": "spa",
+      "dockerfile": "deploy/docker/node-react-express.Dockerfile",
+      "packagePath": "packages/joe-dobbelaar",
+      "watchPaths": [
+        "packages/joe-dobbelaar/",
+        "deploy/compose/joe-dobbelaar.yml",
+        "deploy/compose/joe-dobbelaar.env.example",
+        "deploy/dns/sites/joe-dobbelaar.json",
+        "packages/web-legos/",
+        "scripts/vite/",
+        "packages/server-legos/",
+        "deploy/docker/node-react-express.Dockerfile",
+        "!re:^packages/server-legos/(cmsCollections.js|site(Text|Images|Models)(V2)?.js)$"
+      ]
+    },
+    {
+      "app": "talk-about-dreams",
+      "port": 8080,
+      "kind": "spa-static",
+      "dockerfile": "deploy/docker/spa-static.Dockerfile",
+      "cms": true,
+      "siteKey": "TAG",
+      "packagePath": "packages/talk-about-dreams",
+      "watchPaths": [
+        "packages/talk-about-dreams/",
+        "deploy/compose/talk-about-dreams.yml",
+        "deploy/compose/talk-about-dreams.env.example",
+        "deploy/dns/sites/talk-about-dreams.json",
+        "packages/web-legos/",
+        "scripts/vite/",
+        "packages/server-legos/",
+        "deploy/docker/spa-static.Dockerfile"
+      ],
+      "companions": [
+        "wl-cms",
+        "wl-auth",
+        "wl-forms",
+        "site-mail"
+      ],
+      "qaEnvironment": {
+        "WL_CMS_URL": "{url:wl-cms}",
+        "WL_CMS_API_KEY": "qa-not-for-production",
+        "WL_CMS_SITE": "{app}",
+        "WL_AUTH_URL": "{url:wl-auth}",
+        "WL_AUTH_API_KEY": "qa-not-for-production",
+        "WL_AUTH_SITE": "{app}",
+        "WL_FORMS_URL": "{url:wl-forms}",
+        "WL_FORMS_API_KEY": "qa-not-for-production",
+        "WL_FORMS_SITE": "{app}",
+        "SITE_MAIL_URL": "{url:site-mail}",
+        "SITE_MAIL_API_KEY": "qa-not-for-production",
+        "SITE_MAIL_SITE_SLUG": "{app}"
+      }
+    },
+    {
+      "app": "boston-mixtape",
+      "port": 8080,
+      "kind": "spa-static",
+      "dockerfile": "deploy/docker/spa-static.Dockerfile",
+      "cms": true,
+      "siteKey": "BBM",
+      "packagePath": "packages/boston-mixtape",
+      "watchPaths": [
+        "packages/boston-mixtape/",
+        "deploy/compose/boston-mixtape.yml",
+        "deploy/compose/boston-mixtape.env.example",
+        "deploy/dns/sites/boston-mixtape.json",
+        "packages/web-legos/",
+        "scripts/vite/",
+        "packages/server-legos/",
+        "deploy/docker/spa-static.Dockerfile"
+      ],
+      "companions": [
+        "wl-cms",
+        "wl-auth",
+        "wl-forms",
+        "site-mail"
+      ],
+      "qaEnvironment": {
+        "WL_CMS_URL": "{url:wl-cms}",
+        "WL_CMS_API_KEY": "qa-not-for-production",
+        "WL_CMS_SITE": "{app}",
+        "WL_AUTH_URL": "{url:wl-auth}",
+        "WL_AUTH_API_KEY": "qa-not-for-production",
+        "WL_AUTH_SITE": "{app}",
+        "WL_FORMS_URL": "{url:wl-forms}",
+        "WL_FORMS_API_KEY": "qa-not-for-production",
+        "WL_FORMS_SITE": "{app}",
+        "SITE_MAIL_URL": "{url:site-mail}",
+        "SITE_MAIL_API_KEY": "qa-not-for-production",
+        "SITE_MAIL_SITE_SLUG": "{app}"
+      }
+    },
+    {
+      "app": "room01890",
+      "port": 8080,
+      "kind": "spa-static",
+      "dockerfile": "deploy/docker/spa-static.Dockerfile",
+      "cms": true,
+      "siteKey": "R01",
+      "provision": {
+        "serviceAccountFrom": "boston-mixtape",
+        "mailProfileFrom": "TALK_ABOUT_DREAMS"
+      },
+      "packagePath": "packages/room01890",
+      "watchPaths": [
+        "packages/room01890/",
+        "deploy/compose/room01890.yml",
+        "deploy/compose/room01890.env.example",
+        "deploy/dns/sites/room01890.json",
+        "packages/web-legos/",
+        "scripts/vite/",
+        "packages/server-legos/",
+        "deploy/docker/spa-static.Dockerfile"
+      ],
+      "companions": [
+        "wl-cms",
+        "wl-auth",
+        "wl-forms",
+        "site-mail"
+      ],
+      "qaEnvironment": {
+        "WL_CMS_URL": "{url:wl-cms}",
+        "WL_CMS_API_KEY": "qa-not-for-production",
+        "WL_CMS_SITE": "{app}",
+        "WL_AUTH_URL": "{url:wl-auth}",
+        "WL_AUTH_API_KEY": "qa-not-for-production",
+        "WL_AUTH_SITE": "{app}",
+        "WL_FORMS_URL": "{url:wl-forms}",
+        "WL_FORMS_API_KEY": "qa-not-for-production",
+        "WL_FORMS_SITE": "{app}",
+        "SITE_MAIL_URL": "{url:site-mail}",
+        "SITE_MAIL_API_KEY": "qa-not-for-production",
+        "SITE_MAIL_SITE_SLUG": "{app}"
+      },
+      "qaCopyFiles": [
+        {
+          "from": "/opt/services/data/app-env/boston-mixtape-serviceAccountKey.json",
+          "to": "/opt/services/data/app-env/room01890-serviceAccountKey.json"
+        }
+      ]
+    },
+    {
+      "app": "site-mail",
+      "port": 3020,
+      "kind": "express",
+      "dockerfile": "deploy/docker/node-express.Dockerfile",
+      "packagePath": "packages/site-mail",
+      "watchPaths": [
+        "packages/site-mail/",
+        "deploy/compose/site-mail.yml",
+        "deploy/compose/site-mail.env.example",
+        "deploy/dns/sites/site-mail.json",
+        "deploy/docker/node-express.Dockerfile"
+      ]
+    },
+    {
+      "app": "wl-cms",
+      "port": 3021,
+      "kind": "express",
+      "dockerfile": "deploy/docker/node-express.Dockerfile",
+      "packagePath": "packages/wl-cms",
+      "watchPaths": [
+        "packages/wl-cms/",
+        "deploy/compose/wl-cms.yml",
+        "deploy/compose/wl-cms.env.example",
+        "deploy/dns/sites/wl-cms.json",
+        "deploy/docker/node-express.Dockerfile"
+      ],
+      "qaVolumes": [
+        "/opt/services/data/app-env:/opt/services/data/app-env:ro"
+      ],
+      "qaEnvironment": {
+        "CMS_COLLECTION_PREFIX": "{cmsPrefix}"
+      },
+      "qaCloneAssets": "/opt/services/data/app-assets/wl-cms"
+    },
+    {
+      "app": "wl-auth",
+      "port": 3022,
+      "kind": "express",
+      "dockerfile": "deploy/docker/node-express.Dockerfile",
+      "packagePath": "packages/wl-auth",
+      "watchPaths": [
+        "packages/wl-auth/",
+        "deploy/compose/wl-auth.yml",
+        "deploy/compose/wl-auth.env.example",
+        "deploy/dns/sites/wl-auth.json",
+        "deploy/docker/node-express.Dockerfile"
+      ],
+      "qaVolumes": [
+        "/opt/services/data/app-env:/opt/services/data/app-env:ro"
+      ]
+    },
+    {
+      "app": "wl-forms",
+      "port": 3023,
+      "kind": "express",
+      "dockerfile": "deploy/docker/node-express.Dockerfile",
+      "packagePath": "packages/wl-forms",
+      "watchPaths": [
+        "packages/wl-forms/",
+        "deploy/compose/wl-forms.yml",
+        "deploy/compose/wl-forms.env.example",
+        "deploy/dns/sites/wl-forms.json",
+        "deploy/docker/node-express.Dockerfile"
+      ],
+      "qaVolumes": [
+        "/opt/services/data/app-env:/opt/services/data/app-env:ro"
+      ]
+    },
+    {
+      "app": "site-billing",
+      "port": 3024,
+      "kind": "express",
+      "dockerfile": "deploy/docker/node-express.Dockerfile",
+      "packagePath": "packages/site-billing",
+      "watchPaths": [
+        "packages/site-billing/",
+        "deploy/compose/site-billing.yml",
+        "deploy/compose/site-billing.env.example",
+        "deploy/dns/sites/site-billing.json",
+        "deploy/docker/node-express.Dockerfile",
+        "deploy/billing/",
+        "scripts/billing/"
+      ],
+      "qaEnvironment": {
+        "SITE_BILLING_STATE_DIR": "/opt/services/data/app-assets/site-billing",
+        "SITE_BILLING_TRAEFIK_DYNAMIC_PATH": "/opt/services/data/app-assets/site-billing/billing-blocks.yml",
+        "SITE_BILLING_TRAEFIK_SERVICE_URL": "http://{container}:{port}",
+        "SITE_BILLING_ALLOW_DEBUG": "true"
+      }
+    },
+    {
+      "app": "docs",
+      "port": 8080,
+      "kind": "docs",
+      "dockerfile": "deploy/docker/docs-static.Dockerfile",
+      "packagePath": "packages/docs",
+      "watchPaths": [
+        "packages/docs/",
+        "deploy/compose/docs.yml",
+        "deploy/compose/docs.env.example",
+        "deploy/dns/sites/docs.json",
+        "scripts/docs/",
+        "deploy/docker/docs-static.Dockerfile"
+      ],
+      "qa": false
+    },
+    {
+      "app": "storybook",
+      "port": 8080,
+      "kind": "static",
+      "dockerfile": "deploy/docker/storybook.Dockerfile",
+      "packagePath": "packages/storybook",
+      "watchPaths": [
+        "tools/storybook/",
+        "re:^deploy/docker/storybook",
+        "deploy/compose/storybook.yml",
+        "packages/web-legos/",
+        "scripts/vite/",
+        "re:^packages/[^/]+/client/((src|public)/|index.html$)"
+      ],
+      "qaPreDeploy": [
+        "sudo bash scripts/glados/provision-cms-read-key.sh"
+      ]
+    }
+  ]
+}

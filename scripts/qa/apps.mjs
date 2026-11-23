@@ -1,3 +1,5 @@
+import fs from "node:fs";
+
 /**
  * Canonical QA / publish app catalog.
  * app-slug === compose / matrix name (e.g. beyond-the-bell).
@@ -9,97 +11,16 @@ export const QA_DOMAIN = "qa.joed.dev";
 /** First-level joed.dev label so Cloudflare Universal SSL (*.joed.dev) covers QA hosts. */
 export const QA_HOST_DOMAIN = "joed.dev";
 
-const SPA_STATIC_DOCKERFILE = "deploy/docker/spa-static.Dockerfile";
-const SPA_NODE_DOCKERFILE = "deploy/docker/node-react-express.Dockerfile";
+
+/**
+ * The catalog itself is deploy/apps.json, which the r2pen2/devops QA preview workflows read too.
+ * Fields beyond devops's (siteKey, provision) are WL-only and ignored there.
+ */
+const CATALOG = JSON.parse(fs.readFileSync(new URL("../../deploy/apps.json", import.meta.url), "utf8"));
+const byKind = (...kinds) => CATALOG.apps.filter((a) => kinds.includes(a.kind));
 
 /** SPA apps that sync web-legos into the image. */
-export const SPA_APPS = [
-  {
-    app: "nicole-levin",
-    port: 8080,
-    kind: "spa-static",
-    dockerfile: SPA_STATIC_DOCKERFILE,
-    extraVolumes: [],
-    cms: true,
-    siteKey: "NL",
-  },
-  {
-    app: "a-new-day-coaching",
-    port: 8080,
-    kind: "spa-static",
-    dockerfile: SPA_STATIC_DOCKERFILE,
-    extraVolumes: [],
-    cms: true,
-    siteKey: "ANDC",
-  },
-  {
-    app: "a-new-day-coaching-crm",
-    port: 3008,
-    kind: "spa",
-    dockerfile: SPA_NODE_DOCKERFILE,
-    extraVolumes: ["cal"],
-  },
-  {
-    app: "beyond-the-bell",
-    port: 8080,
-    kind: "spa-static",
-    dockerfile: SPA_STATIC_DOCKERFILE,
-    extraVolumes: [],
-    cms: true,
-  },
-  {
-    app: "wl-admin-portal",
-    port: 25565,
-    kind: "spa",
-    dockerfile: SPA_NODE_DOCKERFILE,
-    extraVolumes: [],
-  },
-  {
-    app: "you-can-do-it-gardening",
-    port: 8080,
-    kind: "spa-static",
-    dockerfile: SPA_STATIC_DOCKERFILE,
-    extraVolumes: [],
-    cms: true,
-  },
-  {
-    app: "joe-dobbelaar",
-    port: 3002,
-    kind: "spa",
-    dockerfile: SPA_NODE_DOCKERFILE,
-    extraVolumes: [],
-  },
-  {
-    app: "talk-about-dreams",
-    port: 8080,
-    kind: "spa-static",
-    dockerfile: SPA_STATIC_DOCKERFILE,
-    extraVolumes: [],
-    cms: true,
-    siteKey: "TAG",
-  },
-  {
-    app: "boston-mixtape",
-    port: 8080,
-    kind: "spa-static",
-    dockerfile: SPA_STATIC_DOCKERFILE,
-    extraVolumes: [],
-    cms: true,
-    siteKey: "BBM",
-  },
-  {
-    app: "room01890",
-    port: 8080,
-    kind: "spa-static",
-    dockerfile: SPA_STATIC_DOCKERFILE,
-    extraVolumes: [],
-    cms: true,
-    siteKey: "R01",
-    // First prod deploy creates its env file, service account (shared wladminportal project) and
-    // auth/forms keys on glados: scripts/glados/provision-site.sh.
-    provision: { serviceAccountFrom: "boston-mixtape", mailProfileFrom: "TALK_ABOUT_DREAMS" },
-  },
-];
+export const SPA_APPS = byKind("spa", "spa-static");
 
 /** Apps that seed/cleanup prefixed Firestore CMS collections for QA. */
 export function cmsQaApps() {
@@ -110,60 +31,15 @@ export function cmsCollectionPrefix(pr) {
   return `qa-pr-${pr}-`;
 }
 
-export const EXPRESS_APPS = [
-  {
-    app: "site-mail",
-    port: 3020,
-    kind: "express",
-    dockerfile: "deploy/docker/node-express.Dockerfile",
-  },
-  {
-    app: "wl-cms",
-    port: 3021,
-    kind: "express",
-    dockerfile: "deploy/docker/node-express.Dockerfile",
-  },
-  {
-    app: "wl-auth",
-    port: 3022,
-    kind: "express",
-    dockerfile: "deploy/docker/node-express.Dockerfile",
-  },
-  {
-    app: "wl-forms",
-    port: 3023,
-    kind: "express",
-    dockerfile: "deploy/docker/node-express.Dockerfile",
-  },
-  {
-    app: "site-billing",
-    port: 3024,
-    kind: "express",
-    dockerfile: "deploy/docker/node-express.Dockerfile",
-  },
-];
+export const EXPRESS_APPS = byKind("express");
 
-export const DOCS_APPS = [
-  {
-    app: "docs",
-    port: 8080,
-    kind: "docs",
-    dockerfile: "deploy/docker/docs-static.Dockerfile",
-  },
-];
+export const DOCS_APPS = byKind("docs");
 
 /**
  * Static sites with no WL services: the component catalog (tools/storybook, WL-7). It renders
  * web-legos and every site's client source, so detect-changed-apps rebuilds it when any of those change.
  */
-export const STATIC_APPS = [
-  {
-    app: "storybook",
-    port: 8080,
-    kind: "static",
-    dockerfile: "deploy/docker/storybook.Dockerfile",
-  },
-];
+export const STATIC_APPS = byKind("static");
 
 /** QA preview apps (no docs host). */
 export const ALL_APPS = [...SPA_APPS, ...EXPRESS_APPS, ...STATIC_APPS];

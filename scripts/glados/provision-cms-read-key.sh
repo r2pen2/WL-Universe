@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Read-only wl-cms access for the component catalog (storybook.joed.dev and pr-<n>-storybook).
-# Idempotent; run by publish-app-images.yml (storybook / wl-cms deploys) and scripts/qa/deploy-pr.mjs.
+# Idempotent; run by publish-app-images.yml (storybook / wl-cms deploys) and, for QA previews, by
+# r2pen2/devops deploy-pr.mjs (storybook's qaPreDeploy in deploy/apps.json).
 #
 # - Generates WL_CMS_READ_API_KEY in wl-cms.env if missing and recreates wl-cms so it takes effect.
 #   wl-cms accepts that key for GET/HEAD only (packages/wl-cms/lib/auth.js); writes get 403.
