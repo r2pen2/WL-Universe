@@ -1,0 +1,51 @@
+{
+  "project": "WL",
+  "label": "qa-previews",
+  "epic": {
+    "key": "epic",
+    "name": "QA previews: run WL-Universe's on the devops reusable workflow",
+    "description": "<p>WL-Universe's PR previews (<code>.github/workflows/qa-preview.yml</code> + <code>scripts/qa/*</code>) are a separate copy of devops's <code>reusable-qa-preview.yml</code> + <code>ci/scripts/qa/*</code>, and the two have drifted: <code>deploy-pr</code>, <code>cleanup-pr</code> and <code>generate-compose</code> differ by 135-231 lines. Fixes land twice or only once (the \"runner owns the qa folder\" fix had to go into both: r2pen2/devops#15 and WL-Universe). Goal: WL-Universe calls the devops reusable workflow and its <code>scripts/qa</code> copies are deleted.</p><p>WL-Universe has features devops lacks; each has to become a generic option in devops first, without changing what bindarr, it and speaker get. Move them one at a time, each step deployable on its own.</p>"
+  },
+  "items": [
+    {
+      "key": "inputs",
+      "name": "devops QA: per-repo hooks for app catalog, env stubs and extra deploy steps",
+      "description": "<p>Make the reusable workflow and <code>ci/scripts/qa</code> take what WL-Universe hard-codes: its app catalog (<code>scripts/qa/apps.mjs</code> → a catalog file), its env-stub dir, image naming (<code>wl-universe-&lt;app&gt;</code>), and a pre-deploy hook per app (Storybook's read-only CMS key, service-account copy for new v2 sites).</p>"
+    },
+    {
+      "key": "companions",
+      "name": "devops QA: deploy companion services with an app, falling back to :latest",
+      "description": "<p>A static SPA's preview needs <code>wl-cms</code>, <code>wl-auth</code>, <code>wl-forms</code> and <code>site-mail</code> up too, using <code>:pr-N</code> if the PR built one and <code>:latest</code> otherwise (WL's <code>SPA_STATIC_SERVICES</code> + <code>imageTagFor</code>). Generalize as a catalog field (\"companions\").</p>",
+      "blockedBy": [
+        "inputs"
+      ]
+    },
+    {
+      "key": "cms",
+      "name": "devops QA: CMS isolation (cloned CMS files, prefixed Firestore, read-only prod mounts)",
+      "description": "<p>Port WL's preview isolation: copy prod CMS files per PR (<code>cloneCmsAssets</code>), seed prefixed Firestore collections via the wl-cms image (<code>seedFirestore</code>, <code>CMS_COLLECTION_PREFIX</code>), read-only prod image/SA mounts and the Traefik write isolation from <code>generate-compose</code>, and the matching teardown in <code>cleanup-pr</code>. A preview must never read or write prod data.</p>",
+      "blockedBy": [
+        "inputs",
+        "companions"
+      ]
+    },
+    {
+      "key": "checks",
+      "name": "devops QA: optional Lighthouse and feature-liveness jobs",
+      "description": "<p>Move WL's <code>accessibility (Lighthouse)</code> and <code>feature liveness</code> jobs into the reusable workflow behind inputs, off by default for other repos.</p>",
+      "blockedBy": [
+        "inputs"
+      ]
+    },
+    {
+      "key": "switch",
+      "name": "WL-Universe: call devops reusable-qa-preview; delete scripts/qa copies",
+      "description": "<p>Replace <code>qa-preview.yml</code> and <code>qa-preview-cleanup.yml</code> with calls to the devops reusable workflows, delete the duplicated <code>scripts/qa</code> files, and check a preview end to end (content loads, CMS edits stay in the preview, teardown removes everything).</p>",
+      "blockedBy": [
+        "companions",
+        "cms",
+        "checks"
+      ]
+    }
+  ]
+}
