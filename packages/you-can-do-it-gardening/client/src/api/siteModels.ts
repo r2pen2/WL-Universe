@@ -428,8 +428,6 @@ export class FeaturedClip extends StaticSiteModel {
   images = {}
   numbers = {}
   shortStrings = {
-    /** Heading above the clip, so visitors know what they're watching. */
-    title: "From Backyards to Bedrock Gardens",
     // New Hampshire PBS, "From Backyards to Bedrock Gardens | Windows to the Wild" (the newest
     // appearance on Find Me). Shown until
     // someone sets a clip in the CMS; saving a blank link there hides the section.
@@ -438,8 +436,8 @@ export class FeaturedClip extends StaticSiteModel {
     endTime: "11:40",
   }
   longStrings = {
-    /** A line under the heading; blank shows none. */
-    caption: "From New Hampshire PBS's Windows to the Wild.",
+    /** A line above the clip, so visitors know what they're watching; blank shows none. */
+    caption: "From Backyards to Bedrock Gardens, on New Hampshire PBS's Windows to the Wild.",
   }
 
   fillConstantExampleData() {
@@ -463,7 +461,6 @@ export class FeaturedClip extends StaticSiteModel {
     fc.shortStrings.youtubeLink = data.youtubeLink ?? fc.shortStrings.youtubeLink;
     fc.shortStrings.startTime = data.startTime ?? fc.shortStrings.startTime;
     fc.shortStrings.endTime = data.endTime ?? fc.shortStrings.endTime;
-    fc.shortStrings.title = data.title ?? fc.shortStrings.title;
     fc.longStrings.caption = data.caption ?? fc.longStrings.caption;
     return fc;
   }

@@ -47,7 +47,7 @@ const collapseItems = [
     name: "Find Me",
     href: "find-me",
   },
-  // FAQ is hidden at Jess's request (WL-13); the /faq page still works for anyone with the link.
+  // FAQ is hidden at Jess's request (WL-13); its route is commented out in App.jsx too.
 ];
 
 function NavbarPages() {
