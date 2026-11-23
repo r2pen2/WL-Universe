@@ -17,7 +17,7 @@ jobs:
   # Detect, build pr-N images, deploy on the active host and comment the URLs: r2pen2/devops,
   # driven by deploy/apps.json. The checks below run against what it deployed.
   preview:
-    uses: r2pen2/devops/.github/workflows/reusable-qa-preview.yml@main
+    uses: r2pen2/devops/.github/workflows/reusable-qa-preview.yml@qa/wl-universe-hooks
     with:
       catalog: deploy/apps.json
     secrets: inherit
