@@ -13,50 +13,11 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # r2pen2/devops: compose down, delete this PR's cloned data (qa-pr-<n>- Firestore collections via
+  # scripts/qa/firestore-qa.mjs, its copy of the CMS files), then sweep the same for any other closed
+  # PR whose cleanup didn't finish, and mark the PR comment torn down.
   cleanup:
-    name: teardown QA on glados
-    runs-on:
-      - self-hosted
-      - glados
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-
-      # Tears down the PR's containers, deletes its clone of prod data (qa-pr-<n>- Firestore
-      # collections and its copy of the CMS files under app-assets/qa/pr-<n>), then sweeps the
-      # same for any other closed PR whose cleanup didn't finish.
-      - name: Compose down, delete cloned data, sweep closed PRs
-        env:
-          PR: ${{ github.event.pull_request.number }}
-          OWNER: ${{ github.repository_owner }}
-          GH_TOKEN: ${{ github.token }}
-          REPO: ${{ github.repository }}
-        run: |
-          set -euo pipefail
-          # Open PRs keep their previews. If GitHub can't be asked, skip the sweep rather than
-          # treat every PR as closed.
-          if open=$(curl -fsS -H "Authorization: Bearer $GH_TOKEN"                 "https://api.github.com/repos/$REPO/pulls?state=open&per_page=100"               | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>console.log(JSON.parse(s).map(p=>p.number).join(",")))'); then
-            echo "open PRs: ${open:-none}"
-            node scripts/qa/cleanup-pr.mjs --pr "$PR" --owner "$OWNER" --prune-images --sweep --open "$open"
-          else
-            echo "::warning::Couldn't list open PRs; cleaning up PR $PR only"
-            node scripts/qa/cleanup-pr.mjs --pr "$PR" --owner "$OWNER" --prune-images
-          fi
-
-  comment:
-    name: clear QA comment
-    needs: cleanup
-    if: always()
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-
-      - name: Mark deployments removed
-        env:
-          GH_TOKEN: ${{ github.token }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          PR: ${{ github.event.pull_request.number }}
-        run: |
-          set -euo pipefail
-          node scripts/qa/comment-pr.mjs --pr "$PR" --teardown || true
+    uses: r2pen2/devops/.github/workflows/reusable-qa-cleanup.yml@main
+    with:
+      catalog: deploy/apps.json
+    secrets: inherit

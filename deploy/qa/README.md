@@ -1,6 +1,8 @@
-# Ephemeral QA on glados
+# Ephemeral QA previews
 
-Short-lived preview hosts for pull requests. Authoritative plan: [`docs/ephemeral-qa-environments.md`](../../docs/ephemeral-qa-environments.md).
+Short-lived preview hosts for pull requests, on whichever host is active. Authoritative plan: [`docs/ephemeral-qa-environments.md`](../../docs/ephemeral-qa-environments.md).
+
+**The deploy code lives in r2pen2/devops** (`reusable-qa-preview.yml`, `reusable-qa-cleanup.yml`, `ci/scripts/qa/*`), shared with the other repos that preview. This repo only describes its apps in [`deploy/apps.json`](../apps.json): ports, Dockerfiles, which paths rebuild which app, companions (a static site's preview also runs `wl-cms`, `wl-auth`, `wl-forms` and `site-mail`), extra QA volumes and env, and the Firestore seed script. Field reference: devops `ci/scripts/lib/catalog.mjs`. [`scripts/qa/apps.mjs`](../../scripts/qa/apps.mjs) reads the same file for this repo's own scripts.
 
 ## Hostname scheme
 
@@ -28,10 +30,10 @@ After one-time Cloudflare wildcard bootstrap (`*.joed.dev` → Traefik), **per-P
 | Assets | `/opt/services/data/app-assets/<app>/` | CMS apps: prod `images`/`static` **:ro**; others: `/opt/services/data/app-assets/qa/pr-<n>/<app>/` |
 | Firestore CMS | `siteText` / `siteImages` / … | Seeded copy at `qa-pr-<n>-siteText` etc.; deleted on PR close |
 
-Generator:
+Generator (in a devops checkout):
 
 ```sh
-node scripts/qa/generate-compose.mjs --pr 42 --app beyond-the-bell
+node ci/scripts/qa/generate-compose.mjs --catalog <WL-Universe>/deploy/apps.json --pr 42 --app beyond-the-bell
 ```
 
 Example output: [`examples/pr-42-beyond-the-bell.compose.yml`](./examples/pr-42-beyond-the-bell.compose.yml). Prod routers stay `beyond-the-bell`; QA uses `qa-pr-42-beyond-the-bell` — no label collision.
@@ -49,7 +51,7 @@ Schema example: [`active.json.example`](./active.json.example).
 
 ## CMS content (Firestore)
 
-Marketing SPAs with `cms: true` in [`scripts/qa/apps.mjs`](../../scripts/qa/apps.mjs):
+Marketing SPAs with `cms: true` in [`deploy/apps.json`](../apps.json) (`qaSeed` runs the script in the `wl-cms` image):
 
 1. **Deploy** copies prod root collections (except `users` / `siteForms`) into `qa-pr-<n>-*` via [`scripts/qa/firestore-qa.mjs`](../../scripts/qa/firestore-qa.mjs).
 2. App gets `CMS_COLLECTION_PREFIX=qa-pr-<n>-` so Server-Legos reads/writes only those collections.
@@ -69,8 +71,8 @@ Auth/permissions stay on the shared `users` collection. SMTP/Stripe stay QA-stub
 ## Cloudflare bootstrap (one-time)
 
 ```sh
-# Token via env or GitHub secret CLOUDFLARE_API_TOKEN — never commit
-CLOUDFLARE_API_TOKEN=... node scripts/qa/ensure-qa-wildcard.mjs
+# Token via env or GitHub secret CLOUDFLARE_API_TOKEN — never commit. Script is in r2pen2/devops.
+CLOUDFLARE_API_TOKEN=... node ci/scripts/qa/ensure-qa-wildcard.mjs
 ```
 
 Required token permissions:
@@ -86,21 +88,19 @@ Workflow: `.github/workflows/qa-wildcard-bootstrap.yml` (`workflow_dispatch`).
 
 | Workflow | Trigger | Action |
 |----------|---------|--------|
-| `qa-preview.yml` | PR open/sync/reopen | detect apps → build/push `:pr-<n>` → glados deploy → sticky comment → update `active.json` |
-| `qa-preview-cleanup.yml` | PR closed | compose down → remove `active.json` entries |
-| `qa-wildcard-bootstrap.yml` | manual | run Cloudflare wildcard script |
+| `qa-preview.yml` | PR open/sync/reopen | devops `reusable-qa-preview`: detect apps → build/push `:pr-<n>` → deploy → sticky comment → `active.json`; then this repo's feature liveness and Lighthouse checks |
+| `qa-preview-cleanup.yml` | PR closed | devops `reusable-qa-cleanup`: compose down, delete cloned data, sweep closed PRs' leftovers |
+| `qa-wildcard-bootstrap.yml` | manual | devops `reusable-qa-wildcard` |
 
-Changed-app detection: `scripts/qa/detect-changed-apps.mjs`
+Changed-app detection: each app's `watchPaths` in `deploy/apps.json` (prefixes, `re:` regexes, `!` exclusions) plus top-level `sharedPaths`:
 
-- Direct package/compose paths
-- `web-legos` / `server-legos` → all SPA apps
-- Shared Dockerfiles / root lockfile → all apps
+- Direct package/compose/DNS paths
+- `web-legos` / `scripts/vite` / `server-legos` → all SPA apps (`server-legos` CMS modules → CMS sites only)
+- Each Dockerfile → the apps built with it; any other `deploy/docker/` file or the root lockfile → all apps
 
-## Local helpers
+## Local helpers (in a devops checkout)
 
 ```sh
-node scripts/qa/detect-changed-apps.mjs --base origin/main --head HEAD --json
-node scripts/qa/deploy-pr.mjs --pr 42 --apps beyond-the-bell --sha "$(git rev-parse --short HEAD)"
-node scripts/qa/cleanup-pr.mjs --pr 42
-node scripts/qa/update-active-json.mjs list
+node ci/scripts/detect-changed-apps.mjs --catalog <WL-Universe>/deploy/apps.json --base origin/main --head HEAD --scope qa --json
+node ci/scripts/qa/update-active-json.mjs list   # on the host
 ```

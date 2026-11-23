@@ -126,13 +126,13 @@ Keep a file registry plus sticky PR comments:
 ```
 
 - Visibility: sticky PR comment (App → URL table) + `active.json` on glados.
-- Helpers: `scripts/qa/update-active-json.mjs`, documented in `deploy/qa/README.md`.
+- Helpers: r2pen2/devops `ci/scripts/qa/update-active-json.mjs`, documented in `deploy/qa/README.md`.
 
 ## Cloudflare programmatic bootstrap
 
 Requires a **Cloudflare API token** (GitHub Actions secret `CLOUDFLARE_API_TOKEN`) with permissions to manage the `joed.dev` zone DNS + Zero Trust tunnel config (or Account tunnel routes).
 
-Script: `scripts/qa/ensure-qa-wildcard.mjs` (workflow: `qa-wildcard-bootstrap.yml`)
+Script: r2pen2/devops `ci/scripts/qa/ensure-qa-wildcard.mjs` (workflow: `qa-wildcard-bootstrap.yml` → devops `reusable-qa-wildcard`)
 
 - Idempotent: ensure DNS record `*.qa.joed.dev` → tunnel
 - Idempotent: ensure tunnel ingress/public hostname for `*.qa.joed.dev` → `http://traefik:80`

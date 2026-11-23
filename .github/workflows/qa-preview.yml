@@ -14,180 +14,18 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  detect:
-    name: detect changed apps
-    runs-on: ubuntu-latest
-    outputs:
-      apps: ${{ steps.detect.outputs.apps }}
-      apps_csv: ${{ steps.detect.outputs.apps_csv }}
-      has_apps: ${{ steps.detect.outputs.has_apps }}
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Detect apps
-        id: detect
-        run: |
-          set -euo pipefail
-          base="${{ github.event.pull_request.base.sha }}"
-          head="${{ github.event.pull_request.head.sha }}"
-          json="$(node scripts/qa/detect-changed-apps.mjs --base "$base" --head "$head" --json)"
-          echo "$json"
-          apps="$(node -e 'const d=JSON.parse(process.argv[1]); process.stdout.write(JSON.stringify(d.apps))' "$json")"
-          csv="$(node -e 'const d=JSON.parse(process.argv[1]); process.stdout.write(d.apps.join(","))' "$json")"
-          {
-            echo "apps=$apps"
-            echo "apps_csv=$csv"
-            if [[ "$apps" == "[]" ]]; then
-              echo "has_apps=false"
-            else
-              echo "has_apps=true"
-            fi
-          } >> "$GITHUB_OUTPUT"
-
-  build:
-    name: build (${{ matrix.app }})
-    needs: detect
-    if: needs.detect.outputs.has_apps == 'true'
-    runs-on: ubuntu-latest
-    # One job per app, all at once (each shows up separately in the Actions UI).
-    strategy:
-      fail-fast: false
-      matrix:
-        app: ${{ fromJSON(needs.detect.outputs.apps) }}
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-
-      - name: Resolve build settings
-        id: app
-        env:
-          APP: ${{ matrix.app }}
-        run: |
-          set -euo pipefail
-          node -e '
-            import("./scripts/qa/apps.mjs").then((m) => {
-              const a = m.ALL_APPS.find((x) => x.app === process.env.APP);
-              const out = a
-                ? `build=true\nport=${a.port}\ndockerfile=${a.dockerfile || "deploy/docker/node-react-express.Dockerfile"}\n`
-                : "build=false\n";
-              process.stdout.write(out);
-            })
-          ' >> "$GITHUB_OUTPUT"
-          cat "$GITHUB_OUTPUT"
-
-      - name: Set up Docker Buildx
-        if: steps.app.outputs.build == 'true'
-        uses: docker/setup-buildx-action@v3
-
-      - name: Log in to GHCR
-        if: steps.app.outputs.build == 'true'
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build and push
-        if: steps.app.outputs.build == 'true'
-        env:
-          APP: ${{ matrix.app }}
-          OWNER: ${{ github.repository_owner }}
-          SHA: ${{ github.sha }}
-          PR: ${{ github.event.pull_request.number }}
-          PORT: ${{ steps.app.outputs.port }}
-          DOCKERFILE: ${{ steps.app.outputs.dockerfile }}
-        run: |
-          set -euo pipefail
-          owner_lc="$(echo "$OWNER" | tr '[:upper:]' '[:lower:]')"
-          image="ghcr.io/${owner_lc}/wl-universe-${APP}"
-          docker buildx build \
-            --file "${DOCKERFILE}" \
-            --build-arg "APP_DIR=packages/${APP}" \
-            --build-arg "APP_NAME=${APP}" \
-            --build-arg "PORT=${PORT}" \
-            --tag "${image}:pr-${PR}" \
-            --tag "${image}:pr-${PR}-${SHA}" \
-            --cache-from "type=gha,scope=qa-${APP}" \
-            --cache-to "type=gha,mode=max,scope=qa-${APP}" \
-            --push \
-            .
-
-  deploy:
-    name: deploy on glados
-    needs: [detect, build]
-    if: needs.detect.outputs.has_apps == 'true'
-    runs-on:
-      - self-hosted
-      - glados
-    outputs:
-      deployments: ${{ steps.deploy.outputs.deployments }}
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-
-      - name: Log in to GHCR
-        run: |
-          set -euo pipefail
-          # compose pull runs via sudo; login must be for root's docker config
-          echo "${{ secrets.GITHUB_TOKEN }}" | sudo docker login ghcr.io -u "${{ github.actor }}" --password-stdin
-
-      - name: Deploy QA stacks
-        id: deploy
-        env:
-          PR: ${{ github.event.pull_request.number }}
-          APPS_CSV: ${{ needs.detect.outputs.apps_csv }}
-          SHA: ${{ github.sha }}
-          OWNER: ${{ github.repository_owner }}
-        run: |
-          set -euo pipefail
-          node scripts/qa/deploy-pr.mjs \
-            --pr "$PR" \
-            --apps "$APPS_CSV" \
-            --sha "$SHA" \
-            --owner "$OWNER" \
-            --out /tmp/qa-deployments-${PR}.json
-          {
-            echo "deployments<<EOF"
-            cat "/tmp/qa-deployments-${PR}.json"
-            echo "EOF"
-          } >> "$GITHUB_OUTPUT"
-
-  comment:
-    name: PR comment
-    needs: [detect, deploy]
-    if: always() && needs.detect.result == 'success'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-
-      - name: Upsert sticky QA comment
-        env:
-          GH_TOKEN: ${{ github.token }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          PR: ${{ github.event.pull_request.number }}
-          HAS_APPS: ${{ needs.detect.outputs.has_apps }}
-          DEPLOYMENTS: ${{ needs.deploy.outputs.deployments }}
-          DEPLOY_RESULT: ${{ needs.deploy.result }}
-        run: |
-          set -euo pipefail
-          if [[ "${HAS_APPS}" != "true" ]]; then
-            node scripts/qa/comment-pr.mjs --pr "$PR" --empty
-            exit 0
-          fi
-          if [[ "${DEPLOY_RESULT}" != "success" || -z "${DEPLOYMENTS}" ]]; then
-            echo "Deploy did not succeed; skipping URL comment update"
-            exit 0
-          fi
-          node scripts/qa/comment-pr.mjs --pr "$PR" --deployments "$DEPLOYMENTS"
+  # Detect, build pr-N images, deploy on the active host and comment the URLs: r2pen2/devops,
+  # driven by deploy/apps.json. The checks below run against what it deployed.
+  preview:
+    uses: r2pen2/devops/.github/workflows/reusable-qa-preview.yml@main
+    with:
+      catalog: deploy/apps.json
+    secrets: inherit
 
   liveness:
     name: feature liveness
-    needs: [detect, deploy]
-    if: needs.detect.outputs.has_apps == 'true' && needs.deploy.result == 'success'
+    needs: preview
+    if: needs.preview.outputs.has_apps == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
@@ -196,7 +34,7 @@ jobs:
       - name: Probe deployed QA hosts
         env:
           PR: ${{ github.event.pull_request.number }}
-          APPS_JSON: ${{ needs.detect.outputs.apps }}
+          APPS_JSON: ${{ needs.preview.outputs.apps }}
         run: |
           set -euo pipefail
           sleep 5
@@ -211,8 +49,8 @@ jobs:
 
   accessibility:
     name: accessibility (Lighthouse)
-    needs: [detect, deploy]
-    if: needs.detect.outputs.has_apps == 'true' && needs.deploy.result == 'success'
+    needs: preview
+    if: needs.preview.outputs.has_apps == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
@@ -225,7 +63,7 @@ jobs:
       - name: Audit previews against the live sites
         env:
           PR: ${{ github.event.pull_request.number }}
-          APPS_CSV: ${{ needs.detect.outputs.apps_csv }}
+          APPS_CSV: ${{ needs.preview.outputs.apps_csv }}
         run: |
           set -euo pipefail
           export CHROME_PATH="$(command -v google-chrome || command -v chromium)"

@@ -1,6 +1,6 @@
 name: QA Cloudflare wildcard bootstrap
 
-# One-time / idempotent: *.joed.dev (+ legacy *.qa.joed.dev) DNS + tunnel ingress → Traefik.
+# One-time / idempotent: *.joed.dev DNS + tunnel ingress → Traefik (r2pen2/devops).
 # Requires repository secret CLOUDFLARE_API_TOKEN (never commit the token).
 
 on:
@@ -11,19 +11,6 @@ permissions:
 
 jobs:
   bootstrap:
-    name: ensure QA wildcards
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-
-      - name: Ensure QA wildcard
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-        run: |
-          set -euo pipefail
-          if [[ -z "${CLOUDFLARE_API_TOKEN}" ]]; then
-            echo "::error::CLOUDFLARE_API_TOKEN secret is not set"
-            exit 1
-          fi
-          node scripts/qa/ensure-qa-wildcard.mjs
+    uses: r2pen2/devops/.github/workflows/reusable-qa-wildcard.yml@main
+    secrets:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
