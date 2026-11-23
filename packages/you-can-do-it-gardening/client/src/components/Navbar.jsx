@@ -47,10 +47,7 @@ const collapseItems = [
     name: "Find Me",
     href: "find-me",
   },
-  {
-    name: "FAQ",
-    href: "faq"
-  }
+  // FAQ is hidden at Jess's request (WL-13); the /faq page still works for anyone with the link.
 ];
 
 function NavbarPages() {
@@ -106,13 +103,6 @@ function NavbarPages() {
         itemCss={{fontSize: navbarItemFontSize}}
       >
         Find Me
-      </NextUINavbar.Link>
-      <NextUINavbar.Link 
-        isActive={checkLinkActive("faq")}
-        href="faq"
-        itemCss={{fontSize: navbarItemFontSize}}
-      >
-        FAQ
       </NextUINavbar.Link>
     </NextUINavbar.Content>
   )
