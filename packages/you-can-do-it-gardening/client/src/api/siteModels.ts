@@ -435,7 +435,10 @@ export class FeaturedClip extends StaticSiteModel {
     startTime: "0:35",
     endTime: "11:40",
   }
-  longStrings = {}
+  longStrings = {
+    /** A line above the clip, so visitors know what they're watching; blank shows none. */
+    caption: "From Backyards to Bedrock Gardens, on New Hampshire PBS's Windows to the Wild.",
+  }
 
   fillConstantExampleData() {
     this.shortStrings.youtubeLink = "https://www.youtube.com/watch?v=niYKpfztsI0";
@@ -458,6 +461,7 @@ export class FeaturedClip extends StaticSiteModel {
     fc.shortStrings.youtubeLink = data.youtubeLink ?? fc.shortStrings.youtubeLink;
     fc.shortStrings.startTime = data.startTime ?? fc.shortStrings.startTime;
     fc.shortStrings.endTime = data.endTime ?? fc.shortStrings.endTime;
+    fc.longStrings.caption = data.caption ?? fc.longStrings.caption;
     return fc;
   }
 }

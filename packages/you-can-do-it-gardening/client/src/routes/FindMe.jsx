@@ -82,13 +82,11 @@ export default function FindMe() {
             </div>
             <Text style={{maxWidth: 600}}>{teachingItem.description}</Text>
           </div>
-          <div className="d-flex flex-column justify-content-center d-lg-none">          
-            <ModelEditButton userCanEdit={userCanEditTeachingItems} data={teachingItem} model={TeachingItem} setCurrentModel={setCurrentModel} setEditModalOpen={setEditModalOpen} />
-          </div>
         </Card>
-        <div className="d-none d-lg-flex" style={{marginLeft: "2rem"}}>
-          <ModelEditButton userCanEdit={userCanEditTeachingItems} data={teachingItem} model={TeachingItem} setCurrentModel={setCurrentModel} setEditModalOpen={setEditModalOpen} />
-        </div>
+        {/* Beside the card, not in it: inside, a tap on the button opened the card's link instead of the editor. */}
+        {userCanEditTeachingItems && (
+          <ModelEditButton small userCanEdit={userCanEditTeachingItems} data={teachingItem} model={TeachingItem} setCurrentModel={setCurrentModel} setEditModalOpen={setEditModalOpen} />
+        )}
       </div>
     )
   }
