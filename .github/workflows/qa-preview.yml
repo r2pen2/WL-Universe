@@ -116,7 +116,7 @@ jobs:
             .
 
   deploy:
-    name: deploy
+    name: deploy on glados
     needs: [detect, build]
     if: needs.detect.outputs.has_apps == 'true'
     runs-on:
