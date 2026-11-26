@@ -1,0 +1,10 @@
+{
+  "project": "WL",
+  "label": "service-request",
+  "epic": {
+    "key": "epic",
+    "name": "Bluprint CRM: no users in Manage Users, and students get a registration error",
+    "description": "<p><b>Service request from Rachell (A New Day Coaching), 2026-11-24.</b> Manage Users shows \"No users found\" (screenshot 2026-10-05), and students trying to sign up get \"Registration Error: Email already in use\" (screenshot 2026-09-14). She wants to see her students, set goals, link their LMS and have them use the assignment tracker.</p><h3>Findings</h3><ul><li>The empty roster was the one-bad-doc bug fixed on 2026-10-29 (a551f29). glados serves that build, and Firestore has 18 profiles (2 Coach, 11 Student, 4 Parent, 1 Developer).</li><li>The registration error came from one student who had already signed in with Google using that email, so the email/password sign-up was correctly refused. Neither of his Google sign-ins got a profile, because of the old sync-code backend call (also fixed on 10-29).</li><li>3 Auth accounts have no <code>users/</code> profile: the student's two Google logins (Sep 5 and 6) and an unknown email/password sign-up on Nov 22. The current registration code passes against the emulator under both the live and repo rules, so the Nov 22 failure was in that browser or network.</li><li>The <code>firestore-rules.yml</code> deploy has failed since 10-29 with a 403 from firebaserules.googleapis.com. The CI service account needs a rules role, so production still runs the Sep 11 rules.</li><li>Not a real outage: Joe's home LAN blocks anewdaycoaching.com through a safebrowse.io filter. The origin on glados is fine.</li></ul><h3>To do</h3><ul><li>Backfill profiles for the 3 orphaned Auth accounts (the student's two as Student).</li><li>Give the CI service account the Firebase Rules role and re-run the rules deploy.</li><li>Reply to Rachell: the roster works now, and the student should sign in with the Google button.</li></ul><p>Decided against a server-side safety net that creates stub profiles: no profile is better than one that can't be edited.</p>"
+  },
+  "items": []
+}
